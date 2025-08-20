@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <title>Cédric Caruzzo | Research Scientist</title>
   <style>
+    /* CSS is unchanged */
     body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
     h1 { font-size: 2.4em; color: #1a1a1a; margin-bottom: 0.2em; font-weight: 700; }
     h2 { font-size: 1.6em; color: #2c3e50; margin-top: 2.5em; margin-bottom: 1.2em; font-weight: 600; border-bottom: 2px solid #3498db; padding-bottom: 0.3em; }
@@ -23,22 +24,24 @@
     nav a:hover { color: #2980b9; text-decoration: underline; }
     section { margin-bottom: 3em; text-align: justify; }
     p, ul { margin-bottom: 1em; font-size: 1.05em; }
-    .research-focus-item { margin-bottom: 1.2em; } /* ADDED */
+    .research-focus-item { margin-bottom: 1.2em; }
     .experience-item, .publication-item { margin-bottom: 2em; padding-bottom: 1.5em; border-bottom: 1px solid #eee; }
     .experience-item:last-child, .publication-item:last-child { border-bottom: none; }
     .institution { font-weight: 600; color: #2c3e50; font-size: 1.1em; }
     .position { color: #34495e; font-style: italic; margin-bottom: 0.5em; }
+    .position a { color: #34495e; text-decoration: underline; } /* Style for supervisor links */
     .duration { color: #7f8c8d; font-size: 0.9em; margin-bottom: 0.8em; }
     .experience-item ul { list-style-type: disc; padding-left: 20px; margin-top: 10px; }
     .experience-item li { margin-bottom: 0.5em; }
+    .experience-item li a { color: #333; font-weight: 500; } /* Style for links inside list items */
     .projects table { width: 100%; border-collapse: collapse; margin-top: 1em; font-size: 1.02em; }
     .projects th { background: #f8f9fa; color: #2c3e50; padding: 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #3498db; }
     .projects td { border-bottom: 1px solid #eee; padding: 12px; vertical-align: top; }
     .projects tr:hover { background: #f9f9f9; }
     .project-title a { color: inherit; text-decoration: none; font-weight: 600; }
     .project-title a:hover { color: #3498db; text-decoration: underline; }
-    .project-contribution { font-size: 1em; margin-top: 4px; } /* CHANGED */
-    .project-methods { font-size: 0.9em; color: #7f8c8d; margin-top: 5px; font-family: monospace; } /* CHANGED */
+    .project-contribution { font-size: 1em; margin-top: 4px; }
+    .project-methods { font-size: 0.9em; color: #7f8c8d; margin-top: 5px; font-family: monospace; }
     footer { margin-top: 60px; padding-top: 30px; text-align: center; font-size: 0.9em; color: #7f8c8d; border-top: 1px solid #eee; }
     .social-links { margin-top: 25px; display: flex; justify-content: center; gap: 10px; align-items: center; }
     .social-links a { display: inline-block; transition: transform 0.2s; }
@@ -86,10 +89,10 @@
 <section id="about">
   <h2>About Me</h2>
   <p>
-    My research addresses the fundamental challenges of **representation learning** from large-scale, structured scientific data. I am particularly interested in developing novel machine learning methods that can navigate the immense scale and complexity of domains like digital pathology, where gigapixel images present unique optimization and architectural challenges.
+    My research addresses the fundamental challenges of <strong>representation learning</strong> from large-scale, structured scientific data. I am particularly interested in developing novel machine learning methods that can navigate the immense scale and complexity of domains like digital pathology, where gigapixel images present unique optimization and architectural challenges.
   </p>
   <p>
-    I use this domain as a testbed to design and validate new self-supervised and multimodal learning frameworks. A key focus of my work is on **domain generalization**—developing models that learn representations invariant to systemic noise and batch effects, a critical step for robust real-world deployment. My goal is to create methods that are not only performant but also scalable and built on solid theoretical ground, fusing unstructured visual data with structured modalities like genomics or chemical representations to build more comprehensive models of complex systems.
+    I use this domain as a testbed to design and validate new self-supervised and multimodal learning frameworks. A key focus of my work is on <strong>domain generalization</strong>, developing models that learn representations invariant to systemic noise and batch effects, a critical step for robust real-world deployment. My goal is to create methods that are not only performant but also scalable and built on solid theoretical ground, fusing unstructured visual data with structured modalities like genomics or chemical representations to build more comprehensive models of complex systems.
   </p>
 </section>
 
@@ -101,14 +104,13 @@
     </div>
     <div class="research-focus-item">
       <h3>Self-Supervised Learning for Domain-Invariant Representations</h3>
-      <p>Designing contrastive and generative objectives to learn representations that are robust to nuisance variables (e.g., scanner drift, staining variation, batch effects), a key problem in learning from multi-source datasets.</p>
+      <p>Designing contrastive and generative objectives to learn representations that are robust to nuisance variables, a key problem in learning from multi-source datasets.</p>
     </div>
     <div class="research-focus-item">
       <h3>Multimodal Learning with Structured and Unstructured Data</h3>
-      <p>Developing frameworks to fuse high-dimensional visual data with structured information (e.g., chemical SMILES strings, genomic data) to learn powerful, predictive models of biological systems.</p>
+      <p>Developing frameworks to fuse high-dimensional visual data with structured information to learn powerful, predictive models of biological systems.</p>
     </div>
 </section>
-
 
 <section id="publications">
   <h2>Publications</h2>
@@ -145,7 +147,7 @@
   </div>
   <div class="experience-item">
     <div class="institution">KAIST, Graduate School of AI</div>
-    <div class="position">Master's Student</div>
+    <div class="position">Master's Student (Advisor: <a href="https://scholar.google.com/citations?user=HNMjoNEAAAAJ&hl=en" target="_blank">Prof. Ye Jong Chul</a>)</div>
     <div class="duration">Feb 2023 — Mar 2025</div>
     <ul>
       <li>Thesis: <em>Development of Foundation Models in the Context of Cell Painting</em></li>
@@ -154,9 +156,30 @@
       <li>Investigated methods to mitigate batch effects and improve data harmonization for large-scale bio-imaging.</li>
     </ul>
   </div>
-  </section>
+  
+  <div class="experience-item">
+    <div class="institution">Institut Pasteur Korea & Institut Pasteur Paris</div>
+    <div class="position">Data Scientist, Pasteur International Unit AI3D</div>
+    <div class="duration">Oct 2021 — Dec 2024</div>
+    <ul>
+      <li>Worked within the Pasteur International Unit (PIU) AI3D, a joint initiative between Institut Pasteur Korea (lead: <a href="https://scholar.google.com/citations?user=8xzsh0wAAAAJ&hl=en" target="_blank">Dr. Spencer Shorte</a>) and Institut Pasteur Paris (lead: <a href="https://scholar.google.com/citations?user=cPAja4UAAAAJ&hl=en" target="_blank">Dr. Christophe Zimmer</a>).</li>
+      <li>Designed and implemented the institute’s primary analysis pipeline for high-content screening, boosting throughput and reproducibility.</li>
+      <li>Applied computer vision models to Cell Painting assays to improve phenotypic profiling for drug discovery campaigns.</li>
+    </ul>
+  </div>
 
-<section id="projects" class="projects">
+  <div class="experience-item">
+    <div class="institution">Institut Pasteur New Caledonia / ISEA</div>
+    <div class="position">Research Intern, Undergraduate (Supervisor: <a href="https://scholar.google.com/citations?user=I3ysxxkAAAAJ&hl=en" target="_blank">Prof. Nazha Selmaoui-Folcher</a>)</div>
+    <div class="duration">Oct 2020 — Oct 2021</div>
+    <ul>
+        <li>Developed novel feature extraction and classification methods (CNNs, ML classifiers) for high-dimensional MALDI-TOF mass spectrometry data.</li>
+        <li>Created an interpretable deconvolution framework to identify discriminative biomarkers for pathogen detection.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="projects">
   <h2>Selected Projects</h2>
   <table>
     <thead>
@@ -189,7 +212,7 @@
           <a href="#" target="_blank">PanNuke Semantic Segmentation</a>
         </td>
         <td class="project-contribution">
-          An educational implementation of U-Net and U-Net++ and multiple other famous architectures from scratch for nucleus segmentation, exploring architectural choices in medical image analysis.
+          An educational implementation of U-Net, U-Net++, and other architectures from scratch for nucleus segmentation, exploring architectural choices in medical image analysis.
           <div class="project-methods">PyTorch, CNNs, Semantic Segmentation</div>
         </td>
       </tr>
