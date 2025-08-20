@@ -6,53 +6,225 @@
   <title>Cédric Caruzzo</title>
   <style>
     body {
-      font-family: "Inter", Arial, sans-serif;
+      font-family: "Georgia", "Times New Roman", serif;
       max-width: 900px;
       margin: 0 auto;
-      padding: 20px;
-      line-height: 1.6;
+      padding: 40px 20px;
+      line-height: 1.7;
       color: #333;
-      background: #fafafa;
+      background: #fff;
     }
-    h1, h2, h3 {
-      color: #111;
+    
+    h1 {
+      font-size: 2.2em;
+      color: #1a1a1a;
+      margin-bottom: 0.2em;
+      font-weight: normal;
     }
+    
+    h2 {
+      font-size: 1.4em;
+      color: #2c3e50;
+      margin-top: 2em;
+      margin-bottom: 1em;
+      font-weight: 600;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 0.3em;
+    }
+    
+    h3 {
+      font-size: 1.2em;
+      color: #34495e;
+      margin-bottom: 0.5em;
+    }
+    
     header {
       text-align: center;
-      margin-bottom: 40px;
-    }
-    nav a {
-      margin: 0 10px;
-      text-decoration: none;
-      color: #0077b5;
-    }
-    section {
       margin-bottom: 50px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid #eee;
     }
-    ul {
-      list-style-type: none;
-      padding: 0;
+    
+    .subtitle {
+      font-size: 1.1em;
+      color: #666;
+      margin: 0.5em 0 1.5em 0;
+      font-style: italic;
     }
-    li {
-      margin-bottom: 10px;
+    
+    .affiliation {
+      font-size: 1.05em;
+      color: #2c3e50;
+      margin-bottom: 1em;
     }
+    
+    .affiliation a {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .affiliation a:hover {
+      text-decoration: underline;
+    }
+    
+    nav {
+      margin-top: 20px;
+      font-size: 0.95em;
+    }
+    
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #3498db;
+      font-weight: 500;
+    }
+    
+    nav a:hover {
+      color: #2980b9;
+      text-decoration: underline;
+    }
+    
+    section {
+      margin-bottom: 3em;
+      text-align: justify;
+    }
+    
+    p {
+      margin-bottom: 1em;
+      font-size: 1.05em;
+    }
+    
+    .research-interests {
+      background: #f8f9fa;
+      padding: 20px;
+      border-left: 4px solid #3498db;
+      margin: 2em 0;
+      font-style: italic;
+    }
+    
+    .experience-item {
+      margin-bottom: 2em;
+      padding-bottom: 1.5em;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .experience-item:last-child {
+      border-bottom: none;
+    }
+    
+    .institution {
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 1.1em;
+    }
+    
+    .position {
+      color: #34495e;
+      font-style: italic;
+      margin-bottom: 0.5em;
+    }
+    
+    .duration {
+      color: #7f8c8d;
+      font-size: 0.9em;
+      margin-bottom: 0.8em;
+    }
+    
     .projects table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 1em;
+      font-size: 1.02em;
     }
-    .projects th, .projects td {
-      border-bottom: 1px solid #ddd;
-      padding: 8px;
+    
+    .projects th {
+      background: #f8f9fa;
+      color: #2c3e50;
+      padding: 12px;
       text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid #3498db;
     }
+    
+    .projects td {
+      border-bottom: 1px solid #eee;
+      padding: 12px;
+      vertical-align: top;
+    }
+    
+    .projects tr:hover {
+      background: #f9f9f9;
+    }
+    
+    .project-title {
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    
     footer {
-      margin-top: 40px;
+      margin-top: 60px;
+      padding-top: 30px;
       text-align: center;
       font-size: 0.9em;
-      color: #777;
+      color: #7f8c8d;
+      border-top: 1px solid #eee;
     }
+    
+    .badge {
+      margin: 20px 0;
+    }
+    
     .badge img {
-      height: 28px;
+      height: 32px;
+      transition: opacity 0.2s;
+    }
+    
+    .badge img:hover {
+      opacity: 0.8;
+    }
+    
+    .fun-note {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 2em 0;
+      font-size: 0.95em;
+      color: #856404;
+    }
+    
+    .technical-note {
+      font-family: "Monaco", "Consolas", monospace;
+      background: #f8f9fa;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.9em;
+      color: #e74c3c;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 15px;
+      }
+      
+      h1 {
+        font-size: 1.8em;
+      }
+      
+      nav a {
+        margin: 0 8px;
+        display: inline-block;
+        margin-bottom: 5px;
+      }
+      
+      .projects table {
+        font-size: 0.95em;
+      }
+      
+      section {
+        text-align: left;
+      }
     }
   </style>
 </head>
@@ -60,17 +232,22 @@
 
 <header>
   <h1>Cédric Caruzzo</h1>
-  <p>AI Research Scientist @ <a href="https://lunit.io/" target="_blank">Lunit</a></p>
-  <p>Developing foundation and multimodal models to transform cancer research and diagnostics.</p>
-  <p class="badge">
+  <div class="affiliation">
+    AI Research Scientist at <a href="https://lunit.io/" target="_blank">Lunit Inc.</a>
+  </div>
+  <p class="subtitle">
+    Building foundation models and multimodal AI systems for oncology and digital pathology.
+  </p>
+  <div class="badge">
     <a href="https://www.linkedin.com/in/cedric-caruzzo/" target="_blank">
       <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
     </a>
-  </p>
+  </div>
   <nav>
-    <a href="#about">About</a> |
-    <a href="#work">Experience</a> |
-    <a href="#projects">Projects</a> |
+    <a href="#about">About</a>
+    <a href="#research">Research</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
     <a href="#contact">Contact</a>
   </nav>
 </header>
@@ -78,56 +255,105 @@
 <section id="about">
   <h2>About</h2>
   <p>
-    I am an AI researcher working at the intersection of <b>computer vision</b>, <b>self-supervised learning</b>, and <b>foundation models</b>.  
-    My research focuses on building robust and generalizable AI systems for oncology, with the long-term goal of enabling clinically impactful applications.
+    I am an AI researcher working at the intersection of <strong>computer vision</strong>, <strong>self-supervised learning</strong>, and <strong>foundation models</strong>. My research focuses on developing robust, generalizable AI systems for digital pathology and oncology, with the ultimate goal of creating clinically impactful applications that can improve cancer diagnosis and treatment.
   </p>
   <p>
-    Before joining Lunit, I worked on <b>Cell Painting</b> at Institut Pasteur Korea, developing large-scale models for drug discovery.  
-    I also completed my MSc at <b>KAIST AI</b> under Prof. Jong Chul Ye, where I proposed new approaches for foundation models in Cell Painting and multimodal translation between cell morphology and chemistry.
+    Currently at Lunit, I develop large-scale vision models trained on histopathology data, multimodal systems that integrate various data modalities, and work with GPU clusters for training foundation models. My work spans from fundamental research in self-supervised learning to applied AI for biomarker discovery and clinical decision support.
+  </p>
+
+</section>
+
+<section id="research">
+  <h2>Research Interests</h2>
+  <div class="research-interests">
+    My research focuses on developing AI systems that can understand and reason about biological and medical imagery at scale, with particular emphasis on foundation models, multimodal learning, and their applications in oncology and drug discovery.
+  </div>
+  
+  <h3>Current Focus Areas</h3>
+  <p>
+    <strong>Foundation Models for Digital Pathology:</strong> Training large-scale vision transformers on gigapixel histopathology images to learn generalizable representations for downstream cancer research tasks.
+  </p>
+  <p>
+    <strong>Multimodal AI in Oncology:</strong> Integrating histopathology with other data modalities (genomics, radiology, clinical data) to provide comprehensive views of cancer biology for improved diagnosis and treatment planning.
+  </p>
+  <p>
+    <strong>Self-Supervised Learning:</strong> Developing methods that learn meaningful representations from unlabeled data, addressing the challenge of limited annotated medical imaging datasets.
+  </p>
+  <p>
+    <strong>Cell Painting and High-Content Screening:</strong> Leveraging high-throughput phenotypic assays for drug discovery, with particular focus on laboratory batch correction and multimodal translation between cellular phenotypes and chemical compounds.
   </p>
 </section>
 
-<section id="work">
+<section id="experience">
   <h2>Experience</h2>
-  <ul>
-    <li><b>Lunit</b> — AI Research Scientist. Developing foundation & multimodal AI for cancer diagnosis and treatment.</li>
-    <li><b>KAIST AI</b> — MSc research on foundation models for Cell Painting; multimodal phenotype ↔ compound translation.</li>
-    <li><b>Institut Pasteur Korea</b> — Built models for high-content screening in drug discovery (neglected diseases).</li>
-    <li><b>Institut Pasteur New Caledonia</b> — Applied AI to arboviruses and mass spectrometry during BSc studies.</li>
-  </ul>
+  
+  <div class="experience-item">
+    <div class="institution">Lunit Inc.</div>
+    <div class="position">AI Research Scientist</div>
+    <div class="duration">2024 — Present</div>
+    <p>Developing foundation models and multimodal AI systems for digital histopathology. Leading research on vision transformers for gigapixel medical images, biomarker discovery, and clinical decision support systems for cancer diagnosis and treatment planning.</p>
+  </div>
+  
+  <div class="experience-item">
+    <div class="institution">Korea Advanced Institute of Science and Technology (KAIST)</div>
+    <div class="position">Master of Science in Artificial Intelligence</div>
+    <div class="duration">2022 — 2024</div>
+    <p>Graduate School of AI under Prof. Jong Chul Ye. Thesis: "Development of Foundation Models in the Context of Cell Painting" — tackled laboratory batch correction challenges and developed asymmetric translation systems between cell painting phenotypes and chemical compound representations.</p>
+  </div>
+  
+  <div class="experience-item">
+    <div class="institution">Institut Pasteur Korea</div>
+    <div class="position">Research Scientist</div>
+    <div class="duration">2021 — 2022</div>
+    <p>High-throughput screening and confocal microscopy for drug discovery targeting neglected diseases. Developed computer vision models for cell painting assays and automated screening systems.</p>
+  </div>
+  
+  <div class="experience-item">
+    <div class="institution">Institut Pasteur New Caledonia</div>
+    <div class="position">Research Assistant</div>
+    <div class="duration">2019 — 2021</div>
+    <p>Applied machine learning to mass spectrometry analysis of arboviruses under Prof. Nazha Selmaoui-Folcher. Integrated research with university laboratory work during bachelor's studies.</p>
+  </div>
 </section>
 
 <section id="projects" class="projects">
   <h2>Selected Projects</h2>
   <table>
-    <tr>
-      <th>Project</th>
-      <th>Description</th>
-    </tr>
-    <tr>
-      <td><b>Foundation Model for Cell Painting</b></td>
-      <td>Large-scale vision model learning generalizable features from cell morphology images.</td>
-    </tr>
-    <tr>
-      <td><b>Multimodal Phenotype–Compound Translation</b></td>
-      <td>Bidirectional system translating between cell morphology (Cell Painting) and chemical structures (SMILES).</td>
-    </tr>
-    <tr>
-      <td><b>Educatif PanNuke Segmentation</b></td>
-      <td>Educational project: implemented U-Net & U-Net++ for histopathology segmentation.</td>
-    </tr>
-    <tr>
-      <td><b>Neural Style Transfer</b></td>
-      <td>Implementation of the classic algorithm for artistic style recomposition.</td>
-    </tr>
+    <thead>
+      <tr>
+        <th>Project</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="project-title">Foundation Model for Cell Painting</td>
+        <td>Large-scale vision transformer learning rich, generalizable features from cell morphology images. Addressed laboratory batch correction challenges in high-throughput screening environments.</td>
+      </tr>
+      <tr>
+        <td class="project-title">Multimodal Phenotype–Compound Translation</td>
+        <td>Bidirectional model translating between cell painting phenotypes and compound SMILES representations for drug discovery applications.</td>
+      </tr>
+      <tr>
+        <td class="project-title">Histopathology Foundation Models</td>
+        <td>Training vision transformers on gigapixel pathology slides for biomarker discovery and clinical decision support. Currently advancing cancer diagnosis through AI at Lunit.</td>
+      </tr>
+      <tr>
+        <td class="project-title">Educational CV Projects</td>
+        <td>PanNuke semantic segmentation implementing U-Net & U-Net++ from scratch in PyTorch for educational and research purposes.</td>
+      </tr>
+      <tr>
+        <td class="project-title">Neural Style Transfer</td>
+        <td>Implementation of the classic neural style transfer algorithm for artistic style composition and computer vision research.</td>
+      </tr>
+    </tbody>
   </table>
 </section>
 
 <section id="contact">
-  <h2>Contact</h2>
+  <h2>Contact & Collaboration</h2>
   <p>
-    The best place to reach me is via <a href="https://www.linkedin.com/in/cedric-caruzzo/" target="_blank">LinkedIn</a>.  
-    I am open to collaborations and discussions on computer vision, multimodal AI, and foundation models in oncology.
+    I'm interested in research collaborations in computer vision, foundation models, multimodal AI, and their applications in oncology and drug discovery. The best way to reach me is through <a href="https://www.linkedin.com/in/cedric-caruzzo/" target="_blank">LinkedIn</a>.
   </p>
 </section>
 
