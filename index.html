@@ -67,6 +67,17 @@
     .affiliation a:hover {
       text-decoration: underline;
     }
+
+    .profile-pic {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 20px auto;
+      display: block;
+      border: 4px solid #3498db;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
     
     nav {
       margin-top: 20px;
@@ -232,6 +243,7 @@
 
 <header>
   <h1>Cédric Caruzzo</h1>
+  <img src="img/profile.jpeg" alt="Cédric Caruzzo" class="profile-pic">
   <div class="affiliation">
     AI Research Scientist at <a href="https://lunit.io/" target="_blank">Lunit Inc.</a>
   </div>
@@ -279,9 +291,6 @@
   <p>
     <strong>Self-Supervised Learning:</strong> Developing methods that learn meaningful representations from unlabeled data, addressing the challenge of limited annotated medical imaging datasets.
   </p>
-  <p>
-    <strong>Cell Painting and High-Content Screening:</strong> Leveraging high-throughput phenotypic assays for drug discovery, with particular focus on laboratory batch correction and multimodal translation between cellular phenotypes and chemical compounds.
-  </p>
 </section>
 
 <section id="experience">
@@ -290,21 +299,21 @@
   <div class="experience-item">
     <div class="institution">Lunit Inc.</div>
     <div class="position">AI Research Scientist</div>
-    <div class="duration">2024 — Present</div>
+    <div class="duration">2025 — Present</div>
     <p>Developing foundation models and multimodal AI systems for digital histopathology. Leading research on vision transformers for gigapixel medical images, biomarker discovery, and clinical decision support systems for cancer diagnosis and treatment planning.</p>
   </div>
   
   <div class="experience-item">
     <div class="institution">Korea Advanced Institute of Science and Technology (KAIST)</div>
     <div class="position">Master of Science in Artificial Intelligence</div>
-    <div class="duration">2022 — 2024</div>
+    <div class="duration">2023 — 2025</div>
     <p>Graduate School of AI under Prof. Jong Chul Ye. Thesis: "Development of Foundation Models in the Context of Cell Painting" — tackled laboratory batch correction challenges and developed asymmetric translation systems between cell painting phenotypes and chemical compound representations.</p>
   </div>
   
   <div class="experience-item">
     <div class="institution">Institut Pasteur Korea</div>
     <div class="position">Research Scientist</div>
-    <div class="duration">2021 — 2022</div>
+    <div class="duration">2021 — 2025</div>
     <p>High-throughput screening and confocal microscopy for drug discovery targeting neglected diseases. Developed computer vision models for cell painting assays and automated screening systems.</p>
   </div>
   
@@ -328,7 +337,7 @@
     <tbody>
       <tr>
         <td class="project-title">Foundation Model for Cell Painting</td>
-        <td>Large-scale vision transformer learning rich, generalizable features from cell morphology images. Addressed laboratory batch correction challenges in high-throughput screening environments.</td>
+        <td>Large-scale vision transformer learning rich, generalizable features from cell morphology images. Addressed batch correction challenges in high-throughput screening environments (both technical and procedural batch effects).</td>
       </tr>
       <tr>
         <td class="project-title">Multimodal Phenotype–Compound Translation</td>
