@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Project: Mitigating Bias in Face Aging Models</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+  <style>
+    /* This CSS is copied directly from your index.html for a consistent style */
+    body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
+    h1 { font-size: 2.4em; color: #1a1a1a; margin-bottom: 0.2em; font-weight: 700; }
+    h2 { font-size: 1.6em; color: #2c3e50; margin-top: 2.5em; margin-bottom: 1.2em; font-weight: 600; border-bottom: 2px solid #3498db; padding-bottom: 0.3em; }
+    h3 { font-size: 1.2em; color: #34495e; margin-bottom: 0.5em; font-weight: 600; }
+    p, ul { margin-bottom: 1em; font-size: 1.05em; text-align: justify;}
+    a { color: #3498db; text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; }
+    .main-header { text-align: center; margin-bottom: 50px; padding-bottom: 30px; border-bottom: 1px solid #eee; }
+    .project-meta { text-align: center; color: #555; margin-bottom: 2em; }
+    .project-meta span { margin: 0 15px; }
+    .project-meta a { font-weight: 600; }
+    .back-link { display: block; text-align: center; margin-bottom: 40px; font-weight: 600; }
+    figure { margin: 2em 0; text-align: center; }
+    figcaption { font-size: 0.9em; color: #7f8c8d; margin-top: 0.8em; }
+    img, video { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center; margin: 2em 0; }
+    .comparison-grid h3 { text-align: center; margin-bottom: 1em; font-size: 1.1em; color: #34495e;}
+  </style>
+</head>
+<body>
+
+  <header class="main-header">
+    <h1>Teaching a GAN About Fairness</h1>
+    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0;">A Project on Mitigating Racial Bias in Face Aging Models</p>
+    <div class="project-meta">
+      <span><strong>Authors:</strong> Cédric Caruzzo, Juchul Shin, Minshik Choi</span>
+      <span><a href="https://github.com/CedricCaruzzo/Racial-Bias-Removal-for-Face-Age-Progression/" target="_blank">[GitHub Repository]</a></span>
+    </div>
+  </header>
+
+  <a href="index.html" class="back-link">&larr; Back to Main Page</a>
+
+  <section id="introduction">
+    <h2>The Challenge: AI Sees a Biased World</h2>
+    <p>
+      Facial Age Progression (FAP)—the ability to predict what someone will look like as they age—is a fascinating frontier in computer vision. But many state-of-the-art models have a critical flaw: they are trained on datasets that don't represent the diversity of the real world. Datasets like FFHQ, while high-quality, are heavily skewed towards caucasian faces.
+    </p>
+    <figure>
+      <img src="img/proj_fairness/FFHQ_bias.PNG" alt="Chart showing racial bias in the FFHQ dataset">
+      <figcaption>The racial distribution in the popular FFHQ dataset. Truncation, a common technique in GANs, further amplifies this bias, increasing the ratio of generated white faces.</figcaption>
+    </figure>
+    <p>
+      This imbalance means that models trained on this data often fail to accurately capture the unique aging patterns of non-white individuals. An age progression model that changes a person's perceived race is not just inaccurate; it's a failure of fairness. This project tackles that problem head-on.
+    </p>
+  </section>
+
+  <section id="baseline">
+    <h2>The Tool: Style-Based Age Manipulation (SAM)</h2>
+    <p>
+      Our starting point was a powerful model called SAM (Style-based Age Manipulation). SAM is an image-to-image translation model built on StyleGAN, a renowned generative network. It works by encoding a person's face into a latent space—a compressed representation of facial features—and then cleverly manipulating that representation to change their age while preserving their identity.
+    </p>
+    <figure>
+      <img src="img/proj_fairness/SAM_architecture.PNG" alt="SAM model architecture diagram">
+      <figcaption>The baseline SAM architecture, which maps an input image and a target age to a set of style vectors to generate the aged face.</figcaption>
+    </figure>
+  </section>
+
+  <section id="solution">
+    <h2>Our Idea: A "Fairness" Penalty</h2>
+    <p>
+      The core of our idea was simple: what if we could penalize the model every time it generated a face whose race was different from the input? To do this, we integrated a pre-trained race classifier, <strong>DeepFace</strong>, directly into the training loop.
+    </p>
+    <p>
+      During training, after SAM generated an aged face, DeepFace would analyze both the original and the new face. If it detected a change in racial characteristics, it would send a "race loss" signal back to the main model, nudging its parameters to correct the mistake. In essence, we taught the model to preserve racial identity as a core objective, alongside preserving personal identity and accurately portraying age.
+    </p>
+    <figure>
+      <img src="img/proj_fairness/OURS_SAM_architecture.PNG" alt="Our modified SAM architecture with DeepFace for race loss">
+      <figcaption>Our proposed architecture. We add a DeepFace classifier that compares the input and output images, calculating a "race loss" to guide the model towards fairer results.</figcaption>
+    </figure>
+  </section>
+
+  <section id="results">
+    <h2>The Results: Seeing is Believing</h2>
+    <p>
+      While quantitative metrics are still a work in progress, the qualitative results, even from early training, are striking. The most powerful demonstration is a direct video comparison.
+    </p>
+
+    <figure>
+      <video controls autoplay loop muted playsinline>
+        <source src="img/proj_fairness/comparison.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <figcaption><strong>The key result.</strong> Left: Our fairness-enhanced model. Right: The original SAM model. Notice how our model consistently preserves the subject's racial identity during age progression, while the baseline model often shifts towards caucasian features.</figcaption>
+    </figure>
+    
+    <h3>Side-by-Side Image Comparisons</h3>
+    <p>
+      The effect is also clear in still images. We compared generations from our model (trained from scratch with a race loss lambda of 15) against the original vanilla SAM.
+    </p>
+
+    <div class="comparison-grid">
+      <div>
+        <h3>Our Model</h3>
+        <img src="img/proj_fairness/Comparison_young.PNG" alt="Our model's output for a young face">
+      </div>
+      <div>
+        <h3>Baseline SAM</h3>
+        <img src="img/proj_fairness/Comparison_mature.PNG" alt="Baseline SAM's output for a young face">
+      </div>
+    </div>
+    <figcaption style="text-align: center; margin-top: -1em;">Comparison at a younger age.</figcaption>
+    
+    <div class="comparison-grid" style="margin-top: 2em;">
+      <div>
+        <h3>Our Model</h3>
+        <img src="img/proj_fairness/Comparison_old.PNG" alt="Our model's output for an old face">
+      </div>
+      <div>
+        <h3>Baseline SAM</h3>
+        <img src="img/proj_fairness/Comparison_old_baseline.PNG" alt="Baseline SAM's output for an old face"> </div>
+    </div>
+    <figcaption style="text-align: center; margin-top: -1em;">Comparison at an older age. Our model retains the original facial structure and racial characteristics more faithfully.</figcaption>
+  </section>
+
+  <section id="conclusion">
+    <h2>What We Learned & Future Directions</h2>
+    <p>
+      This project, while challenging due to computational constraints, shows significant promise. Our key takeaway is that incorporating auxiliary information—like a race classifier—directly into the loss function can be a powerful strategy for mitigating dataset bias without needing to curate a perfectly balanced dataset.
+    </p>
+    <ul>
+      <li><strong>Training from Scratch is Key:</strong> Fine-tuning the already-biased baseline model was ineffective. The model needed to learn the importance of racial identity from the very beginning.</li>
+      <li><strong>Potential for More:</strong> This approach could be extended to preserve other attributes like gender, expression, or emotion, leading to even more controllable and robust generative models.</li>
+    </ul>
+    <p>
+      Ultimately, this work is a step towards building AI systems that are not only technologically advanced but also socially conscious and equitable for everyone.
+    </p>
+  </section>
+  
+  <a href="index.html" class="back-link" style="margin-top: 50px;">&larr; Back to Main Page</a>
+
+</body>
+</html>
