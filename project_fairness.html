@@ -9,7 +9,6 @@
   <title>Project: Mitigating Bias in Face Aging Models</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
   <style>
-    /* This CSS is copied directly from your index.html for a consistent style */
     body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
     h1 { font-size: 2.4em; color: #1a1a1a; margin-bottom: 0.2em; font-weight: 700; }
     h2 { font-size: 1.6em; color: #2c3e50; margin-top: 2.5em; margin-bottom: 1.2em; font-weight: 600; border-bottom: 2px solid #3498db; padding-bottom: 0.3em; }
@@ -23,6 +22,7 @@
     .project-meta a { font-weight: 600; }
     .back-link { display: block; text-align: center; margin-bottom: 40px; font-weight: 600; }
     figure { margin: 2em 0; text-align: center; }
+    .video-figure {max-width: 75%; margin: 0 auto;}
     figcaption { font-size: 0.9em; color: #7f8c8d; margin-top: 0.8em; }
     img, video { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
     .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center; margin: 2em 0; }
@@ -40,7 +40,7 @@
     </div>
   </header>
 
-  <a href="index.html" class="back-link">&larr; Back to Main Page</a>
+  <a href="index.html" class="back-link">Back to Main Page</a>
 
   <section id="introduction">
     <h2>The Challenge: AI Sees a Biased World</h2>
@@ -48,7 +48,7 @@
       Facial Age Progression (FAP)—the ability to predict what someone will look like as they age—is a fascinating frontier in computer vision. But many state-of-the-art models have a critical flaw: they are trained on datasets that don't represent the diversity of the real world. Datasets like FFHQ, while high-quality, are heavily skewed towards caucasian faces.
     </p>
     <figure>
-      <img src="img/proj_fairness/FFHQ_bias.PNG" alt="Chart showing racial bias in the FFHQ dataset">
+      <img src="img/proj_fairness/FFHQ_bias.png" alt="Chart showing racial bias in the FFHQ dataset">
       <figcaption>The racial distribution in the popular FFHQ dataset. Truncation, a common technique in GANs, further amplifies this bias, increasing the ratio of generated white faces.</figcaption>
     </figure>
     <p>
@@ -87,7 +87,7 @@
       While quantitative metrics are still a work in progress, the qualitative results, even from early training, are striking. The most powerful demonstration is a direct video comparison.
     </p>
 
-    <figure>
+    <figure class="video-figure">
       <video controls autoplay loop muted playsinline>
         <source src="img/proj_fairness/comparison.mp4" type="video/mp4">
         Your browser does not support the video tag.
@@ -102,26 +102,25 @@
 
     <div class="comparison-grid">
       <div>
-        <h3>Our Model</h3>
+        <h3>Young age</h3>
         <img src="img/proj_fairness/Comparison_young.PNG" alt="Our model's output for a young face">
       </div>
-      <div>
-        <h3>Baseline SAM</h3>
-        <img src="img/proj_fairness/Comparison_mature.PNG" alt="Baseline SAM's output for a young face">
-      </div>
     </div>
-    <figcaption style="text-align: center; margin-top: -1em;">Comparison at a younger age.</figcaption>
+    <figcaption style="text-align: center; margin-top: -1em;">Comparison at a younger age. Left is OURS, Right is base model.</figcaption>
     
     <div class="comparison-grid" style="margin-top: 2em;">
       <div>
-        <h3>Our Model</h3>
+        <h3>Mature Age</h3>
+        <img src="img/proj_fairness/Comparison_mature.PNG" alt="Our model's output for a mature face">
+      </div>
+    <figcaption style="text-align: center; margin-top: -1em;">Comparison at an older age. Our model retains the original facial structure and racial characteristics more faithfully. Left is OURS, Right is base model.</figcaption>
+
+    <div class="comparison-grid" style="margin-top: 2em;">
+      <div>
+        <h3>Eldery Age</h3>
         <img src="img/proj_fairness/Comparison_old.PNG" alt="Our model's output for an old face">
       </div>
-      <div>
-        <h3>Baseline SAM</h3>
-        <img src="img/proj_fairness/Comparison_old_baseline.PNG" alt="Baseline SAM's output for an old face"> </div>
-    </div>
-    <figcaption style="text-align: center; margin-top: -1em;">Comparison at an older age. Our model retains the original facial structure and racial characteristics more faithfully.</figcaption>
+    <figcaption style="text-align: center; margin-top: -1em;">Comparison at an eldery age. Left is OURS, Right is base model.<div class="comparison-grid" style="margin-top: 2em;">
   </section>
 
   <section id="conclusion">
@@ -138,7 +137,7 @@
     </p>
   </section>
   
-  <a href="index.html" class="back-link" style="margin-top: 50px;">&larr; Back to Main Page</a>
+  <a href="index.html" class="back-link" style="margin-top: 50px;">Back to Main Page</a>
 
 </body>
 </html>
