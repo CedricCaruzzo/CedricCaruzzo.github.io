@@ -33,7 +33,8 @@
 
   <header class="main-header">
     <h1>Teaching a GAN About Fairness</h1>
-    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0;">A Project on Mitigating Racial Bias in Face Aging Models</p>
+    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">A Project on Mitigating Racial Bias in Face Aging Models </p>
+
     <div class="project-meta">
       <span><strong>Authors:</strong> Cédric Caruzzo, Juchul Shin, Minshik Choi</span>
       <span><a href="https://github.com/CedricCaruzzo/Racial-Bias-Removal-for-Face-Age-Progression/" target="_blank">[GitHub Repository]</a></span>
@@ -92,36 +93,31 @@
         <source src="img/proj_fairness/comparison.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
-      <figcaption><strong>The key result.</strong> Left: Our fairness-enhanced model. Right: The original SAM model. Notice how our model consistently preserves the subject's racial identity during age progression, while the baseline model often shifts towards caucasian features.</figcaption>
+      <figcaption><strong>The key result.</strong> First Half: the base model. Second Half: OURS Fairness-Aware Model. Notice how our model consistently preserves the subject's racial identity during age progression, while the baseline model often shifts towards caucasian features.</figcaption>
     </figure>
     
     <h3>Side-by-Side Image Comparisons</h3>
     <p>
-      The effect is also clear in still images. We compared generations from our model (trained from scratch with a race loss lambda of 15) against the original vanilla SAM.
+    The effect is also clear in still images. We compared generations from our model (trained from scratch with a race loss lambda of 15) against the original vanilla SAM.
     </p>
 
-    <div class="comparison-grid">
-      <div>
-        <h3>Young age</h3>
-        <img src="img/proj_fairness/Comparison_young.PNG" alt="Our model's output for a young face">
-      </div>
-    </div>
-    <figcaption style="text-align: center; margin-top: -1em;">Comparison at a younger age. Left is OURS, Right is base model.</figcaption>
-    
-    <div class="comparison-grid" style="margin-top: 2em;">
-      <div>
-        <h3>Mature Age</h3>
-        <img src="img/proj_fairness/Comparison_mature.PNG" alt="Our model's output for a mature face">
-      </div>
-    <figcaption style="text-align: center; margin-top: -1em;">Comparison at an older age. Our model retains the original facial structure and racial characteristics more faithfully. Left is OURS, Right is base model.</figcaption>
+    <figure>
+    <h3>Young Age</h3>
+    <img src="img/proj_fairness/Comparison_young.PNG" alt="Comparison of our model vs baseline for a young face">
+    <figcaption>Comparison at a younger age. Our model (left) vs. the baseline model (right).</figcaption>
+    </figure>
 
-    <div class="comparison-grid" style="margin-top: 2em;">
-      <div>
-        <h3>Eldery Age</h3>
-        <img src="img/proj_fairness/Comparison_old.PNG" alt="Our model's output for an old face">
-      </div>
-    <figcaption style="text-align: center; margin-top: -1em;">Comparison at an eldery age. Left is OURS, Right is base model.<div class="comparison-grid" style="margin-top: 2em;">
-  </section>
+    <figure>
+    <h3>Mature Age</h3>
+    <img src="img/proj_fairness/Comparison_mature.PNG" alt="Comparison of our model vs baseline for a mature face">
+    <figcaption>Comparison at a mature age. Our model retains racial characteristics more faithfully.</figcaption>
+    </figure>
+
+    <figure>
+    <h3>Elderly Age</h3>
+    <img src="img/proj_fairness/Comparison_old.PNG" alt="Comparison of our model vs baseline for an elderly face">
+    <figcaption>Comparison at an elderly age. The baseline model shows a significant shift in features.</figcaption>
+    </figure>
 
   <section id="conclusion">
     <h2>What We Learned & Future Directions</h2>
