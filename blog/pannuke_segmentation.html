@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Project: PanNuke Segmentation Playground</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+  <style>
+    body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
+    h1 { font-size: 2.4em; color: #1a1a1a; margin-bottom: 0.2em; font-weight: 700; }
+    h2 { font-size: 1.6em; color: #2c3e50; margin-top: 2.5em; margin-bottom: 1.2em; font-weight: 600; border-bottom: 2px solid #3498db; padding-bottom: 0.3em; }
+    h3 { font-size: 1.2em; color: #34495e; margin-bottom: 0.5em; font-weight: 600; }
+    p, ul, li { margin-bottom: 1em; font-size: 1.05em; text-align: justify;}
+    a { color: #3498db; text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; }
+    .main-header { text-align: center; margin-bottom: 50px; padding-bottom: 30px; border-bottom: 1px solid #eee; }
+    .project-meta { text-align: center; color: #555; margin-bottom: 2em; }
+    .project-meta a { font-weight: 600; }
+    .back-link { display: block; text-align: center; margin-bottom: 40px; font-weight: 600; }
+    figure { margin: 2.5em 0; text-align: center; }
+    figcaption { font-size: 0.9em; color: #7f8c8d; margin-top: 0.8em; line-height: 1.5; max-width: 80%; margin-left: auto; margin-right: auto;}
+    img { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    code { background-color: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; }
+    pre { background-color: #2d2d2d; color: #f8f8f2; padding: 1.5em; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;}
+    pre code { background: none; padding: 0; }
+    .model-list li { font-weight: 600; color: #34495e; }
+    .model-list span { font-weight: 400; color: #333; }
+  </style>
+</head>
+<body>
+
+  <header class="main-header">
+    <h1>An Interactive Playground for Histopathology Segmentation</h1>
+    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">Exploring the PanNuke Dataset with PyTorch Implementations from Scratch</p>
+  </header>
+
+  <a href="../blog.html" class="back-link">&larr; Back to Projects & Writing Hub</a>
+
+  <figure>
+    <img src="../img/pannuke_seg/pannuke_streamlit.png" alt="Demonstration of the interactive web application for PanNuke segmentation.">
+    <figcaption>The Streamlit web application, allowing for interactive model selection and visualization of segmentation masks on the PanNuke dataset.</figcaption>
+  </figure>
+
+  <section id="introduction">
+    <h2>The Goal: Education and Exploration</h2>
+    <p>
+      Nuclei segmentation in histopathology images is a foundational task in computational pathology. This project was created to be both a powerful tool and an open educational resource. It provides a complete ecosystem for training and evaluating deep learning models on the PanNuke dataset, which contains over 7,000 annotated image patches from 19 different tissue types.
+    </p>
+    <p>
+      Whether you're a student exploring computer vision and seeking PyTorch implementations, or a medical practitioner interested in interacting with this dataset, this repository offers a transparent and hands-on approach. Its core philosophy is to demystify these models by providing everything from the data preprocessing pipeline to an interactive web application for inference.
+    </p>
+  </section>
+
+  <section id="models">
+    <h2>Architectures Implemented from Scratch</h2>
+    <p>
+      A key feature of this project is the collection of well-known segmentation architectures, all coded from the ground up in PyTorch to maximize understanding and customizability. The available models include:
+    </p>
+    <ul class="model-list">
+      <li>UNet: <span>The classic architecture from Ronneberger et al., a staple in biomedical image segmentation.</span></li>
+      <li>UNet++: <span>An advanced, nested U-Net design that captures features at finer-grained scales for more precise segmentations.</span></li>
+      <li>ResNet/UNet (Scratch): <span>A powerful hybrid combining a ResNet-style encoder with a UNet decoder, built entirely from scratch.</span></li>
+      <li>ResNet/UNet (Pretrained): <span>Leverages a pretrained ResNet encoder for transfer learning, combined with the custom UNet decoder for faster, more robust training.</span></li>
+    </ul>
+  </section>
+  
+  <section id="webapp">
+    <h2>Interactive Web Application</h2>
+    <p>
+      To make model exploration intuitive and accessible, the project includes a web application built with Streamlit. This interface allows you to:
+    </p>
+    <ul>
+      <li>Browse through the PanNuke dataset on the fly.</li>
+      <li>Select any of the trained models.</li>
+      <li>Instantly perform inference and visualize the predicted segmentation mask overlaid on the original image.</li>
+    </ul>
+    <p>
+      This hands-on tool bridges the gap between training a model and seeing its tangible results, making it ideal for demonstrations, debugging, and educational purposes.
+    </p>
+  </section>
+
+  <section id="code">
+      <h2>Code & Resources</h2>
+      <p style="text-align: center;">The complete source code, training pipeline, and web application are available on GitHub. Dive in to train your own models or explore the pre-built implementations!</p>
+      <p style="text-align: center; margin-top: 1.5em;">
+          <a href="https://github.com/CedricCaruzzo/pannuke-segmentation" target="_blank" style="background-color: #2c3e50; color: white; padding: 12px 25px; border-radius: 8px; font-weight: 600; display: inline-block;">View on GitHub</a>
+      </p>
+  </section>
+  
+  <a href="../blog.html" class="back-link" style="margin-top: 50px;">&larr; Back to Projects & Writing Hub</a>
+
+</body>
+</html>
