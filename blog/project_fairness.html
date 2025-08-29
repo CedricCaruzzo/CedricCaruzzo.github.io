@@ -49,7 +49,7 @@
       Facial Age Progression (FAP)—the ability to predict what someone will look like as they age—is a fascinating frontier in computer vision. But many state-of-the-art models have a critical flaw: they are trained on datasets that don't represent the diversity of the real world. Datasets like FFHQ, while high-quality, are heavily skewed towards caucasian faces.
     </p>
     <figure>
-      <img src="img/proj_fairness/FFHQ_bias.png" alt="Chart showing racial bias in the FFHQ dataset">
+      <img src="../img/proj_fairness/FFHQ_bias.png" alt="Chart showing racial bias in the FFHQ dataset">
       <figcaption>The racial distribution in the popular FFHQ dataset. Truncation, a common technique in GANs, further amplifies this bias, increasing the ratio of generated white faces.</figcaption>
     </figure>
     <p>
@@ -63,7 +63,7 @@
       Our starting point was a powerful model called SAM (Style-based Age Manipulation). SAM is an image-to-image translation model built on StyleGAN, a renowned generative network. It works by encoding a person's face into a latent space—a compressed representation of facial features—and then cleverly manipulating that representation to change their age while preserving their identity.
     </p>
     <figure>
-      <img src="img/proj_fairness/SAM_architecture.PNG" alt="SAM model architecture diagram">
+      <img src="../img/proj_fairness/SAM_architecture.PNG" alt="SAM model architecture diagram">
       <figcaption>The baseline SAM architecture, which maps an input image and a target age to a set of style vectors to generate the aged face.</figcaption>
     </figure>
   </section>
@@ -77,7 +77,7 @@
       During training, after SAM generated an aged face, DeepFace would analyze both the original and the new face. If it detected a change in racial characteristics, it would send a "race loss" signal back to the main model, nudging its parameters to correct the mistake. In essence, we taught the model to preserve racial identity as a core objective, alongside preserving personal identity and accurately portraying age.
     </p>
     <figure>
-      <img src="img/proj_fairness/OURS_SAM_architecture.PNG" alt="Our modified SAM architecture with DeepFace for race loss">
+      <img src="../img/proj_fairness/OURS_SAM_architecture.PNG" alt="Our modified SAM architecture with DeepFace for race loss">
       <figcaption>Our proposed architecture. We add a DeepFace classifier that compares the input and output images, calculating a "race loss" to guide the model towards fairer results.</figcaption>
     </figure>
   </section>
@@ -90,7 +90,7 @@
 
     <figure class="video-figure">
       <video controls autoplay loop muted playsinline>
-        <source src="img/proj_fairness/comparison.mp4" type="video/mp4">
+        <source src="../img/proj_fairness/comparison.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
       <figcaption><strong>The key result.</strong> First Half: the base model. Second Half: OURS Fairness-Aware Model. Notice how our model consistently preserves the subject's racial identity during age progression, while the baseline model often shifts towards caucasian features.</figcaption>
@@ -103,19 +103,19 @@
 
     <figure>
     <h3>Young Age</h3>
-    <img src="img/proj_fairness/Comparison_young.PNG" alt="Comparison of our model vs baseline for a young face">
+    <img src="../img/proj_fairness/Comparison_young.PNG" alt="Comparison of our model vs baseline for a young face">
     <figcaption>Comparison at a younger age. Our model (left) vs. the baseline model (right).</figcaption>
     </figure>
 
     <figure>
     <h3>Mature Age</h3>
-    <img src="img/proj_fairness/Comparison_mature.PNG" alt="Comparison of our model vs baseline for a mature face">
+    <img src="../img/proj_fairness/Comparison_mature.PNG" alt="Comparison of our model vs baseline for a mature face">
     <figcaption>Comparison at a mature age. Our model retains racial characteristics more faithfully.</figcaption>
     </figure>
 
     <figure>
     <h3>Elderly Age</h3>
-    <img src="img/proj_fairness/Comparison_old.PNG" alt="Comparison of our model vs baseline for an elderly face">
+    <img src="../img/proj_fairness/Comparison_old.PNG" alt="Comparison of our model vs baseline for an elderly face">
     <figcaption>Comparison at an elderly age. The baseline model shows a significant shift in features.</figcaption>
     </figure>
 
