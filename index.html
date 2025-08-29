@@ -24,16 +24,12 @@
     nav a:hover { color: #2980b9; text-decoration: underline; }
     section { margin-bottom: 3em; text-align: justify; }
     p, ul { margin-bottom: 1em; font-size: 1.05em; }
-    .research-focus-item { margin-bottom: 1.2em; }
     .experience-item, .publication-item { margin-bottom: 2em; padding-bottom: 1.5em; border-bottom: 1px solid #eee; }
     .experience-item:last-child, .publication-item:last-child { border-bottom: none; }
     .institution { font-weight: 600; color: #2c3e50; font-size: 1.1em; }
     .position { color: #34495e; font-style: italic; margin-bottom: 0.5em; }
-    .position a { color: #34495e; text-decoration: underline; } /* Style for supervisor links */
+    .position a { color: #34495e; text-decoration: underline; }
     .duration { color: #7f8c8d; font-size: 0.9em; margin-bottom: 0.8em; }
-    .experience-item ul { list-style-type: disc; padding-left: 20px; margin-top: 10px; }
-    .experience-item li { margin-bottom: 0.5em; }
-    .experience-item li a { color: #333; font-weight: 500; } /* Style for links inside list items */
     .projects table { width: 100%; border-collapse: collapse; margin-top: 1em; font-size: 1.02em; }
     .projects th { background: #f8f9fa; color: #2c3e50; padding: 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #3498db; }
     .projects td { border-bottom: 1px solid #eee; padding: 12px; vertical-align: top; }
@@ -70,7 +66,7 @@
     AI Research Scientist at <a href="https://lunit.io/" target="_blank">Lunit Inc.</a>
   </div>
   <p class="subtitle">
-    Developing new methods for representation learning on large-scale, multimodal scientific data.
+    Building foundation models for large-scale, multimodal scientific data.
   </p>
   <div class="social-links">
     <a href="mailto:cedric.caruzzo@lunit.io" title="Email"><img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/></a>
@@ -81,42 +77,22 @@
   <nav>
     <a href="#about">About</a>
     <a href="#publications">Publications</a>
-    <a href="#experience">Experience</a>
+    <a href="experience.html">Experience</a>
     <a href="#projects">Projects</a>
   </nav>
 </header>
 
 <section id="about">
-  <h2>About Me</h2>
-  <p>
-    My research is centered on building <strong>robust and efficient foundation models</strong> for visual understanding, especially in complex scientific domains. I am driven by the challenge of learning from large-scale, unlabeled data, using domains like digital pathology as a testbed. These gigapixel images provide a unique opportunity to develop scalable architectures and self-supervised methods that learn <strong>dense feature representations</strong> without direct supervision.
-  </p>
-  <p>
-    A primary goal of my work is to develop models that generalize effectively and can be fine-tuned to numerous downstream tasks with minimal data. This involves not only creating powerful visual learners but also exploring how to leverage <strong>multimodality</strong>. I have a strong interest in <strong>alignment</strong>—specifically, in designing frameworks that fuse and align unstructured visual data with structured modalities like genomics or chemical representations to build more comprehensive and predictive models of complex systems. Furthermore, I am deeply interested in ensuring that as these models scale, their learned objectives are robustly aligned with human intent, preventing unintended behaviors and ensuring reliable real-world performance.
-  </p>
-</section>
-
-<section id="research">
-  <h2>Research Focus</h2>
-  <div class="research-focus-item">
-    <h3>Robust and Scalable Foundation Models</h3>
-    <p>Designing novel vision architectures and self-supervised learning objectives to train powerful foundation models on massive, unlabeled datasets, with a focus on computational and memory efficiency.</p>
-  </div>
-  <div class="research-focus-item">
-    <h3>Multimodal Fusion and Alignment</h3>
-    <p>Developing methods to align dense visual representations with other data modalities (e.g., text, genomics, graphs) to enable zero-shot reasoning and unlock more powerful predictive capabilities.</p>
-  </div>
-  <div class="research-focus-item">
-    <h3>Efficient Fine-Tuning and Generalization</h3>
-    <p>Investigating techniques like parameter-efficient fine-tuning (PEFT) and domain adaptation to ensure that large pre-trained models can be quickly and effectively applied to a wide range of specialized downstream tasks.</p>
-  </div>
-  <div class="research-focus-item">
-    <h3>Human-Intent Alignment and Reliability</h3> <p>Moving beyond simple objective functions to ensure model behavior is robustly aligned with the true, often nuanced, goals of a task. This includes exploring preference learning methods to build more predictable and trustworthy AI systems.</p>
-  </div>
-  <div class="research-focus-item">
-    <h3>Representation Learning for Scientific Discovery</h3>
-    <p>Applying these core principles to challenging, high-impact scientific domains like digital pathology and high-content screening to accelerate discovery and build more reliable systems.</p>
-  </div>
+<h2>About Me</h2>
+<p>
+I am an <strong>AI Research Scientist</strong> at <a href="https://lunit.io/" target="_blank">Lunit Inc.</a>, where I build large-scale vision foundation models for digital pathology. My work focuses on developing robust self-supervised methods and scalable architectures to learn dense feature representations from gigapixel-scale biomedical data.
+</p>
+<p>
+I completed my Master's degree at the <strong>KAIST Graduate School of AI</strong> as a recipient of the prestigious <strong>Global Presidential Scholarship</strong>. Advised by Professor Ye Jong Chul in the Bio-Imaging, Signal Processing & Learning Lab (BISPL), my research centered on creating foundation models for Cell Painting assays. Concurrently with my full-time studies, I served as a consultant for Institut Pasteur Korea, continuing to drive key projects.
+</p>
+<p>
+My work at KAIST followed my full-time role as a Data Scientist within the <strong>Pasteur International Unit AI3D</strong>, a joint initiative between <strong>Institut Pasteur Paris</strong> (mentored by <a href="https://scholar.google.com/citations?user=cPAja4UAAAAJ&hl=en" target="_blank">Dr. Christophe Zimmer</a>) and <strong>Institut Pasteur Korea</strong> (mentored by <a href="https://scholar.google.com/citations?user=8xzsh0wAAAAJ&hl=en" target="_blank">Dr. Spencer Shorte</a>). In this role, I designed and deployed the core computer vision pipelines for high-content screening to accelerate drug discovery.
+</p>
 </section>
 
 <section id="publications">
@@ -137,63 +113,6 @@
     <div class="publication-links">
       <a href="pdf/poster/Live-cell-painting-Institut-Pasteur-Korea.pdf" target="_blank">[Poster PDF]</a>
     </div>
-  </div>
-
-</section>
-
-<section id="experience">
-  <h2>Experience</h2>
-  <div class="experience-item">
-    <div class="institution">Lunit Inc.</div>
-    <div class="position">AI Research Scientist</div>
-    <div class="duration">Mar 2025 — Present</div>
-    <ul>
-      <li>Designing and training large-scale vision foundation models for digital histopathology.</li>
-      <li>Developing scalable, distributed inference systems for clinical-scale workloads.</li>
-      <li>Crafting theory-grounded data curation strategies to improve model reliability and generalization.</li>
-    </ul>
-  </div>
-  <div class="experience-item">
-    <div class="institution">KAIST, Graduate School of AI</div>
-    <div class="position">Master's Student (Advisor: <a href="https://scholar.google.com/citations?user=HNMjoNEAAAAJ&hl=en" target="_blank">Prof. Ye Jong Chul</a>)</div>
-    <div class="duration">Feb 2023 — Mar 2025</div>
-    <ul>
-      <li>Thesis: <em>Development of Foundation Models in the Context of Cell Painting <a href="https://library.kaist.ac.kr/search/detail/view.do?bibCtrlNo=1122202&flag=dissertation" target="_blank">[Thesis]</a></em></li>
-      <li>Developed foundation models for Cell Painting to automate phenotype profiling in drug discovery.</li>
-      <li>Designed bidirectional generative models for cross-modal translation between visual phenotypes and chemical structures.</li>
-      <li>Investigated methods to mitigate batch effects and improve data harmonization for large-scale bio-imaging.</li>
-    </ul>
-  </div>
-  
-  <div class="experience-item">
-    <div class="institution">Institut Pasteur Korea & Institut Pasteur Paris</div>
-    <div class="position">Data Scientist (Part-time), Pasteur International Unit AI3D</div>
-    <div class="duration">Feb 2023 — Dec 2024</div>
-    <ul>
-      <li>Continued core development responsibilities on a part-time basis (40 hours/month) after transitioning to full-time Master's studies.</li>
-      <li>Led the ongoing implementation and extension of the institute's primary AI analysis pipeline for high-content screening.</li>
-    </ul>
-  </div>
-
-  <div class="experience-item">
-    <div class="institution">Institut Pasteur Korea & Institut Pasteur Paris</div>
-    <div class="position">Data Scientist, Pasteur International Unit AI3D</div>
-    <div class="duration">Oct 2021 — Feb 2023</div>
-    <ul>
-      <li>Worked within the Pasteur International Unit (PIU) AI3D, a joint initiative between Institut Pasteur Korea (lead: <a href="https://scholar.google.com/citations?user=8xzsh0wAAAAJ&hl=en" target="_blank">Dr. Spencer Shorte</a>) and Institut Pasteur Paris (lead: <a href="https://scholar.google.com/citations?user=cPAja4UAAAAJ&hl=en" target="_blank">Dr. Christophe Zimmer</a>).</li>
-      <li>Designed and implemented the institute’s primary analysis pipeline for high-content screening, boosting throughput and reproducibility.</li>
-      <li>Applied computer vision models to Cell Painting assays to improve phenotypic profiling for drug discovery campaigns.</li>
-    </ul>
-  </div>
-
-  <div class="experience-item">
-    <div class="institution">Institut Pasteur New Caledonia / ISEA</div>
-    <div class="position">Research Intern, Undergraduate (Supervisor: <a href="https://scholar.google.com/citations?user=I3ysxxkAAAAJ&hl=en" target="_blank">Prof. Nazha Selmaoui-Folcher</a>)</div>
-    <div class="duration">Oct 2020 — Oct 2021</div>
-    <ul>
-        <li>Developed novel feature extraction and classification methods (CNNs, ML classifiers) for high-dimensional MALDI-TOF mass spectrometry data.</li>
-        <li>Created an interpretable deconvolution framework to identify discriminative biomarkers for pathogen detection.</li>
-    </ul>
   </div>
 </section>
 
@@ -219,7 +138,7 @@
       <tr>
         <td class="project-title">
           <a href="https://github.com/CedricCaruzzo/Racial-Bias-Removal-for-Face-Age-Progression/" target="_blank">Mitigating Racial Bias in Face Age Progression</a>
-          </td>
+        </td>
         <td class="project-contribution">
           An investigation into fairness for generative models. We modified a StyleGAN-based age progression model (SAM) to mitigate racial bias by incorporating a race classifier into the training process, promoting more equitable transformations across demographics.<a href="project_fairness.html" class="back-link" style="margin-top: 50px;">[Blog]</a>
           <div class="project-methods">Generative Models, Fairness in AI, StyleGAN, Computer Vision</div>
@@ -227,13 +146,6 @@
       </tr>
     </tbody>
   </table>
-</section>
-
-<section id="contact">
-  <h2>Contact</h2>
-  <p>
-    I'm always interested in discussing new ideas in multimodal learning and self-supervision. I'm keen to connect with students and researchers working on similar problems. Don't hesitate to get in touch via <a href="mailto:cedric.caruzzo@lunit.io">[Email]</a>.
-  </p>
 </section>
 
 <footer>
