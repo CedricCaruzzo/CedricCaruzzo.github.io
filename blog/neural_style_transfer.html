@@ -12,8 +12,7 @@
   <!-- KaTeX for rendering math formulas -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmNOspLegM" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" xintegrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
-    onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ] });"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" xintegrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
 
   <style>
     body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
@@ -31,8 +30,6 @@
     figcaption { font-size: 0.9em; color: #7f8c8d; margin-top: 0.8em; line-height: 1.5; max-width: 80%; margin-left: auto; margin-right: auto;}
     img { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
     code { background-color: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; }
-    pre { background-color: #2d2d2d; color: #f8f8f2; padding: 1.5em; border-radius: 8px; overflow-x: auto; }
-    pre code { background: none; padding: 0; }
     .results-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
   </style>
 </head>
@@ -116,22 +113,29 @@
     </div>
   </section>
   
+  <!-- FIX: Updated this section to use a button instead of code blocks -->
   <section id="code">
-    <h2>Try It Yourself</h2>
-    <p>
-      The project includes a simple Python script to experiment with the algorithm. You can perform a full style transfer, or visualize how the network reconstructs content or style from a random noise image.
-    </p>
-    <h3>Full Style Transfer</h3>
-    <pre><code>python main.py --content_path='img/content/dancing.jpg' \
-             --style_path='img/style/picasso.jpg' \
-             --mode='style_transfer'</code></pre>
-    <h3>Content Reconstruction from Noise</h3>
-    <pre><code>python main.py --content_path='noise' \
-             --style_path='img/content/dancing.jpg' \
-             --mode='content'</code></pre>
+      <h2>Code & Resources</h2>
+      <p style="text-align: center;">The complete source code and instructions to reproduce these results are available on GitHub.</p>
+      <p style="text-align: center; margin-top: 1.5em;">
+          <a href="https://github.com/CedricCaruzzo/Neural-Style-Transfer/" target="_blank" style="background-color: #2c3e50; color: white; padding: 12px 25px; border-radius: 8px; font-weight: 600; display: inline-block;">View on GitHub</a>
+      </p>
   </section>
   
   <a href="../blog.html" class="back-link" style="margin-top: 50px;">&larr; Back to Projects & Writing Hub</a>
 
+  <!-- FIX: This script block at the end of the body ensures all math content is loaded before rendering. -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ]
+      });
+    });
+  </script>
+
 </body>
 </html>
+
