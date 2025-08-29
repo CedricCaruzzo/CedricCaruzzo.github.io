@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Project: Neural Style Transfer</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+  
+  <!-- KaTeX for rendering math formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmNOspLegM" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" xintegrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ] });"></script>
+
+  <style>
+    body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
+    h1 { font-size: 2.4em; color: #1a1a1a; margin-bottom: 0.2em; font-weight: 700; }
+    h2 { font-size: 1.6em; color: #2c3e50; margin-top: 2.5em; margin-bottom: 1.2em; font-weight: 600; border-bottom: 2px solid #3498db; padding-bottom: 0.3em; }
+    h3 { font-size: 1.2em; color: #34495e; margin-bottom: 0.5em; font-weight: 600; }
+    p, ul { margin-bottom: 1em; font-size: 1.05em; text-align: justify;}
+    a { color: #3498db; text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; }
+    .main-header { text-align: center; margin-bottom: 50px; padding-bottom: 30px; border-bottom: 1px solid #eee; }
+    .project-meta { text-align: center; color: #555; margin-bottom: 2em; }
+    .project-meta a { font-weight: 600; }
+    .back-link { display: block; text-align: center; margin-bottom: 40px; font-weight: 600; }
+    figure { margin: 2.5em 0; text-align: center; }
+    figcaption { font-size: 0.9em; color: #7f8c8d; margin-top: 0.8em; line-height: 1.5; max-width: 80%; margin-left: auto; margin-right: auto;}
+    img { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    code { background-color: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; }
+    pre { background-color: #2d2d2d; color: #f8f8f2; padding: 1.5em; border-radius: 8px; overflow-x: auto; }
+    pre code { background: none; padding: 0; }
+    .results-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  </style>
+</head>
+<body>
+
+  <header class="main-header">
+    <h1>A Deep Dive into Neural Style Transfer</h1>
+    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">Recreating the Seminal Algorithm of Gatys et al.</p>
+    <div class="project-meta">
+      <a href="https://github.com/CedricCaruzzo/Neural-Style-Transfer/" target="_blank">[GitHub Repository]</a>
+    </div>
+  </header>
+
+  <a href="../blog.html" class="back-link">&larr; Back to Projects & Writing Hub</a>
+
+  <figure>
+    <img src="../img/nst/dancing_picasso.jpg" alt="A photo of a person dancing stylized in the manner of Picasso.">
+    <figcaption>An example of Neural Style Transfer: the <strong>content</strong> of a photograph combined with the <strong>style</strong> of a Picasso painting.</figcaption>
+  </figure>
+
+  <section id="introduction">
+    <h2>The Core Idea: Separating Style from Content</h2>
+    <p>
+      Neural Style Transfer (NST), introduced by Gatys et al. in 2015, is a fascinating technique that merges the content of one image with the style of another. The "style" refers to textures, colors, and visual patterns, while the "content" is the higher-level structure of the image. The key insight was realizing that a pre-trained Convolutional Neural Network (CNN) could be used to mathematically define and separate these two properties.
+    </p>
+    <p>
+      At its heart, the algorithm works by optimizing a generated image to minimize a two-part loss function: a <strong>content loss</strong> that ensures the image looks like the content source, and a <strong>style loss</strong> that ensures it has the textures and patterns of the style source.
+    </p>
+    $$
+    \mathcal{L}_{\text{total}} = \alpha \cdot \mathcal{L}_{\text{content}} + \beta \cdot \mathcal{L}_{\text{style}}
+    $$
+  </section>
+
+  <section id="content-loss">
+    <h2>Defining Content Loss</h2>
+    <p>
+      As an image passes through a CNN, early layers capture fine-grained details (like edges), while deeper layers capture more abstract, high-level features that define the image's content. We can therefore measure the difference in content between two images by comparing their feature maps from a deep layer in the network.
+    </p>
+    <p>
+      Let $F^l$ be the feature map of our generated image at a deep layer $l$, and $P^l$ be the feature map of the original content image at the same layer. The content loss is simply the squared-error loss between these two feature maps.
+    </p>
+    $$
+    \mathcal{L}_{\text{content}} = \frac{1}{2} \sum_{i,j} \left( F_{ij}^l - P_{ij}^l \right)^2
+    $$
+  </section>
+  
+  <section id="style-loss">
+    <h2>Defining Style Loss</h2>
+    <p>
+      Style is a more complex property, captured across multiple layers of the network. To represent style, we use the <strong>Gram matrix</strong>. The Gram matrix of a layer's activations captures the correlations between different feature maps. In essence, it measures which features tend to activate together, which corresponds to the texture and patterns in that layer's receptive field.
+    </p>
+    <p>
+      The style loss for a single layer is the squared-error loss between the Gram matrices of the generated image ($G^l$) and the style reference image ($A^l$).
+    </p>
+    $$
+    \mathcal{L}_{\text{style}}^l = \frac{1}{4 N_l^2 M_l^2} \sum_{i,j} \left( G_{ij}^l - A_{ij}^l \right)^2
+    $$
+    <p>
+      The total style loss is the weighted sum of these individual layer losses, allowing us to capture stylistic elements at different scales, from fine textures to broader brush strokes.
+    </p>
+    $$
+    \mathcal{L}_{\text{style}} = \sum_{l} w_l \mathcal{L}_{\text{style}}^l
+    $$
+  </section>
+
+  <section id="results-gallery">
+    <h2>Results Gallery</h2>
+    <div class="results-gallery">
+      <figure>
+        <img src="../img/nst/dancing_vg_starry_night.jpg" alt="Dancer stylized with Van Gogh's Starry Night">
+        <figcaption>Content: Dancer, Style: Van Gogh's "Starry Night"</figcaption>
+      </figure>
+      <figure>
+        <img src="../img/nst/village_paper_texture.jpg" alt="Village stylized with paper texture">
+        <figcaption>Content: Village, Style: Paper Texture</figcaption>
+      </figure>
+      <figure>
+        <img src="../img/nst/village_night.png" alt="Village stylized as a night scene">
+        <figcaption>Content: Village, Style: Starry Night</figcaption>
+      </figure>
+    </div>
+  </section>
+  
+  <section id="code">
+    <h2>Try It Yourself</h2>
+    <p>
+      The project includes a simple Python script to experiment with the algorithm. You can perform a full style transfer, or visualize how the network reconstructs content or style from a random noise image.
+    </p>
+    <h3>Full Style Transfer</h3>
+    <pre><code>python main.py --content_path='img/content/dancing.jpg' \
+             --style_path='img/style/picasso.jpg' \
+             --mode='style_transfer'</code></pre>
+    <h3>Content Reconstruction from Noise</h3>
+    <pre><code>python main.py --content_path='noise' \
+             --style_path='img/content/dancing.jpg' \
+             --mode='content'</code></pre>
+  </section>
+  
+  <a href="../blog.html" class="back-link" style="margin-top: 50px;">&larr; Back to Projects & Writing Hub</a>
+
+</body>
+</html>
