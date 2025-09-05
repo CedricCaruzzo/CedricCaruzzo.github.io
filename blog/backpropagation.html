@@ -26,6 +26,15 @@
     .analysis-block { margin-top: 1.5em; padding-left: 1.5em; border-left: 3px solid #3498db; font-style: italic; }
     .math-block { margin: 2em auto; padding: 1.5em; background-color: #f9f9f9; border-left: 4px solid #3498db; }
   </style>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
 </head>
 <body>
 
@@ -36,18 +45,13 @@
 
   <a href="../blog.html" class="back-link">&larr; Back to Projects & Writing Hub</a>
 
-  <figure>
-    <img src="https://i.imgur.com/uXXE12m.png" alt="A diagram showing backpropagation in a neural network">
-    <figcaption>Backpropagation is a message-passing algorithm where an error signal flows backward from the output, allowing every parameter in the network to know how to adjust itself to improve the overall prediction.</figcaption>
-  </figure>
-
   <section id="introduction">
     <h2>The Million-Knob Problem</h2>
     <p>
       Imagine a machine with a million knobs. Your goal is to tune these knobs to produce a specific, desired output. After your first attempt, the output is wrong. How do you decide which knob to turn, in which direction, and by how much? Turning them randomly is hopeless. This is the challenge faced by every neural network—a vast landscape of parameters (weights and biases) that must be tuned to minimize error.
     </p>
     <p>
-      The solution to this "credit assignment" problem is an elegant and powerful algorithm called **Backpropagation**. It is, without exaggeration, the engine that powers modern deep learning. This post will demystify backpropagation by building it from the ground up, starting with a single neuron and scaling up to a full, vectorized network.
+      The solution to this "credit assignment" problem is an elegant and powerful algorithm called Backpropagation. It is, without exaggeration, the engine that powers modern deep learning. This post will demystify backpropagation by building it from the ground up, starting with a single neuron and scaling up to a full, vectorized network.
     </p>
   </section>
 
@@ -57,17 +61,14 @@
       At its heart, backpropagation is a method for efficiently calculating the gradient of the loss function with respect to every parameter in the network. The gradient tells us the "slope" of the loss landscape—the direction of steepest error increase. To learn, we simply take a small step in the opposite direction.
     </p>
     <p>
-      The algorithm works by propagating the error signal backward, layer by layer. It starts at the final output and asks, "How did this prediction contribute to the total error?" It then takes that answer and moves to the previous layer, asking, "And how did this layer's outputs contribute to the error of the *next* layer?" This cascade of blame continues until it reaches the very first layer, providing every parameter with a precise gradient that quantifies its contribution to the overall error.
+      The algorithm works by propagating the error signal backward, layer by layer. It starts at the final output and asks, "How did this prediction contribute to the total error?" It then takes that answer and moves to the previous layer, asking, "And how did this layer's outputs contribute to the error of the next layer?" This cascade of blame continues until it reaches the very first layer, providing every parameter with a precise gradient that quantifies its contribution to the overall error.
     </p>
-    <div class="analysis-block">
-        <p><strong>Analogy:</strong> Imagine a multi-stage rocket launch fails. Engineers analyze the final stage first to see what went wrong. Based on those findings, they analyze the stage before it, and so on, tracing the source of the failure backward in time. Backpropagation does the same, but with mathematical error instead of mechanical failure.</p>
-    </div>
   </section>
   
   <section id="math">
     <h2>The Mathematics: A Chain Reaction of Derivatives</h2>
     <p>
-      The mechanism behind backpropagation is calculus's **chain rule**. It allows us to calculate the derivative of a composite function. Since a neural network is just a giant, nested function, the chain rule is the perfect tool.
+      The mechanism behind backpropagation is calculus's chain rule. It allows us to calculate the derivative of a composite function. Since a neural network is just a giant, nested function, the chain rule is the perfect tool.
     </p>
 
     <h3>Level 1: A Single Linear Neuron</h3>
@@ -122,7 +123,7 @@
       <li><strong>Multi-Node:</strong> If a neuron's output goes to multiple neurons in the next layer, its "blame" is the <strong>sum</strong> of the gradients coming back from all those paths. This is how a neuron correctly accounts for its total influence on the final loss.</li>
     </ul>
     <p>
-      Doing these calculations one by one is computationally impossible. This is why we use **vectorization**. The entire forward and backward pass for a full layer of neurons can be computed with a few efficient matrix multiplications.
+      Doing these calculations one by one is computationally impossible. This is why we use vectorization. The entire forward and backward pass for a full layer of neurons can be computed with a few efficient matrix multiplications.
     </p>
 
   </section>
@@ -132,57 +133,65 @@
     <p>Test your understanding by manually calculating the gradients for the following scenarios.</p>
 
     <h3>Problem 1: Simple Linear Neuron</h3>
-    <pre><code>Setup:
-Input: x = 4
-Weight: w = -2
-Bias: b = 3
-True Label: y_true = -3
-Loss: L = 1/2 * (y_true - y_pred)^2
-
-Task: Calculate the gradients dL/dw and dL/db.</code></pre>
+    <div class="math-block">
+        <p><strong>Setup:</strong></p>
+        <ul>
+            <li>Input: $x = 4$</li>
+            <li>Weight: $w = -2$</li>
+            <li>Bias: $b = 3$</li>
+            <li>True Label: $y_{true} = -3$</li>
+            <li>Loss: $L = \frac{1}{2}(y_{true} - y_{pred})^2$</li>
+        </ul>
+        <p><strong>Task:</strong> Calculate the gradients $\frac{\partial L}{\partial w}$ and $\frac{\partial L}{\partial b}$.</p>
+    </div>
 
     <h3>Problem 2: Neuron with Sigmoid</h3>
-    <pre><code>Setup:
-Input: x = 1
-Weight: w = 2
-Bias: b = -1
-True Label: y_true = 1
-Model: z = w*x + b,  y_pred = sigmoid(z)
-Loss: L = 1/2 * (y_true - y_pred)^2
-
-Task: Calculate dL/dw. You will need a calculator for sigmoid(1) ≈ 0.731.</code></pre>
+    <div class="math-block">
+        <p><strong>Setup:</strong></p>
+        <ul>
+            <li>Input: $x = 1$</li>
+            <li>Weight: $w = 2$</li>
+            <li>Bias: $b = -1$</li>
+            <li>True Label: $y_{true} = 1$</li>
+            <li>Model: $z = w \cdot x + b$, &nbsp; $y_{pred} = \sigma(z)$</li>
+            <li>Loss: $L = \frac{1}{2}(y_{true} - y_{pred})^2$</li>
+        </ul>
+        <p><strong>Task:</strong> Calculate $\frac{\partial L}{\partial w}$. You will need a calculator for $\sigma(1) \approx 0.731$.</p>
+    </div>
   </section>
 
   <section id="solutions">
     <h2>Solutions</h2>
     
     <h3>Solution to Problem 1</h3>
-    <pre><code>1. Forward Pass:
-   y_pred = (-2 * 4) + 3 = -5
-   L = 1/2 * (-3 - (-5))^2 = 1/2 * (2)^2 = 2
-
-2. Backward Pass:
-   Error Signal (dL/d_ypred) = y_pred - y_true = -5 - (-3) = -2
-   dL/dw = (Error Signal) * x = (-2) * 4 = -8
-   dL/db = (Error Signal) * 1 = (-2) * 1 = -2</code></pre>
+    <div class="math-block">
+      <p><strong>1. Forward Pass:</strong></p>
+      <p>$y_{pred} = (-2 \cdot 4) + 3 = -5$</p>
+      <p>$L = \frac{1}{2}(-3 - (-5))^2 = \frac{1}{2}(2)^2 = 2$</p>
+      <br>
+      <p><strong>2. Backward Pass:</strong></p>
+      <p>Error Signal ($\frac{\partial L}{\partial y_{pred}}$) = $y_{pred} - y_{true} = -5 - (-3) = -2$</p>
+      <p>$\frac{\partial L}{\partial w} = \frac{\partial L}{\partial y_{pred}} \cdot x = (-2) \cdot 4 = -8$</p>
+      <p>$\frac{\partial L}{\partial b} = \frac{\partial L}{\partial y_{pred}} \cdot 1 = (-2) \cdot 1 = -2$</p>
+    </div>
 
     <h3>Solution to Problem 2</h3>
-    <pre><code>1. Forward Pass:
-   z = (2 * 1) + (-1) = 1
-   y_pred = sigmoid(1) ≈ 0.731
-   L = 1/2 * (1 - 0.731)^2 ≈ 0.036
-
-2. Backward Pass:
-   dL/d_ypred = y_pred - y_true = 0.731 - 1 = -0.269
-   d_ypred/dz = sigmoid'(z) = y_pred * (1 - y_pred) = 0.731 * (1 - 0.731) ≈ 0.197
-   dz/dw = x = 1
-   
-   dL/dw = dL/d_ypred * d_ypred/dz * dz/dw
-   dL/dw ≈ (-0.269) * (0.197) * (1) ≈ -0.053</code></pre>
+    <div class="math-block">
+      <p><strong>1. Forward Pass:</strong></p>
+      <p>$z = (2 \cdot 1) + (-1) = 1$</p>
+      <p>$y_{pred} = \sigma(1) \approx 0.731$</p>
+      <p>$L = \frac{1}{2}(1 - 0.731)^2 \approx 0.036$</p>
+      <br>
+      <p><strong>2. Backward Pass:</strong></p>
+      <p>$\frac{\partial L}{\partial y_{pred}} = y_{pred} - y_{true} = 0.731 - 1 = -0.269$</p>
+      <p>$\frac{\partial y_{pred}}{\partial z} = \sigma'(z) = y_{pred} \cdot (1 - y_{pred}) = 0.731 \cdot (1 - 0.731) \approx 0.197$</p>
+      <p>$\frac{\partial z}{\partial w} = x = 1$</p>
+      <p>$\frac{\partial L}{\partial w} = \frac{\partial L}{\partial y_{pred}} \cdot \frac{\partial y_{pred}}{\partial z} \cdot \frac{\partial z}{\partial w} \approx (-0.269) \cdot (0.197) \cdot (1) \approx -0.053$</p>
+    </div>
   </section>
   
   <section id="conclusion">
-    <h2>Conclusion: The Algorithm That Unlocked Deep Learning</h2>
+    <h2>Conclusion</h2>
     <p>
       Backpropagation is not magic. It is the methodical and recursive application of the chain rule from calculus, made computationally feasible through vectorization. By providing an efficient way to solve the "credit assignment" problem, it transformed neural networks from a theoretical curiosity into the powerful engine behind the deep learning revolution. Understanding this algorithm from the ground up reveals the elegant mathematical core that allows machines to learn.
     </p>
