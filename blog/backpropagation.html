@@ -9,10 +9,11 @@
   <title>Project: The Engine of Learning</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.em%22 font-size=%2290%22>🧠</text></svg>">
   <style>
-    body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
+    body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
     h1 { font-size: 2.4em; color: #1a1a1a; margin-bottom: 0.2em; font-weight: 700; }
     h2 { font-size: 1.6em; color: #2c3e50; margin-top: 2.5em; margin-bottom: 1.2em; font-weight: 600; border-bottom: 2px solid #3498db; padding-bottom: 0.3em; }
-    h3 { font-size: 1.2em; color: #34495e; margin-bottom: 0.5em; font-weight: 600; }
+    h3 { font-size: 1.3em; color: #34495e; margin-bottom: 0.5em; margin-top: 1.8em; font-weight: 600; }
+    h4 { font-size: 1.1em; color: #2c3e50; margin-bottom: 0.4em; margin-top: 1.4em; font-weight: 600; }
     p, ul, li { margin-bottom: 1em; font-size: 1.05em; text-align: justify;}
     a { color: #3498db; text-decoration: none; font-weight: 500; }
     a:hover { text-decoration: underline; }
@@ -24,7 +25,12 @@
     pre { background-color: #2d2d2d; color: #f8f8f2; padding: 1.5em; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;}
     pre code { background: none; padding: 0; }
     .analysis-block { margin-top: 1.5em; padding-left: 1.5em; border-left: 3px solid #3498db; font-style: italic; }
-    .math-block { margin: 2em auto; padding: 1.5em; background-color: #f9f9f9; border-left: 4px solid #3498db; }
+    .math-block { margin: 2em auto; padding: 1.5em; background-color: #f9f9f9; border-left: 4px solid #3498db; border-radius: 6px; }
+    .derivation-block { margin: 2em auto; padding: 1.5em; background-color: #f0f8ff; border-left: 4px solid #4169e1; border-radius: 6px; }
+    .insight-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; margin: 2em 0; border-radius: 10px; }
+    .insight-box h4 { color: white; margin-top: 0; }
+    .algorithm-box { background-color: #f8f9fa; border: 2px solid #e9ecef; padding: 20px; margin: 2em 0; border-radius: 8px; }
+    .step-counter { color: #3498db; font-weight: bold; }
   </style>
   <script>
     MathJax = {
@@ -40,169 +46,637 @@
 
   <header class="main-header">
     <h1>The Engine of Learning</h1>
-    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">A "From-Scratch" Guide to Backpropagation</p>
+    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">Demystifying Backpropagation Through Mathematical Rigor</p>
   </header>
 
   <a href="../blog.html" class="back-link">&larr; Back to Projects & Writing Hub</a>
 
   <section id="introduction">
-    <h2>The Million-Knob Problem</h2>
+    <h2>The Symphony of a Million Parameters</h2>
     <p>
-      Imagine a machine with a million knobs. Your goal is to tune these knobs to produce a specific, desired output. After your first attempt, the output is wrong. How do you decide which knob to turn, in which direction, and by how much? Turning them randomly is hopeless. This is the challenge faced by every neural network—a vast landscape of parameters (weights and biases) that must be tuned to minimize error.
+      Picture yourself standing before an enormous pipe organ with a million stops, each one controlling the pitch and volume of a different pipe. Your task? To create a perfect symphony from chaos. After your first attempt produces nothing but cacophony, you face the fundamental challenge: which stops should you adjust, by how much, and in what direction?
     </p>
     <p>
-      The solution to this "credit assignment" problem is an elegant and powerful algorithm called Backpropagation. It is, without exaggeration, the engine that powers modern deep learning. This post will demystify backpropagation by building it from the ground up, starting with a single neuron and scaling up to a full, vectorized network.
+      This is precisely the predicament faced by every neural network during training. Each weight and bias is like one of those organ stops, and the network must learn to "tune" millions of parameters simultaneously to minimize prediction error. The breakthrough that made this possible wasn't just clever engineering—it was a profound mathematical insight that transformed machine learning forever.
+    </p>
+    <p>
+      Welcome to backpropagation: the algorithm that taught machines how to learn from their mistakes with mathematical precision.
     </p>
   </section>
 
-  <section id="concepts">
-    <h2>The Core Idea: A Cascade of Blame</h2>
+  <section id="intuition">
+    <h2>The Calculus of Blame</h2>
     <p>
-      At its heart, backpropagation is a method for efficiently calculating the gradient of the loss function with respect to every parameter in the network. The gradient tells us the "slope" of the loss landscape—the direction of steepest error increase. To learn, we simply take a small step in the opposite direction.
+      At its mathematical core, backpropagation is an application of the chain rule from calculus, but thinking of it merely as "fancy derivatives" misses its elegant conceptual beauty. The algorithm embodies a systematic approach to credit assignment—it traces the path of influence from output error back through the network's computational graph, quantifying exactly how each parameter contributed to the final mistake.
     </p>
-    <p>
-      The algorithm works by propagating the error signal backward, layer by layer. It starts at the final output and asks, "How did this prediction contribute to the total error?" It then takes that answer and moves to the previous layer, asking, "And how did this layer's outputs contribute to the error of the next layer?" This cascade of blame continues until it reaches the very first layer, providing every parameter with a precise gradient that quantifies its contribution to the overall error.
-    </p>
-  </section>
-  
-  <section id="math">
-    <h2>The Mathematics: A Chain Reaction of Derivatives</h2>
-    <p>
-      The mechanism behind backpropagation is calculus's chain rule. It allows us to calculate the derivative of a composite function. Since a neural network is just a giant, nested function, the chain rule is the perfect tool.
-    </p>
-
-    <h3>Level 1: A Single Linear Neuron</h3>
-    <p>Let's start with the simplest possible case: one input $x$, one weight $w$, one bias $b$, and a linear prediction $y_{pred}$. The loss $L$ is measured by Mean Squared Error (MSE).</p>
-    <div class="math-block">
+    
+    <div class="insight-box">
+      <h4>🔍 The Key Insight</h4>
       <p>
-        <strong>Forward Pass:</strong><br>
-        1. Prediction: $y_{pred} = w \cdot x + b$<br>
-        2. Loss: $L = \frac{1}{2}(y_{true} - y_{pred})^2$
-      </p>
-      <p>
-        <strong>Backward Pass (Goal: find $\frac{\partial L}{\partial w}$):</strong><br>
-        We use the chain rule: $\frac{\partial L}{\partial w} = \frac{\partial L}{\partial y_{pred}} \cdot \frac{\partial y_{pred}}{\partial w}$
-      </p>
-      <p>
-        1. $\frac{\partial L}{\partial y_{pred}} = y_{pred} - y_{true}$ &nbsp; (The initial error signal)<br>
-        2. $\frac{\partial y_{pred}}{\partial w} = x$ &nbsp; (The local derivative)
-      </p>
-      <p>
-        <strong>Result:</strong> $\frac{\partial L}{\partial w} = (y_{pred} - y_{true}) \cdot x$
+        The gradient of the loss function with respect to any parameter tells us the instantaneous rate of change of error with respect to that parameter. In other words: "If I nudge this weight by a tiny amount, how much will my error increase or decrease?" This is the information we need to improve our model systematically.
       </p>
     </div>
 
-    <h3>Level 2: Adding a Non-Linear Activation</h3>
-    <p>To learn complex patterns, we need non-linear activation functions like Sigmoid ($\sigma$). This adds another link to our chain.</p>
+    <p>
+      The genius lies in the recursive structure: to compute how a parameter in layer $\ell$ affects the final loss, we need to know how the outputs of layer $\ell$ affect the loss. But that's exactly what we computed for layer $\ell+1$! This creates a natural backward flow of gradient information, hence "back-propagation."
+    </p>
+  </section>
+
+  <section id="foundations">
+    <h2>Mathematical Foundations</h2>
+    
+    <h3>The Chain Rule: Our Mathematical Workhorse</h3>
+    <p>
+      Before diving into neural networks, let's establish our mathematical foundation. The multivariate chain rule states that for a composite function $f(g(x))$:
+    </p>
+    
     <div class="math-block">
-      <p>
-        <strong>Forward Pass:</strong><br>
-        1. Pre-activation: $z = w \cdot x + b$<br>
-        2. Activation: $y_{pred} = \sigma(z)$<br>
-        3. Loss: $L = \frac{1}{2}(y_{true} - y_{pred})^2$
-      </p>
-      <p>
-        <strong>Backward Pass (Goal: find $\frac{\partial L}{\partial w}$):</strong><br>
-        The chain rule now has three parts: $\frac{\partial L}{\partial w} = \frac{\partial L}{\partial y_{pred}} \cdot \frac{\partial y_{pred}}{\partial z} \cdot \frac{\partial z}{\partial w}$
-      </p>
-      <p>
-        1. $\frac{\partial L}{\partial y_{pred}} = y_{pred} - y_{true}$<br>
-        2. $\frac{\partial y_{pred}}{\partial z} = \sigma'(z)$ &nbsp; (Derivative of the activation function)<br>
-        3. $\frac{\partial z}{\partial w} = x$
-      </p>
+      $$\frac{df}{dx} = \frac{df}{dg} \cdot \frac{dg}{dx}$$
     </div>
     
-    <h3>Level 3: Scaling to Multi-Layer, Multi-Node Networks</h3>
     <p>
-      When we scale up, two things happen:
+      For functions of multiple variables, this generalizes to:
     </p>
-    <ul>
-      <li><strong>Multi-Layer:</strong> The chain of derivatives gets longer. The gradient flowing out of one layer becomes the incoming error signal for the layer before it. For a 2-layer network, the gradient for a first-layer weight $w_1$ becomes:
-        $\frac{\partial L}{\partial w_1} = \frac{\partial L}{\partial y_{pred}} \cdot \frac{\partial y_{pred}}{\partial z_2} \cdot \frac{\partial z_2}{\partial h} \cdot \frac{\partial h}{\partial z_1} \cdot \frac{\partial z_1}{\partial w_1}$
-      </li>
-      <li><strong>Multi-Node:</strong> If a neuron's output goes to multiple neurons in the next layer, its "blame" is the <strong>sum</strong> of the gradients coming back from all those paths. This is how a neuron correctly accounts for its total influence on the final loss.</li>
-    </ul>
+    
+    <div class="math-block">
+      $$\frac{\partial f}{\partial x_i} = \sum_j \frac{\partial f}{\partial g_j} \cdot \frac{\partial g_j}{\partial x_i}$$
+    </div>
+    
     <p>
-      Doing these calculations one by one is computationally impossible. This is why we use vectorization. The entire forward and backward pass for a full layer of neurons can be computed with a few efficient matrix multiplications.
+      This is the mathematical engine that powers backpropagation. A neural network is essentially a deeply nested composite function, and the chain rule allows us to efficiently compute gradients by decomposing the problem into manageable pieces.
     </p>
 
+    <h3>Activation Functions and Their Derivatives</h3>
+    <p>
+      Before we can derive backpropagation, we need to understand the building blocks. Let's rigorously derive the derivatives of common activation functions.
+    </p>
+
+    <h4>The Sigmoid Function</h4>
+    <p>
+      The sigmoid function provides a smooth, differentiable way to squash any real number into the range $(0,1)$:
+    </p>
+    
+    <div class="derivation-block">
+      <p><strong>Definition:</strong></p>
+      $$\sigma(z) = \frac{1}{1 + e^{-z}}$$
+      
+      <p><strong>Derivative Derivation:</strong></p>
+      <p>Let $u = 1 + e^{-z}$, so $\sigma(z) = u^{-1}$</p>
+      
+      <p>Using the chain rule:</p>
+      $$\frac{d\sigma}{dz} = \frac{d}{dz}(u^{-1}) = -u^{-2} \cdot \frac{du}{dz}$$
+      
+      <p>Since $\frac{du}{dz} = -e^{-z}$:</p>
+      $$\frac{d\sigma}{dz} = -\frac{1}{(1 + e^{-z})^2} \cdot (-e^{-z}) = \frac{e^{-z}}{(1 + e^{-z})^2}$$
+      
+      <p>Now, let's manipulate this into a more useful form:</p>
+      $$\frac{d\sigma}{dz} = \frac{e^{-z}}{(1 + e^{-z})^2} = \frac{1}{1 + e^{-z}} \cdot \frac{e^{-z}}{1 + e^{-z}}$$
+      
+      <p>Note that $\frac{e^{-z}}{1 + e^{-z}} = \frac{1 + e^{-z} - 1}{1 + e^{-z}} = 1 - \frac{1}{1 + e^{-z}}$</p>
+      
+      <p><strong>Final Result:</strong></p>
+      $$\boxed{\sigma'(z) = \sigma(z)(1 - \sigma(z))}$$
+      
+      <p>This elegant form means we can compute the derivative using only the forward pass value!</p>
+    </div>
+
+    <h4>Other Common Activations</h4>
+    
+    <div class="math-block">
+      <p><strong>ReLU (Rectified Linear Unit):</strong></p>
+      $$\text{ReLU}(z) = \max(0, z)$$
+      $$\text{ReLU}'(z) = \begin{cases} 1 & \text{if } z > 0 \\ 0 & \text{if } z \leq 0 \end{cases}$$
+      
+      <p><strong>Tanh (Hyperbolic Tangent):</strong></p>
+      $$\tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}}$$
+      $$\tanh'(z) = 1 - \tanh^2(z)$$
+    </div>
+  </section>
+
+  <section id="single-neuron">
+    <h2>Building Blocks: The Single Neuron</h2>
+    
+    <h3>Linear Neuron: The Foundation</h3>
+    <p>
+      Let's start with the simplest case and build our intuition step by step. Consider a single linear neuron with one input:
+    </p>
+    
+    <div class="algorithm-box">
+      <h4>Forward Pass</h4>
+      <p><span class="step-counter">Step 1:</span> Linear transformation: $\hat{y} = wx + b$</p>
+      <p><span class="step-counter">Step 2:</span> Loss computation: $\mathcal{L} = \frac{1}{2}(y - \hat{y})^2$</p>
+      
+      <h4>Backward Pass</h4>
+      <p><span class="step-counter">Step 1:</span> Compute loss gradient w.r.t. prediction:</p>
+      $$\frac{\partial \mathcal{L}}{\partial \hat{y}} = \hat{y} - y$$
+      
+      <p><span class="step-counter">Step 2:</span> Compute parameter gradients using chain rule:</p>
+      $$\frac{\partial \mathcal{L}}{\partial w} = \frac{\partial \mathcal{L}}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial w} = (\hat{y} - y) \cdot x$$
+      $$\frac{\partial \mathcal{L}}{\partial b} = \frac{\partial \mathcal{L}}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial b} = (\hat{y} - y) \cdot 1$$
+    </div>
+
+    <h3>Non-linear Neuron: Adding Complexity</h3>
+    <p>
+      Real learning requires non-linearity. Let's add a sigmoid activation:
+    </p>
+    
+    <div class="algorithm-box">
+      <h4>Forward Pass</h4>
+      <p><span class="step-counter">Step 1:</span> Pre-activation: $z = wx + b$</p>
+      <p><span class="step-counter">Step 2:</span> Activation: $\hat{y} = \sigma(z)$</p>
+      <p><span class="step-counter">Step 3:</span> Loss: $\mathcal{L} = \frac{1}{2}(y - \hat{y})^2$</p>
+      
+      <h4>Backward Pass</h4>
+      <p>Now our chain is longer. To find $\frac{\partial \mathcal{L}}{\partial w}$:</p>
+      
+      <div class="math-block">
+        $$\frac{\partial \mathcal{L}}{\partial w} = \frac{\partial \mathcal{L}}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial z} \cdot \frac{\partial z}{\partial w}$$
+      </div>
+      
+      <p><span class="step-counter">Step 1:</span> Loss w.r.t. output: $\frac{\partial \mathcal{L}}{\partial \hat{y}} = \hat{y} - y$</p>
+      <p><span class="step-counter">Step 2:</span> Activation derivative: $\frac{\partial \hat{y}}{\partial z} = \sigma'(z) = \hat{y}(1-\hat{y})$</p>
+      <p><span class="step-counter">Step 3:</span> Pre-activation w.r.t. weight: $\frac{\partial z}{\partial w} = x$</p>
+      
+      <p><strong>Final gradient:</strong></p>
+      <div class="math-block">
+        $$\frac{\partial \mathcal{L}}{\partial w} = (\hat{y} - y) \cdot \hat{y}(1-\hat{y}) \cdot x$$
+      </div>
+    </div>
+  </section>
+
+  <section id="multi-layer">
+    <h2>Scaling Up: Multi-Layer Networks</h2>
+    
+    <p>
+      The real power of backpropagation emerges when we stack multiple layers. Let's consider a two-layer network and see how gradients flow backward through the computational graph.
+    </p>
+
+    <h3>Network Architecture</h3>
+    <div class="math-block">
+      <p><strong>Layer 1 (Hidden):</strong></p>
+      $$z^{(1)} = W^{(1)}x + b^{(1)}$$
+      $$h = \sigma(z^{(1)})$$
+      
+      <p><strong>Layer 2 (Output):</strong></p>
+      $$z^{(2)} = W^{(2)}h + b^{(2)}$$
+      $$\hat{y} = \sigma(z^{(2)})$$
+      
+      <p><strong>Loss:</strong></p>
+      $$\mathcal{L} = \frac{1}{2}(y - \hat{y})^2$$
+    </div>
+
+    <h3>The Backward Pass: Layer by Layer</h3>
+    
+    <div class="algorithm-box">
+      <h4>Output Layer Gradients</h4>
+      <p>We start from the loss and work backward:</p>
+      
+      <div class="math-block">
+        $$\frac{\partial \mathcal{L}}{\partial W^{(2)}} = \frac{\partial \mathcal{L}}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial z^{(2)}} \cdot \frac{\partial z^{(2)}}{\partial W^{(2)}}$$
+      </div>
+      
+      <p>Computing each term:</p>
+      <ul>
+        <li>$\frac{\partial \mathcal{L}}{\partial \hat{y}} = \hat{y} - y$</li>
+        <li>$\frac{\partial \hat{y}}{\partial z^{(2)}} = \hat{y}(1-\hat{y})$</li>
+        <li>$\frac{\partial z^{(2)}}{\partial W^{(2)}} = h^T$ (transpose of hidden layer output)</li>
+      </ul>
+      
+      <h4>Hidden Layer Gradients</h4>
+      <p>Here's where it gets interesting. The hidden layer affects the loss through the output layer:</p>
+      
+      <div class="math-block">
+        $$\frac{\partial \mathcal{L}}{\partial W^{(1)}} = \frac{\partial \mathcal{L}}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial z^{(2)}} \cdot \frac{\partial z^{(2)}}{\partial h} \cdot \frac{\partial h}{\partial z^{(1)}} \cdot \frac{\partial z^{(1)}}{\partial W^{(1)}}$$
+      </div>
+      
+      <p>The key insight: $\frac{\partial z^{(2)}}{\partial h} = W^{(2)}$ represents how the hidden layer influences the output layer.</p>
+    </div>
+
+    <div class="insight-box">
+      <h4>🌟 The Recursive Pattern</h4>
+      <p>
+        Notice the elegant structure: to compute gradients for layer $\ell$, we need the gradients from layer $\ell+1$. This creates a natural recursive algorithm that processes layers in reverse order—the essence of backpropagation.
+      </p>
+    </div>
+  </section>
+
+  <section id="multi-neuron">
+    <h2>Multiple Neurons: Vectorization Emerges</h2>
+    
+    <p>
+      When we have multiple neurons per layer, something beautiful happens: the individual gradient computations combine into elegant matrix operations. This is where the computational efficiency of backpropagation truly shines.
+    </p>
+
+    <h3>Matrix Formulation</h3>
+    <p>
+      Consider a hidden layer with $n$ neurons and an output layer with $m$ neurons. Our weight matrices become:
+    </p>
+    
+    <div class="math-block">
+      <p><strong>Weight Matrix $W^{(2)} \in \mathbb{R}^{m \times n}$:</strong></p>
+      $$W^{(2)} = \begin{pmatrix}
+      w^{(2)}_{11} & w^{(2)}_{12} & \cdots & w^{(2)}_{1n} \\
+      w^{(2)}_{21} & w^{(2)}_{22} & \cdots & w^{(2)}_{2n} \\
+      \vdots & \vdots & \ddots & \vdots \\
+      w^{(2)}_{m1} & w^{(2)}_{m2} & \cdots & w^{(2)}_{mn}
+      \end{pmatrix}$$
+      
+      <p>Each row corresponds to one output neuron, each column to one hidden neuron.</p>
+    </div>
+
+    <h3>Vectorized Backpropagation</h3>
+    
+    <div class="algorithm-box">
+      <h4>Forward Pass (Vectorized)</h4>
+      <div class="math-block">
+        $$\mathbf{z}^{(1)} = W^{(1)}\mathbf{x} + \mathbf{b}^{(1)}$$
+        $$\mathbf{h} = \sigma(\mathbf{z}^{(1)})$$
+        $$\mathbf{z}^{(2)} = W^{(2)}\mathbf{h} + \mathbf{b}^{(2)}$$
+        $$\hat{\mathbf{y}} = \sigma(\mathbf{z}^{(2)})$$
+      </div>
+      
+      <h4>Backward Pass (Vectorized)</h4>
+      <p><span class="step-counter">Step 1:</span> Compute output layer error:</p>
+      <div class="math-block">
+        $$\boldsymbol{\delta}^{(2)} = (\hat{\mathbf{y}} - \mathbf{y}) \odot \sigma'(\mathbf{z}^{(2)})$$
+      </div>
+      <p>where $\odot$ denotes element-wise multiplication.</p>
+      
+      <p><span class="step-counter">Step 2:</span> Backpropagate error to hidden layer:</p>
+      <div class="math-block">
+        $$\boldsymbol{\delta}^{(1)} = (W^{(2)})^T \boldsymbol{\delta}^{(2)} \odot \sigma'(\mathbf{z}^{(1)})$$
+      </div>
+      
+      <p><span class="step-counter">Step 3:</span> Compute weight gradients:</p>
+      <div class="math-block">
+        $$\frac{\partial \mathcal{L}}{\partial W^{(2)}} = \boldsymbol{\delta}^{(2)} \mathbf{h}^T$$
+        $$\frac{\partial \mathcal{L}}{\partial W^{(1)}} = \boldsymbol{\delta}^{(1)} \mathbf{x}^T$$
+      </div>
+    </div>
+
+    <p>
+      This vectorized form reveals the computational elegance: what could be hundreds of individual derivative calculations becomes just a few matrix multiplications!
+    </p>
+  </section>
+
+  <section id="batch-processing">
+    <h2>Batch Processing: The Final Optimization</h2>
+    
+    <p>
+      In practice, we rarely train on single examples. Instead, we process mini-batches of data simultaneously, which provides both computational efficiency and better gradient estimates.
+    </p>
+
+    <h3>Batch Dimensions</h3>
+    <p>
+      When processing a batch of $B$ examples, our tensors expand to include a batch dimension:
+    </p>
+    
+    <div class="math-block">
+      <p><strong>Input batch:</strong> $X \in \mathbb{R}^{B \times d}$ (B examples, d features each)</p>
+      <p><strong>Hidden activations:</strong> $H \in \mathbb{R}^{B \times n}$ (B examples, n hidden units each)</p>
+      <p><strong>Output predictions:</strong> $\hat{Y} \in \mathbb{R}^{B \times m}$ (B examples, m outputs each)</p>
+    </div>
+
+    <h3>Batch Backpropagation Algorithm</h3>
+    
+    <div class="algorithm-box">
+      <h4>Forward Pass</h4>
+      <div class="math-block">
+        $$Z^{(1)} = XW^{(1)T} + \mathbf{b}^{(1)}$$
+        $$H = \sigma(Z^{(1)})$$
+        $$Z^{(2)} = HW^{(2)T} + \mathbf{b}^{(2)}$$
+        $$\hat{Y} = \sigma(Z^{(2)})$$
+      </div>
+      
+      <h4>Backward Pass</h4>
+      <p><span class="step-counter">Step 1:</span> Compute batch error signals:</p>
+      <div class="math-block">
+        $$\Delta^{(2)} = (\hat{Y} - Y) \odot \sigma'(Z^{(2)})$$
+        $$\Delta^{(1)} = \Delta^{(2)}W^{(2)} \odot \sigma'(Z^{(1)})$$
+      </div>
+      
+      <p><span class="step-counter">Step 2:</span> Compute averaged gradients:</p>
+      <div class="math-block">
+        $$\frac{\partial \mathcal{L}}{\partial W^{(2)}} = \frac{1}{B}H^T\Delta^{(2)}$$
+        $$\frac{\partial \mathcal{L}}{\partial W^{(1)}} = \frac{1}{B}X^T\Delta^{(1)}$$
+        $$\frac{\partial \mathcal{L}}{\partial \mathbf{b}^{(2)}} = \frac{1}{B}\sum_{i=1}^B \boldsymbol{\delta}^{(2)}_i$$
+        $$\frac{\partial \mathcal{L}}{\partial \mathbf{b}^{(1)}} = \frac{1}{B}\sum_{i=1}^B \boldsymbol{\delta}^{(1)}_i$$
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h4>🚀 Why Batching Works</h4>
+      <p>
+        Batch processing provides three key advantages: (1) <strong>Computational efficiency</strong> through vectorized operations, (2) <strong>Better gradient estimates</strong> by averaging over multiple examples, and (3) <strong>Memory efficiency</strong> by amortizing the cost of loading data and computing activations.
+      </p>
+    </div>
+  </section>
+
+  <section id="general-algorithm">
+    <h2>The General Backpropagation Algorithm</h2>
+    
+    <p>
+      Now we can state the general backpropagation algorithm for an $L$-layer neural network processing mini-batches:
+    </p>
+
+    <div class="algorithm-box">
+      <h4>Algorithm: Mini-batch Backpropagation</h4>
+      
+      <p><strong>Input:</strong> Training batch $(X, Y)$, network parameters $\{W^{(\ell)}, \mathbf{b}^{(\ell)}\}_{\ell=1}^L$</p>
+      
+      <h5>Forward Pass</h5>
+      <p><span class="step-counter">1.</span> Initialize: $A^{(0)} = X$</p>
+      <p><span class="step-counter">2.</span> For $\ell = 1, 2, \ldots, L$:</p>
+      <div style="margin-left: 20px;">
+        <p>$Z^{(\ell)} = A^{(\ell-1)}W^{(\ell)T} + \mathbf{b}^{(\ell)}$</p>
+        <p>$A^{(\ell)} = \sigma^{(\ell)}(Z^{(\ell)})$</p>
+      </div>
+      
+      <h5>Loss Computation</h5>
+      <p><span class="step-counter">3.</span> Compute loss: $\mathcal{L} = \frac{1}{2B}\|Y - A^{(L)}\|_F^2$</p>
+      
+      <h5>Backward Pass</h5>
+      <p><span class="step-counter">4.</span> Initialize output error: $\Delta^{(L)} = (A^{(L)} - Y) \odot \sigma'^{(L)}(Z^{(L)})$</p>
+      <p><span class="step-counter">5.</span> For $\ell = L-1, L-2, \ldots, 1$:</p>
+      <div style="margin-left: 20px;">
+        <p>$\Delta^{(\ell)} = \Delta^{(\ell+1)}W^{(\ell+1)} \odot \sigma'^{(\ell)}(Z^{(\ell)})$</p>
+      </div>
+      
+      <h5>Gradient Computation</h5>
+      <p><span class="step-counter">6.</span> For $\ell = 1, 2, \ldots, L$:</p>
+      <div style="margin-left: 20px;">
+        <p>$\frac{\partial \mathcal{L}}{\partial W^{(\ell)}} = \frac{1}{B}(A^{(\ell-1)})^T\Delta^{(\ell)}$</p>
+        <p>$\frac{\partial \mathcal{L}}{\partial \mathbf{b}^{(\ell)}} = \frac{1}{B}\sum_{i=1}^B \boldsymbol{\delta}^{(\ell)}_i$</p>
+      </div>
+    </div>
   </section>
 
   <section id="exercises">
-    <h2>Exercises for the Reader</h2>
-    <p>Test your understanding by manually calculating the gradients for the following scenarios.</p>
-
-    <h3>Problem 1: Simple Linear Neuron</h3>
+    <h2>Worked Examples and Exercises</h2>
+    
+    <h3>Detailed Example: Two-Layer Network</h3>
+    <p>Let's work through a complete example with specific numbers to solidify our understanding.</p>
+    
     <div class="math-block">
-        <p><strong>Setup:</strong></p>
-        <ul>
-            <li>Input: $x = 4$</li>
-            <li>Weight: $w = -2$</li>
-            <li>Bias: $b = 3$</li>
-            <li>True Label: $y_{true} = -3$</li>
-            <li>Loss: $L = \frac{1}{2}(y_{true} - y_{pred})^2$</li>
-        </ul>
-        <p><strong>Task:</strong> Calculate the gradients $\frac{\partial L}{\partial w}$ and $\frac{\partial L}{\partial b}$.</p>
+      <p><strong>Network Setup:</strong></p>
+      <ul>
+        <li>Input: $x = 2$</li>
+        <li>Hidden layer: 2 neurons with weights $W^{(1)} = \begin{pmatrix} 0.5 \\ -0.3 \end{pmatrix}$, biases $\mathbf{b}^{(1)} = \begin{pmatrix} 0.1 \\ -0.2 \end{pmatrix}$</li>
+        <li>Output layer: 1 neuron with weights $W^{(2)} = \begin{pmatrix} 0.8 & -0.4 \end{pmatrix}$, bias $b^{(2)} = 0.3$</li>
+        <li>Target: $y = 1$</li>
+        <li>Activation: sigmoid for all layers</li>
+      </ul>
     </div>
 
-    <h3>Problem 2: Neuron with Sigmoid</h3>
+    <div class="algorithm-box">
+      <h4>Forward Pass Calculation</h4>
+      
+      <p><span class="step-counter">Step 1:</span> Hidden layer pre-activation:</p>
+      <div class="math-block">
+        $\mathbf{z}^{(1)} = W^{(1)}x + \mathbf{b}^{(1)} = \begin{pmatrix} 0.5 \\ -0.3 \end{pmatrix} \cdot 2 + \begin{pmatrix} 0.1 \\ -0.2 \end{pmatrix} = \begin{pmatrix} 1.1 \\ -0.8 \end{pmatrix}$
+      </div>
+      
+      <p><span class="step-counter">Step 2:</span> Hidden layer activation:</p>
+      <div class="math-block">
+        $\mathbf{h} = \sigma(\mathbf{z}^{(1)}) = \begin{pmatrix} \sigma(1.1) \\ \sigma(-0.8) \end{pmatrix} = \begin{pmatrix} 0.750 \\ 0.310 \end{pmatrix}$
+      </div>
+      
+      <p><span class="step-counter">Step 3:</span> Output layer pre-activation:</p>
+      <div class="math-block">
+        $z^{(2)} = W^{(2)}\mathbf{h} + b^{(2)} = 0.8 \cdot 0.750 + (-0.4) \cdot 0.310 + 0.3 = 0.776$
+      </div>
+      
+      <p><span class="step-counter">Step 4:</span> Final prediction:</p>
+      <div class="math-block">
+        $\hat{y} = \sigma(0.776) = 0.685$
+      </div>
+      
+      <p><span class="step-counter">Step 5:</span> Loss:</p>
+      <div class="math-block">
+        $\mathcal{L} = \frac{1}{2}(1 - 0.685)^2 = 0.050$
+      </div>
+    </div>
+
+    <div class="algorithm-box">
+      <h4>Backward Pass Calculation</h4>
+      
+      <p><span class="step-counter">Step 1:</span> Output layer error:</p>
+      <div class="math-block">
+        $\delta^{(2)} = (\hat{y} - y) \cdot \sigma'(z^{(2)}) = (0.685 - 1) \cdot 0.685 \cdot (1 - 0.685) = -0.068$
+      </div>
+      
+      <p><span class="step-counter">Step 2:</span> Output layer gradients:</p>
+      <div class="math-block">
+        $\frac{\partial \mathcal{L}}{\partial W^{(2)}} = \delta^{(2)} \mathbf{h}^T = -0.068 \begin{pmatrix} 0.750 & 0.310 \end{pmatrix} = \begin{pmatrix} -0.051 & -0.021 \end{pmatrix}$
+        $\frac{\partial \mathcal{L}}{\partial b^{(2)}} = \delta^{(2)} = -0.068$
+      </div>
+      
+      <p><span class="step-counter">Step 3:</span> Hidden layer error:</p>
+      <div class="math-block">
+        $\boldsymbol{\delta}^{(1)} = (W^{(2)})^T \delta^{(2)} \odot \sigma'(\mathbf{z}^{(1)})$
+        
+        $(W^{(2)})^T \delta^{(2)} = \begin{pmatrix} 0.8 \\ -0.4 \end{pmatrix} (-0.068) = \begin{pmatrix} -0.054 \\ 0.027 \end{pmatrix}$
+        
+        $\sigma'(\mathbf{z}^{(1)}) = \begin{pmatrix} 0.750(1-0.750) \\ 0.310(1-0.310) \end{pmatrix} = \begin{pmatrix} 0.188 \\ 0.214 \end{pmatrix}$
+        
+        $\boldsymbol{\delta}^{(1)} = \begin{pmatrix} -0.054 \\ 0.027 \end{pmatrix} \odot \begin{pmatrix} 0.188 \\ 0.214 \end{pmatrix} = \begin{pmatrix} -0.010 \\ 0.006 \end{pmatrix}$
+      </div>
+      
+      <p><span class="step-counter">Step 4:</span> Hidden layer gradients:</p>
+      <div class="math-block">
+        $\frac{\partial \mathcal{L}}{\partial W^{(1)}} = \boldsymbol{\delta}^{(1)} x^T = \begin{pmatrix} -0.010 \\ 0.006 \end{pmatrix} \cdot 2 = \begin{pmatrix} -0.020 \\ 0.012 \end{pmatrix}$
+        $\frac{\partial \mathcal{L}}{\partial \mathbf{b}^{(1)}} = \boldsymbol{\delta}^{(1)} = \begin{pmatrix} -0.010 \\ 0.006 \end{pmatrix}$
+      </div>
+    </div>
+
+    <h3>Practice Problems</h3>
+    
     <div class="math-block">
-        <p><strong>Setup:</strong></p>
-        <ul>
-            <li>Input: $x = 1$</li>
-            <li>Weight: $w = 2$</li>
-            <li>Bias: $b = -1$</li>
-            <li>True Label: $y_{true} = 1$</li>
-            <li>Model: $z = w \cdot x + b$, &nbsp; $y_{pred} = \sigma(z)$</li>
-            <li>Loss: $L = \frac{1}{2}(y_{true} - y_{pred})^2$</li>
-        </ul>
-        <p><strong>Task:</strong> Calculate $\frac{\partial L}{\partial w}$. You will need a calculator for $\sigma(1) \approx 0.731$.</p>
+      <p><strong>Problem 1: Sigmoid Neuron</strong></p>
+      <p>Given: $x = 0.5$, $w = 1.2$, $b = -0.8$, $y_{true} = 0$</p>
+      <p>Calculate: $\frac{\partial \mathcal{L}}{\partial w}$ and $\frac{\partial \mathcal{L}}{\partial b}$ using MSE loss.</p>
+    </div>
+    
+    <div class="math-block">
+      <p><strong>Problem 2: ReLU Network</strong></p>
+      <p>Consider a two-layer network with ReLU activation in the hidden layer and sigmoid in the output layer.</p>
+      <p>Given: $x = -1$, $W^{(1)} = [2, -1]^T$, $\mathbf{b}^{(1)} = [0.5, -0.3]^T$, $W^{(2)} = [0.7, 0.4]$, $b^{(2)} = 0.2$</p>
+      <p>Calculate all gradients for $y_{true} = 1$.</p>
+    </div>
+
+    <h3>Solutions</h3>
+    
+    <div class="derivation-block">
+      <p><strong>Solution to Problem 1:</strong></p>
+      
+      <p><strong>Forward Pass:</strong></p>
+      <p>$z = 1.2 \times 0.5 + (-0.8) = -0.2$</p>
+      <p>$\hat{y} = \sigma(-0.2) = \frac{1}{1+e^{0.2}} \approx 0.450$</p>
+      <p>$\mathcal{L} = \frac{1}{2}(0 - 0.450)^2 = 0.101$</p>
+      
+      <p><strong>Backward Pass:</strong></p>
+      <p>$\frac{\partial \mathcal{L}}{\partial \hat{y}} = \hat{y} - y_{true} = 0.450 - 0 = 0.450$</p>
+      <p>$\frac{\partial \hat{y}}{\partial z} = \sigma'(-0.2) = 0.450(1-0.450) = 0.248$</p>
+      <p>$\frac{\partial \mathcal{L}}{\partial w} = 0.450 \times 0.248 \times 0.5 = 0.056$</p>
+      <p>$\frac{\partial \mathcal{L}}{\partial b} = 0.450 \times 0.248 = 0.112$</p>
     </div>
   </section>
 
-  <section id="solutions">
-    <h2>Solutions</h2>
+  <section id="computational-graph">
+    <h2>The Computational Graph Perspective</h2>
     
-    <h3>Solution to Problem 1</h3>
-    <div class="math-block">
-      <p><strong>1. Forward Pass:</strong></p>
-      <p>$y_{pred} = (-2 \cdot 4) + 3 = -5$</p>
-      <p>$L = \frac{1}{2}(-3 - (-5))^2 = \frac{1}{2}(2)^2 = 2$</p>
-      <br>
-      <p><strong>2. Backward Pass:</strong></p>
-      <p>Error Signal ($\frac{\partial L}{\partial y_{pred}}$) = $y_{pred} - y_{true} = -5 - (-3) = -2$</p>
-      <p>$\frac{\partial L}{\partial w} = \frac{\partial L}{\partial y_{pred}} \cdot x = (-2) \cdot 4 = -8$</p>
-      <p>$\frac{\partial L}{\partial b} = \frac{\partial L}{\partial y_{pred}} \cdot 1 = (-2) \cdot 1 = -2$</p>
+    <p>
+      Understanding backpropagation through computational graphs provides powerful intuition about why the algorithm works and how it generalizes to arbitrary network architectures.
+    </p>
+    
+    <h3>Graph Structure and Flow</h3>
+    <p>
+      Every neural network can be represented as a directed acyclic graph (DAG) where:
+    </p>
+    
+    <ul>
+      <li><strong>Nodes</strong> represent variables (inputs, weights, activations, loss)</li>
+      <li><strong>Edges</strong> represent operations (matrix multiplication, addition, activation functions)</li>
+      <li><strong>Forward pass</strong> computes values by traversing from inputs to outputs</li>
+      <li><strong>Backward pass</strong> computes gradients by traversing from outputs to inputs</li>
+    </ul>
+
+    <div class="insight-box">
+      <h4>🎯 Key Insight: Local Gradients</h4>
+      <p>
+        Each node in the computational graph only needs to know how to compute the gradient of its own operation (the "local gradient"). The chain rule automatically combines these local gradients to give the correct end-to-end gradient. This modularity is what makes backpropagation so powerful and extensible.
+      </p>
     </div>
 
-    <h3>Solution to Problem 2</h3>
+    <h3>Automatic Differentiation</h3>
+    <p>
+      Modern deep learning frameworks implement backpropagation through automatic differentiation (autodiff). This allows us to define arbitrarily complex neural architectures and automatically compute their gradients. The key insight is that any differentiable program can be represented as a computational graph, and backpropagation can be applied mechanically.
+    </p>
+  </section>
+
+  <section id="practical-considerations">
+    <h2>Practical Considerations and Gotchas</h2>
+    
+    <h3>The Vanishing Gradient Problem</h3>
+    <p>
+      In deep networks, gradients can become exponentially small as they propagate backward through many layers. This happens because:
+    </p>
+    
     <div class="math-block">
-      <p><strong>1. Forward Pass:</strong></p>
-      <p>$z = (2 \cdot 1) + (-1) = 1$</p>
-      <p>$y_{pred} = \sigma(1) \approx 0.731$</p>
-      <p>$L = \frac{1}{2}(1 - 0.731)^2 \approx 0.036$</p>
-      <br>
-      <p><strong>2. Backward Pass:</strong></p>
-      <p>$\frac{\partial L}{\partial y_{pred}} = y_{pred} - y_{true} = 0.731 - 1 = -0.269$</p>
-      <p>$\frac{\partial y_{pred}}{\partial z} = \sigma'(z) = y_{pred} \cdot (1 - y_{pred}) = 0.731 \cdot (1 - 0.731) \approx 0.197$</p>
-      <p>$\frac{\partial z}{\partial w} = x = 1$</p>
-      <p>$\frac{\partial L}{\partial w} = \frac{\partial L}{\partial y_{pred}} \cdot \frac{\partial y_{pred}}{\partial z} \cdot \frac{\partial z}{\partial w} \approx (-0.269) \cdot (0.197) \cdot (1) \approx -0.053$</p>
+      $\frac{\partial \mathcal{L}}{\partial W^{(1)}} \propto \prod_{\ell=2}^L W^{(\ell)} \sigma'(z^{(\ell-1)})$
+    </div>
+    
+    <p>
+      If the weights $W^{(\ell)}$ are small or the activation derivatives $\sigma'(\cdot)$ are small (as with saturated sigmoids), this product can become vanishingly small.
+    </p>
+
+    <div class="insight-box">
+      <h4>🛠️ Solutions to Vanishing Gradients</h4>
+      <ul>
+        <li><strong>Better activations:</strong> ReLU, Leaky ReLU, ELU avoid saturation</li>
+        <li><strong>Better initialization:</strong> Xavier/He initialization keeps gradients stable</li>
+        <li><strong>Normalization:</strong> Batch normalization, layer normalization</li>
+        <li><strong>Residual connections:</strong> Skip connections provide gradient highways</li>
+        <li><strong>LSTM/GRU:</strong> Gated architectures for sequence models</li>
+      </ul>
+    </div>
+
+    <h3>Numerical Stability</h3>
+    <p>
+      Implementing backpropagation requires careful attention to numerical precision:
+    </p>
+    
+    <ul>
+      <li><strong>Overflow/Underflow:</strong> Exponentials in softmax and sigmoid can overflow</li>
+      <li><strong>Loss of precision:</strong> Subtracting large, similar numbers</li>
+      <li><strong>Gradient explosion:</strong> Gradients growing exponentially large</li>
+    </ul>
+
+    <h3>Memory Efficiency</h3>
+    <p>
+      Backpropagation requires storing intermediate activations for the backward pass. For large networks, this can consume enormous amounts of memory. Techniques like gradient checkpointing trade computation for memory by recomputing some activations during the backward pass.
+    </p>
+  </section>
+
+  <section id="extensions">
+    <h2>Beyond Basic Backpropagation</h2>
+    
+    <h3>Convolutional Neural Networks</h3>
+    <p>
+      CNNs extend backpropagation to handle convolution operations. The key insight is that convolution is just a structured form of matrix multiplication, so the same principles apply. However, the gradients must account for parameter sharing across spatial locations.
+    </p>
+
+    <h3>Recurrent Neural Networks</h3>
+    <p>
+      RNNs apply backpropagation through time (BPTT), unrolling the recurrent computation into a feedforward graph across time steps. This can lead to vanishing/exploding gradients over long sequences, motivating architectures like LSTMs and GRUs.
+    </p>
+
+    <h3>Attention Mechanisms</h3>
+    <p>
+      Modern transformer architectures use attention mechanisms that create dynamic computational graphs based on input content. Backpropagation flows through these attention weights, allowing the model to learn what to pay attention to.
+    </p>
+  </section>
+
+  <section id="implementation">
+    <h2>Implementation Insights</h2>
+    
+    <h3>Efficient Matrix Operations</h3>
+    <p>
+      The vectorized formulation of backpropagation maps naturally onto modern GPU architectures. The key operations—matrix multiplication, element-wise operations, and reductions—are exactly what GPUs excel at.
+    </p>
+
+    <div class="algorithm-box">
+      <h4>Computational Complexity</h4>
+      <p>For a fully connected network with layers of size $n_1, n_2, \ldots, n_L$:</p>
+      <ul>
+        <li><strong>Forward pass:</strong> $O(\sum_{\ell=1}^{L-1} n_\ell n_{\ell+1})$ operations</li>
+        <li><strong>Backward pass:</strong> $O(\sum_{\ell=1}^{L-1} n_\ell n_{\ell+1})$ operations</li>
+        <li><strong>Memory:</strong> $O(\sum_{\ell=1}^L n_\ell)$ for activations, $O(\sum_{\ell=1}^{L-1} n_\ell n_{\ell+1})$ for weights</li>
+      </ul>
+      <p>The backward pass has the same computational complexity as the forward pass—this is one of the elegant aspects of the algorithm.</p>
     </div>
   </section>
   
   <section id="conclusion">
-    <h2>Conclusion</h2>
+    <h2>The Profound Simplicity</h2>
     <p>
-      Backpropagation is not magic. It is the methodical and recursive application of the chain rule from calculus, made computationally feasible through vectorization. By providing an efficient way to solve the "credit assignment" problem, it transformed neural networks from a theoretical curiosity into the powerful engine behind the deep learning revolution. Understanding this algorithm from the ground up reveals the elegant mathematical core that allows machines to learn.
+      What makes backpropagation so remarkable is how a relatively simple mathematical idea—applying the chain rule systematically—unlocks the ability to train networks with millions or billions of parameters. The algorithm's recursive structure mirrors the compositional nature of neural networks themselves, creating an elegant symmetry between forward computation and gradient flow.
+    </p>
+    
+    <p>
+      Yet beneath this mathematical elegance lies a profound computational insight: by breaking down the complex problem of credit assignment into a series of local gradient computations, backpropagation makes the seemingly impossible tractable. Each layer only needs to compute its own local gradients and pass error signals to the previous layer—a beautifully modular design that scales from toy examples to the largest models powering today's AI systems.
+    </p>
+    
+    <p>
+      The transition from single neurons to multi-layer, multi-neuron, batched networks reveals how mathematical abstractions can provide both conceptual clarity and computational efficiency. The vectorized formulations aren't just mathematical notation—they correspond directly to the parallel operations that make modern deep learning computationally feasible.
+    </p>
+    
+    <div class="insight-box">
+      <h4>🚀 The Bigger Picture</h4>
+      <p>
+        Backpropagation is more than just an optimization algorithm—it's a computational paradigm that transforms the abstract concept of "learning from mistakes" into concrete mathematical operations. Every time you interact with a recommendation system, machine translation, or image recognition, you're experiencing the culmination of billions of backpropagation steps that taught those systems how to perform their tasks.
+      </p>
+    </div>
+    
+    <p>
+      Understanding backpropagation deeply—from its mathematical foundations through its practical implementations—provides insight not just into how neural networks learn, but into the broader principles of how we can design systems that improve themselves through experience. In that sense, backpropagation represents one of the most successful applications of calculus to the problem of machine intelligence.
     </p>
   </section>
 
   <section id="code">
-      <h2>Code & Resources</h2>
-      <p style="text-align: center;">A complete, modular "from-scratch" implementation of a neural network trained on MNIST, based on the principles discussed here, is available on GitHub.</p>
-      <p style="text-align: center; margin-top: 1.5em;">
-          <a href="https://github.com/CedricCaruzzo/Backpropagation-from-scratch" target="_blank" style="background-color: #2c3e50; color: white; padding: 12px 25px; border-radius: 8px; font-weight: 600; display: inline-block;">View on GitHub</a>
-      </p>
+    <h2>Code & Resources</h2>
+    <p style="text-align: center;">A complete, pedagogical implementation of the concepts discussed here—from single neurons to full networks with batch processing—is available on GitHub. The code includes detailed comments explaining each step of the forward and backward passes.</p>
+    <p style="text-align: center; margin-top: 1.5em;">
+      <a href="https://github.com/CedricCaruzzo/Backpropagation-from-scratch" target="_blank" style="background-color: #2c3e50; color: white; padding: 12px 25px; border-radius: 8px; font-weight: 600; display: inline-block;">View Implementation on GitHub</a>
+    </p>
+    
+    <h3>Additional Resources</h3>
+    <ul>
+      <li><strong>Mathematical Background:</strong> Gilbert Strang's "Introduction to Linear Algebra" for matrix operations</li>
+      <li><strong>Deep Learning Theory:</strong> Ian Goodfellow's "Deep Learning" textbook, Chapter 6</li>
+      <li><strong>Historical Context:</strong> Rumelhart, Hinton, and Williams' original 1986 paper</li>
+      <li><strong>Modern Implementations:</strong> PyTorch autograd documentation for computational graphs</li>
+    </ul>
   </section>
   
   <a href="../blog.html" class="back-link" style="margin-top: 50px;">&larr; Back to Projects & Writing Hub</a>
