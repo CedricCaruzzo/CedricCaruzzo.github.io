@@ -31,6 +31,9 @@
     .insight-box h4 { color: white; margin-top: 0; }
     .algorithm-box { background-color: #f8f9fa; border: 2px solid #e9ecef; padding: 20px; margin: 2em 0; border-radius: 8px; }
     .step-counter { color: #3498db; font-weight: bold; }
+    .network-figure { text-align: center; margin: 25px auto; }
+    .neuron-diagram { max-width: 450px; width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px; }
+    .network-figure figcaption { margin-top: 10px; font-size: 0.9em; font-style: italic; color: #666; }
   </style>
   <script>
     MathJax = {
@@ -85,7 +88,7 @@
   <section id="foundations">
     <h2>Mathematical Foundations</h2>
     
-    <h3>The Chain Rule: Our Mathematical Workhorse</h3>
+    <h3>The Chain Rule</h3>
     <p>
       Before diving into neural networks, let's establish our mathematical foundation. The multivariate chain rule states that for a composite function $f(g(x))$:
     </p>
@@ -160,7 +163,13 @@
     <p>
       Let's start with the simplest case and build our intuition step by step. Consider a single linear neuron with one input:
     </p>
-    
+    <figure class="network-figure">
+      <img src="../img/backpropagation/neurons_single_layer.png" alt="Diagram of a single linear neuron" class="neuron-diagram">
+      <figcaption>Figure 1: A simple linear neuron transforming an input 'x'.</figcaption>
+    </figure>
+    <div class="analysis-block">
+    <p><strong>Note:</strong> We multiply by 1/2 for mathematical convenience. It simplifies the derivative during backpropagation, as the '2' from the power rule cancels out, leaving a clean error term.</p>
+    </div>
     <div class="algorithm-box">
       <h4>Forward Pass</h4>
       <p><span class="step-counter">Step 1:</span> Linear transformation: $\hat{y} = wx + b$</p>
@@ -179,6 +188,11 @@
     <p>
       Real learning requires non-linearity. Let's add a sigmoid activation:
     </p>
+
+    <figure class="network-figure">
+      <img src="../img/backpropagation/neurons_activation.png" alt="Diagram of a single non-linear neuron with an activation function" class="neuron-diagram">
+      <figcaption>Figure 2: A non-linear neuron with a sigmoid activation function ($\sigma$).</figcaption>
+    </figure>
     
     <div class="algorithm-box">
       <h4>Forward Pass</h4>
@@ -210,6 +224,15 @@
     <p>
       The real power of backpropagation emerges when we stack multiple layers. Let's consider a two-layer network and see how gradients flow backward through the computational graph.
     </p>
+
+    <figure class="network-figure">
+      <img src="../img/backpropagation/neurons_multi_layer.png" alt="Diagram of a single non-linear neuron with an activation function" class="neuron-diagram">
+      <figcaption>Figure 3: A 2-layer multi-layer network</figcaption>
+    </figure>
+
+    <div class="analysis-block">
+      <p><strong>Note on Notation:</strong> As we generalize from a single neuron to a full layer of neurons, our parameters also generalize. We'll now use an uppercase $W$ to represent the <strong>weight matrix</strong> for a layer. Lowercase variables like $x$, $h$, and $b$ will represent <strong>vectors</strong> (or scalars in the case of a single bias).</p>
+    </div>
 
     <h3>Network Architecture</h3>
     <div class="math-block">
