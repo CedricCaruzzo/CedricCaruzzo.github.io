@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <title>attogpt: A GPT in 31 Lines, Encoded in Punch Cards</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+  <style>
+    body { 
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      max-width: 900px; 
+      margin: 0 auto; 
+      padding: 40px 20px; 
+      line-height: 1.7; 
+      color: #333; 
+      background: #fff; 
+    }
+    
+    h1 { 
+      font-size: 2.4em; 
+      color: #1a1a1a; 
+      margin-bottom: 0.2em; 
+      font-weight: 700; 
+    }
+    
+    h2 { 
+      font-size: 1.6em; 
+      color: #2c3e50; 
+      margin-top: 2.5em; 
+      margin-bottom: 1.2em; 
+      font-weight: 600; 
+      border-bottom: 2px solid #3498db; 
+      padding-bottom: 0.3em; 
+    }
+    
+    h3 { 
+      font-size: 1.2em; 
+      color: #34495e; 
+      margin-bottom: 0.5em; 
+      font-weight: 600; 
+    }
+    
+    p, ul { 
+      margin-bottom: 1em; 
+      font-size: 1.05em; 
+      text-align: justify;
+    }
+    
+    a { 
+      color: #3498db; 
+      text-decoration: none; 
+      font-weight: 500; 
+    }
+    
+    a:hover { 
+      text-decoration: underline; 
+    }
+    
+    .main-header { 
+      text-align: center; 
+      margin-bottom: 50px; 
+      padding-bottom: 30px; 
+      border-bottom: 1px solid #eee; 
+    }
+    
+    .project-meta { 
+      text-align: center; 
+      color: #555; 
+      margin-bottom: 2em; 
+    }
+    
+    .project-meta span { 
+      margin: 0 15px; 
+    }
+    
+    .project-meta a { 
+      font-weight: 600; 
+    }
+    
+    .back-link { 
+      display: block; 
+      text-align: center; 
+      margin-bottom: 40px; 
+      font-weight: 600; 
+    }
+    
+    figure { 
+      margin: 2em 0; 
+      text-align: center; 
+    }
+    
+    figcaption { 
+      font-size: 0.9em; 
+      color: #7f8c8d; 
+      margin-top: 0.8em; 
+    }
+    
+    img { 
+      max-width: 100%; 
+      height: auto; 
+      border-radius: 8px; 
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 2em 0;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .stat-value {
+      font-size: 2.5em;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    
+    .stat-label {
+      font-size: 0.9em;
+      opacity: 0.9;
+    }
+
+    /* Comparison Timeline */
+    .timeline {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 12px;
+      margin: 2em 0;
+    }
+    
+    .timeline-item {
+      display: flex;
+      align-items: center;
+      margin: 15px 0;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .timeline-version {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: #3498db;
+      min-width: 120px;
+    }
+    
+    .timeline-lines {
+      font-size: 1.3em;
+      font-weight: 700;
+      color: #2c3e50;
+      min-width: 80px;
+      text-align: center;
+    }
+    
+    .timeline-format {
+      flex-grow: 1;
+      color: #7f8c8d;
+      padding-left: 20px;
+      border-left: 2px solid #e0e0e0;
+    }
+
+    /* Punch Card Visualization */
+    .card-controls {
+      text-align: center;
+      margin: 30px 0;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 12px;
+    }
+    
+    .card-controls button {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      margin: 5px;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+    
+    .card-controls button:hover {
+      background: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    }
+    
+    .card-controls button:active {
+      transform: translateY(0);
+    }
+
+    .cards-container {
+      margin: 30px 0;
+    }
+
+    .punchcard {
+      background: linear-gradient(to bottom, #f5e6d3 0%, #f0dcc0 100%);
+      border: 3px solid #8b7355;
+      border-radius: 12px;
+      padding: 30px 20px;
+      margin: 30px 0;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .punchcard::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: repeating-linear-gradient(
+        90deg,
+        #8b7355 0px,
+        #8b7355 2px,
+        transparent 2px,
+        transparent 10px
+      );
+    }
+    
+    .card-label {
+      text-align: center;
+      color: #333;
+      font-weight: 700;
+      margin-bottom: 20px;
+      font-size: 1.1em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(80, 1fr);
+      gap: 1px;
+      padding: 15px;
+      background: #e0d5c0;
+      border-radius: 8px;
+      margin: 0 auto;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+    
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    
+    .hole {
+      width: 100%;
+      aspect-ratio: 1;
+      background: #d0c5b0;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+    
+    .hole.punched {
+      background: #1a1a1a;
+      box-shadow: inset 0 2px 3px rgba(0,0,0,0.5);
+    }
+    
+    .card-text {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(0,0,0,0.03);
+      border-radius: 8px;
+      color: #333;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75em;
+      word-break: break-all;
+      max-height: 120px;
+      overflow-y: auto;
+      line-height: 1.5;
+    }
+
+    /* Code block */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    pre {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9em;
+      line-height: 1.5;
+    }
+
+    /* Loading state */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #7f8c8d;
+      font-style: italic;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      body { padding: 20px 15px; }
+      h1 { font-size: 1.8em; }
+      .stat-value { font-size: 2em; }
+      .card-grid { gap: 0.5px; padding: 10px; }
+      .hole { min-width: 3px; min-height: 3px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="main-header">
+    <h1>attogpt: A Neural Network on Punch Cards 📇</h1>
+    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">
+      A Complete GPT in 31 Lines of Python, Encoded in Vintage IBM Format
+    </p>
+
+    <div class="project-meta">
+      <span><strong>Author:</strong> Cédric Caruzzo</span>
+      <span><a href="https://github.com/yourusername/attogpt" target="_blank">[GitHub Repository]</a></span>
+    </div>
+  </header>
+
+  <a href="../blog.html" class="back-link">&larr; Back to Projects & Writing Hub</a>
+
+  <section id="introduction">
+    <h2>The Challenge: How Small Can a GPT Go?</h2>
+    <p>
+      In 2024, Andrej Karpathy released <strong>microgpt</strong>—a 240-line implementation of GPT that captured the essence of transformer-based language models. It sparked a competition: how much could you compress a working neural network while keeping it functional?
+    </p>
+    
+    <div class="timeline">
+      <h3 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">The Compression Journey</h3>
+      <div class="timeline-item">
+        <span class="timeline-version">microgpt</span>
+        <span class="timeline-lines">240 lines</span>
+        <span class="timeline-format">Original by Andrej Karpathy</span>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-version">picogpt</span>
+        <span class="timeline-lines">68 lines</span>
+        <span class="timeline-format">Shared as a QR code</span>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-version">femtogpt</span>
+        <span class="timeline-lines">53 lines</span>
+        <span class="timeline-format">Encoded as a 3000-digit prime number</span>
+      </div>
+      <div class="timeline-item" style="background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%);">
+        <span class="timeline-version">attogpt</span>
+        <span class="timeline-lines" style="color: #667eea; font-size: 1.5em;">31 lines</span>
+        <span class="timeline-format" style="font-weight: 600; color: #2c3e50;">Preserved on 52 IBM punch cards</span>
+      </div>
+    </div>
+
+    <p>
+      <strong>attogpt</strong> represents an <strong>87.1% reduction</strong> from the original, while maintaining full functionality: autograd, multi-head attention, training, and inference—all in 31 lines and 3,117 characters.
+    </p>
+  </section>
+
+  <section id="stats">
+    <h2>By the Numbers</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">31</div>
+        <div class="stat-label">Lines of Code</div>
+      </div>
+      <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <div class="stat-value">52</div>
+        <div class="stat-label">Punch Cards</div>
+      </div>
+      <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+        <div class="stat-value">3.1KB</div>
+        <div class="stat-label">Total Size</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="what-it-does">
+    <h2>What It Actually Does</h2>
+    <p>
+      Despite its tiny size, attogpt is a fully functional GPT implementation that includes:
+    </p>
+    <ul>
+      <li><strong>Autograd Engine:</strong> Automatic differentiation with backward pass</li>
+      <li><strong>Transformer Architecture:</strong> Multi-head self-attention mechanism</li>
+      <li><strong>Training Loop:</strong> Adam optimizer with bias correction and learning rate decay</li>
+      <li><strong>Text Generation:</strong> Inference with temperature-controlled sampling</li>
+    </ul>
+    
+    <p>
+      After training on a dataset of names for 1,000 steps, it generates plausible new names:
+    </p>
+    
+    <pre>sample  1: kamon
+sample  2: ann
+sample  3: karai
+sample  4: jaire
+sample  5: vialan
+sample  6: karia
+sample  7: yeran
+sample  8: anna
+sample  9: areli
+sample 10: kaina</pre>
+  </section>
+
+  <section id="punch-cards">
+    <h2>The Punch Card Format</h2>
+    <p>
+      To showcase just how compact this code is, I encoded it using the same <strong>physical format</strong> as 1960s computing: <strong>IBM-style punch cards</strong>—80 columns × 12 rows of binary information, just like the cards that helped send humans to the moon.
+    </p>
+    
+    <p>
+      The encoding uses <strong>Base64 with 12-bit binary patterns</strong>, mapping each character to a unique punch combination. While this approach is modern (not authentic 1960s Hollerith encoding, which only supported uppercase), it preserves the aesthetic and demonstrates that the entire neural network fits on 52 cards—less than a single drawer in a 1960s data center.
+    </p>
+
+    <figure>
+      <img src="../img/proj_attogpt/timeline.png" alt="Evolution from punch cards to modern storage" style="max-width: 600px;">
+      <figcaption>
+        <strong>1960:</strong> 52 punch cards (4,160 bytes capacity) 
+        <strong>→ 2025:</strong> 1 QR code or 3KB file. Same intelligence, 65 years of progress.
+      </figcaption>
+    </figure>
+
+    <div class="card-controls">
+      <h3 style="margin-top: 0;">Explore the Punch Cards</h3>
+      <p style="color: #555; margin-bottom: 20px;">
+        Each card shows the actual punch hole patterns. Black holes represent binary 1s.
+      </p>
+      <button onclick="showCard(0)">First Card</button>
+      <button onclick="showCard(25)">Middle Card</button>
+      <button onclick="showCard(51)">Last Card</button>
+      <button onclick="showAllCards()">Show All 52 Cards</button>
+    </div>
+
+    <div class="cards-container" id="cardsContainer">
+      <div class="loading">Loading punch card data...</div>
+    </div>
+  </section>
+
+  <section id="technical">
+    <h2>Technical Details</h2>
+    <h3>Encoding Approach</h3>
+    <p>
+      The encoding process is fully reversible and uses modern techniques while preserving the aesthetic of 1960s punch cards:
+    </p>
+    <ol>
+      <li><strong>Base64 Conversion:</strong> Python code → UTF-8 bytes → Base64 string</li>
+      <li><strong>Binary Punch Mapping:</strong> Each Base64 character → unique 12-bit binary pattern</li>
+      <li><strong>Card Layout:</strong> 80 characters per card, 12 possible punch positions per column</li>
+      <li><strong>Decoding:</strong> Punch patterns → Base64 → UTF-8 → working Python code</li>
+    </ol>
+
+    <h3>Historical Note</h3>
+    <p>
+      While this encoding uses the physical 80×12 format of IBM punch cards, it employs <strong>modern binary encoding</strong> rather than authentic 1960s Hollerith code. This was necessary because:
+    </p>
+    <ul>
+      <li>Original IBM 026/029 keypunch machines only supported UPPERCASE characters</li>
+      <li>Python requires mixed-case (keywords, variables, etc.)</li>
+      <li>Modern encoding allows full reversibility with all characters</li>
+    </ul>
+    <p>
+      The goal is to demonstrate <strong>scale and historical perspective</strong>, not to recreate period-accurate equipment constraints.
+    </p>
+
+    <h3>Key Compression Techniques</h3>
+    <ul>
+      <li><strong>Lambda Functions:</strong> Replace method definitions with inline lambdas</li>
+      <li><strong>Dictionary State:</strong> Flatten nested parameter structure</li>
+      <li><strong>Expression Folding:</strong> Combine multiple operations into single statements</li>
+      <li><strong>Variable Reuse:</strong> Aggressive reuse of variable names</li>
+    </ul>
+
+    <p>
+      Despite the compression, the code maintains <strong>identical functionality</strong> to the original microgpt, producing the same quality of results.
+    </p>
+  </section>
+
+  <section id="why-punch-cards">
+    <h2>Why Punch Cards?</h2>
+    <p>
+      Beyond the technical novelty, there's something profound about encoding a modern neural network in a format from the 1960s. It's a tangible reminder of how far we've come—and how the fundamental principles of computing remain unchanged.
+    </p>
+    <p>
+      IBM punch cards were the primary medium for data storage and program input for decades. A single card could hold 80 bytes. A full drawer? About 2,000 cards, or roughly 156KB. <strong>attogpt would barely make a dent.</strong>
+    </p>
+    <p>
+      The engineers who wrote software on punch cards would likely be amazed that a complete neural network—capable of learning and generating text—could fit on a stack of cards you could hold in one hand.
+    </p>
+  </section>
+
+
+  <a href="../blog.html" class="back-link" style="margin-top: 50px;">&larr; Back to Projects & Writing Hub</a>
+
+  <script>
+    let cardsData = null;
+    let pythonCode = '';
+
+    // Load the punch card encoding data
+    fetch('../img/proj_attogpt/punchcard_encoding.json')
+      .then(response => response.json())
+      .then(data => {
+        cardsData = data;
+        console.log(`Loaded ${data.num_cards} punch cards`);
+        
+        // Decode base64 to get the original code
+        try {
+          pythonCode = atob(data.base64_data);
+        } catch(e) {
+          console.error('Failed to decode base64:', e);
+        }
+        
+        // Show first card by default
+        showCard(0);
+      })
+      .catch(error => {
+        document.getElementById('cardsContainer').innerHTML = 
+          '<div class="loading" style="color: #e74c3c;">Failed to load punch card data. Please check that the JSON file is in the correct location.</div>';
+        console.error('Error loading punch cards:', error);
+      });
+
+    function showCard(index) {
+      if (!cardsData || index < 0 || index >= cardsData.cards.length) return;
+      
+      const container = document.getElementById('cardsContainer');
+      container.innerHTML = '';
+      
+      const card = createCardElement(index, cardsData.cards[index]);
+      container.appendChild(card);
+      
+      // Scroll to cards
+      container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function showAllCards() {
+      if (!cardsData) return;
+      
+      const container = document.getElementById('cardsContainer');
+      container.innerHTML = '<p style="text-align: center; color: #555; margin-bottom: 30px; font-style: italic;">Rendering all 52 punch cards (this may take a moment)...</p>';
+      
+      // Use setTimeout to allow the message to render first
+      setTimeout(() => {
+        container.innerHTML = '';
+        cardsData.cards.forEach((cardData, index) => {
+          const card = createCardElement(index, cardData);
+          container.appendChild(card);
+        });
+        
+        // Scroll to first card
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+
+    function createCardElement(index, cardData) {
+      const cardDiv = document.createElement('div');
+      cardDiv.className = 'punchcard';
+      
+      const startChar = index * 80;
+      const endChar = Math.min(startChar + 80, pythonCode.length);
+      const cardText = pythonCode.substring(startChar, endChar);
+      
+      // Create grid HTML
+      let gridHTML = '<div class="card-grid">';
+      cardData.forEach(colPunches => {
+        gridHTML += '<div class="column">';
+        for (let row = 0; row < 12; row++) {
+          const isPunched = colPunches.includes(row);
+          gridHTML += `<div class="hole ${isPunched ? 'punched' : ''}"></div>`;
+        }
+        gridHTML += '</div>';
+      });
+      gridHTML += '</div>';
+      
+      cardDiv.innerHTML = `
+        <div class="card-label">
+          CARD ${index + 1} / ${cardsData.num_cards} | Characters ${startChar + 1}–${endChar}
+        </div>
+        ${gridHTML}
+        <div class="card-text">${escapeHtml(cardText)}</div>
+      `;
+      
+      return cardDiv;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+
+</body>
+</html>
