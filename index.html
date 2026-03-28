@@ -14,11 +14,12 @@
     h2 { font-size: 1.6em; color: #2c3e50; margin-top: 2.5em; margin-bottom: 1.2em; font-weight: 600; border-bottom: 2px solid #3498db; padding-bottom: 0.3em; }
     h3 { font-size: 1.2em; color: #34495e; margin-bottom: 0.5em; font-weight: 600; }
     header { text-align: center; margin-bottom: 50px; padding-bottom: 30px; border-bottom: 1px solid #eee; }
+    .banner { margin: -40px -20px 0 -20px; width: calc(100% + 40px); height: 200px; background: url('img/banner.png') center/cover no-repeat; }
     .subtitle { font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; }
     .affiliation { font-size: 1.05em; color: #2c3e50; margin-bottom: 1em; }
     .affiliation a { color: #3498db; text-decoration: none; font-weight: 600; }
     .affiliation a:hover { text-decoration: underline; }
-    .profile-pic { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin: 20px auto; display: block; border: 4px solid #3498db; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .profile-pic { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-top: -75px; margin-bottom: 20px; margin-left: auto; margin-right: auto; display: block; border: 4px solid #fff; box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
     nav { margin-top: 25px; font-size: 1em; }
     nav a { margin: 0 12px; text-decoration: none; color: #3498db; font-weight: 500; transition: color 0.2s; }
     nav a:hover { color: #2980b9; text-decoration: underline; }
@@ -54,6 +55,7 @@
       nav a { margin: 0 8px; display: inline-block; margin-bottom: 5px; }
       .projects table { font-size: 0.95em; }
       section { text-align: left; }
+      .banner { margin: -20px -15px 0 -15px; width: calc(100% + 30px); }
     }
     a {
       color: inherit;
@@ -65,13 +67,14 @@
 <body>
 
 <header>
-  <h1>Cédric Caruzzo</h1>
+  <div class="banner"></div>
   <img src="img/profile.jpeg" alt="Cédric Caruzzo" class="profile-pic">
+  <h1>Cédric Caruzzo</h1>
   <div class="affiliation">
     AI Research Scientist at <a href="https://lunit.io/" target="_blank">Lunit Inc.</a>
   </div>
   <p class="subtitle">
-    Building foundation models for large-scale, multimodal scientific data.
+    Vision &amp; Language Foundation Models &middot; Post-Training &middot; Safety &amp; Alignment
   </p>
   <div class="social-links">
     <a href="mailto:cedric.caruzzo@lunit.io" title="Email"><img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/></a>
@@ -90,13 +93,16 @@
 <section id="about">
 <h2>About Me</h2>
 <p>
-I am an AI Research Scientist at <a href="https://lunit.io/" target="_blank">Lunit Inc.</a>, where I build Foundation Models and Agentic AI systems for precision oncology. Moving beyond standard feature extraction, my work focuses on architecting distributed frameworks that enable AI to reason about cancer pathology at scale. I bridge the gap between self-supervised learning research and industrial engineering, designing the scalable infrastructure needed to learn from gigapixel biomedical data.
+I am an AI Research Scientist at <a href="https://lunit.io/" target="_blank">Lunit Inc.</a>, where I work across the full AI stack for precision oncology — from vision and language foundation models through post-training, safety, and alignment. My role spans both research and engineering: designing the systems and training pipelines that make large-scale biomedical AI reliable, interpretable, and deployable in clinical settings.
 </p>
 <p>
-I completed my Master's degree at the KAIST Graduate School of AI as a recipient of the prestigious KAIST Global Presidential Scholarship. Advised by <a href="https://scholar.google.com/citations?user=HNMjoNEAAAAJ&hl=en" target="_blank">Prof. Ye Jong Chul</a> in the Bio-Imaging, Signal Processing & Learning Lab (BISPL), my research centered on creating foundation models for Cell Painting assays. Concurrently with my full-time studies, I served as a consultant for Institut Pasteur Korea, continuing to drive key projects.
+On the vision side, I train self-supervised ViT-based pathology foundation models (DINOv2/v3-style) and build the distributed inference infrastructure to run them over hundreds of terabytes of whole-slide images, reducing compute overhead by 60–80%. In parallel, as part of a government-led national consortium (<em>Chain of Evidence</em>), I contribute to building medical LLMs from scratch — curating 292B+ token corpora, designing RAG pipelines and knowledge graphs, post-training and aligning 21B dense and 16B MoE models, and developing rigorous evaluation frameworks for medical reasoning.
 </p>
 <p>
-My work at KAIST followed my full-time role as a Data Scientist within the Pasteur International Unit AI3D, a joint initiative between Institut Pasteur Paris (mentored by <a href="https://scholar.google.com/citations?user=cPAja4UAAAAJ&hl=en" target="_blank">Dr. Christophe Zimmer</a>) and Institut Pasteur Korea (mentored by <a href="https://scholar.google.com/citations?user=8xzsh0wAAAAJ&hl=en" target="_blank">Dr. Spencer Shorte</a>). In this role, I designed and deployed the core computer vision pipelines for high-content screening to accelerate drug discovery.
+A significant focus of my work is AI safety and alignment in deployed medical models — studying failure modes, developing safety guardrails, and applying mechanistic interpretability to identify and correct problematic circuits and attention behaviors. I also build multi-agent agentic frameworks for clinical reasoning over structured and unstructured biomedical data.
+</p>
+<p>
+I hold a Master's degree from the <a href="https://gsai.kaist.ac.kr/" target="_blank">KAIST Graduate School of AI</a> (KAIST Global Presidential Scholar), where I was advised by <a href="https://scholar.google.com/citations?user=HNMjoNEAAAAJ&hl=en" target="_blank">Prof. Ye Jong Chul</a> in the BISPL lab, focusing on foundation models for Cell Painting assays. Prior to KAIST, I was a Data Scientist in the Pasteur International Unit AI3D (joint initiative between <a href="https://scholar.google.com/citations?user=cPAja4UAAAAJ&hl=en" target="_blank">Institut Pasteur Paris</a> and <a href="https://scholar.google.com/citations?user=8xzsh0wAAAAJ&hl=en" target="_blank">Institut Pasteur Korea</a>), where I built the core computer vision pipelines for high-content screening and drug discovery.
 </p>
 </section>
 
