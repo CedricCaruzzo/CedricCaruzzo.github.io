@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>You Could Have Invented Dr.GRPO Yourself</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+  <style>
+    body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
+    h1 { font-size: 2.4em; color: #1a1a1a; margin-bottom: 0.2em; font-weight: 700; }
+    h2 { font-size: 1.6em; color: #2c3e50; margin-top: 2.5em; margin-bottom: 1.2em; font-weight: 600; border-bottom: 2px solid #e74c3c; padding-bottom: 0.3em; }
+    h3 { font-size: 1.3em; color: #34495e; margin-bottom: 0.5em; margin-top: 1.8em; font-weight: 600; }
+    h4 { font-size: 1.1em; color: #2c3e50; margin-bottom: 0.4em; margin-top: 1.4em; font-weight: 600; }
+    p, ul, li { margin-bottom: 1em; font-size: 1.05em; text-align: justify; }
+    a { color: #e74c3c; text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; }
+    .main-header { text-align: center; margin-bottom: 50px; padding-bottom: 30px; border-bottom: 1px solid #eee; }
+    .back-link { display: block; text-align: center; margin-bottom: 40px; font-weight: 600; }
+    figure { margin: 2.5em 0; text-align: center; }
+    figcaption { font-size: 0.9em; color: #7f8c8d; margin-top: 0.8em; line-height: 1.5; max-width: 80%; margin-left: auto; margin-right: auto; }
+    img { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+
+    /* Equation and derivation blocks */
+    .math-block { margin: 2em auto; padding: 1.5em; background-color: #f9f9f9; border-left: 4px solid #e74c3c; border-radius: 6px; }
+    .derivation-block { margin: 2em auto; padding: 1.5em; background-color: #fff8f8; border-left: 4px solid #c0392b; border-radius: 6px; }
+    .algorithm-box { background-color: #f8f9fa; border: 2px solid #e9ecef; padding: 20px; margin: 2em 0; border-radius: 8px; }
+
+    /* Callout boxes */
+    .insight-box { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; padding: 20px; margin: 2em 0; border-radius: 10px; }
+    .insight-box h4 { color: white; margin-top: 0; }
+    .insight-box p { margin-bottom: 0; }
+    .problem-box { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; padding: 20px; margin: 2em 0; border-radius: 10px; }
+    .problem-box h4 { color: white; margin-top: 0; }
+    .problem-box p { margin-bottom: 0; }
+    .solution-box { background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; padding: 20px; margin: 2em 0; border-radius: 10px; }
+    .solution-box h4 { color: white; margin-top: 0; }
+    .solution-box p { margin-bottom: 0; }
+
+    /* Progression banner between sections */
+    .progression { text-align: center; margin: 3em 0; font-size: 1.1em; color: #7f8c8d; letter-spacing: 0.05em; }
+    .progression strong { color: #e74c3c; }
+
+    /* Analysis/aside block */
+    .analysis-block { margin-top: 1.5em; padding-left: 1.5em; border-left: 3px solid #e74c3c; font-style: italic; }
+
+    /* Inline step counter */
+    .step-counter { color: #e74c3c; font-weight: bold; }
+
+    /* Reference section */
+    .references { font-size: 0.9em; color: #555; }
+    .references li { margin-bottom: 0.5em; }
+
+    /* TODO placeholders - visible in editor, invisible to readers */
+    /* Remove these before publishing */
+    .todo-placeholder {
+      background: #fffde7;
+      border: 2px dashed #f9a825;
+      border-radius: 6px;
+      padding: 1em 1.5em;
+      margin: 1.5em 0;
+      color: #5d4037;
+      font-style: italic;
+    }
+    .todo-placeholder::before { content: "✏️ [YOUR VOICE] "; font-weight: bold; font-style: normal; color: #e65100; }
+  </style>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+  <header class="main-header">
+    <h1>You Could Have Invented Dr.GRPO Yourself</h1>
+    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">From REINFORCE to Reasoning Models, One Problem at a Time</p>
+    <p style="font-size: 0.9em; color: #aaa; text-align: center; margin: 0;">May 2026 &nbsp;·&nbsp; Cédric Caruzzo</p>
+  </header>
+
+  <a href="../blog.html" class="back-link">&larr; Back to Projects & Writing Hub</a>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 1: INTRODUCTION                               -->
+  <!-- ====================================================== -->
+  <section id="introduction">
+
+    <div style="background:#fffbeb; border:1px solid #f59e0b; border-left:5px solid #f59e0b; border-radius:6px; padding:1em 1.4em; margin:0 0 2.4em 0; font-size:0.97em;">
+      <p style="margin:0;"><strong style="color:#92400e;">TL;DR.</strong> A full derivation of modern RL training for language models, walked as a single chain: <code style="background:transparent; font-family:inherit; font-weight:600;">REINFORCE &rarr; Actor-Critic &rarr; GAE &rarr; TRPO &rarr; PPO &rarr; RLHF &rarr; GRPO &rarr; Dr.GRPO</code>. Each algorithm exists because the previous one had a concrete defect. By the end, you understand <em>why</em> every term in a Dr.GRPO loss function is there, and you can read the next paper in this space and predict what kind of move it will make.</p>
+    </div>
+
+    <p>
+      In this post, we will see how modern labs train the reasoning capabilities of LLMs and Agents that let them tackle coding, logic puzzles, and math.
+    </p>
+
+    <p>
+      We will build the foundations from the ground up, all the way to Dr.GRPO, with each transition hopefully smooth and intuitive enough to make you think "Ah, yes, obviously."
+    </p>
+
+    <p>
+      Every algorithm here is just the previous one with one broken thing fixed.
+    </p>
+
+    <p>
+      The chain we will walk is REINFORCE (1992) &rarr; Actor-Critic &rarr; GAE &rarr; TRPO &rarr; PPO &rarr; RLHF &rarr; GRPO &rarr; Dr.GRPO (2025). Eight algorithms over three decades, each one introduced as the natural fix to a defect in the previous. You should be comfortable with basic gradients and probability. Everything else is built up as we go.
+    </p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 2: REINFORCE                                  -->
+  <!-- ====================================================== -->
+  <section id="reinforce">
+    <h2>REINFORCE</h2>
+
+    <h3>The Problem Setup</h3>
+
+    <p>
+      Let's start by laying out the setup and its mathematical formulation.
+    </p>
+
+    <!-- FIGURE: Autoregressive loop -->
+    <figure style="margin: 2.5em 0; user-select: none;">
+      <div style="background:#f8f9fa;border-radius:14px;padding:28px 20px 22px;overflow-x:auto;border:1px solid #e2e8f0;">
+
+        <div style="display:flex;justify-content:center;gap:8px;margin-bottom:28px;flex-wrap:wrap;">
+          <button id="artab0" onclick="arGo(0)" style="padding:7px 18px;border-radius:20px;border:1px solid #e74c3c;background:#e74c3c;color:#fff;font-family:inherit;font-size:0.85em;cursor:pointer;font-weight:600;">Step 0 &nbsp; s<sub>0</sub> &rarr; u<sub>0</sub></button>
+          <button id="artab1" onclick="arGo(1)" style="padding:7px 18px;border-radius:20px;border:1px solid #cbd5e1;background:#f1f5f9;color:#64748b;font-family:inherit;font-size:0.85em;cursor:pointer;font-weight:600;">Step 1 &nbsp; s<sub>1</sub> &rarr; u<sub>1</sub></button>
+          <button id="artab2" onclick="arGo(2)" style="padding:7px 18px;border-radius:20px;border:1px solid #cbd5e1;background:#f1f5f9;color:#64748b;font-family:inherit;font-size:0.85em;cursor:pointer;font-weight:600;">Step 2 &nbsp; s<sub>2</sub> &rarr; u<sub>2</sub></button>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:nowrap;min-width:580px;">
+
+          <div style="text-align:center;flex:0 1 auto;">
+            <div id="arstatelabel" style="font-size:0.75em;font-weight:700;color:#2563eb;margin-bottom:8px;">s<sub>0</sub></div>
+            <div id="arstatebox" style="background:#eff6ff;border:2px solid #3b82f6;border-radius:10px;padding:12px 16px;font-size:0.9em;color:#1e40af;max-width:210px;min-width:130px;min-height:50px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.45;word-break:break-word;"></div>
+            <div style="font-size:0.68em;color:#94a3b8;margin-top:5px;">state (s<sub>i</sub>)</div>
+          </div>
+
+          <div style="color:#94a3b8;font-size:1.6em;flex-shrink:0;">&rarr;</div>
+
+          <div style="text-align:center;flex-shrink:0;">
+            <div style="font-size:0.75em;font-weight:700;color:#7c3aed;margin-bottom:8px;">&pi;<sub>&theta;</sub></div>
+            <div style="background:#f5f3ff;border:2px solid #7c3aed;border-radius:10px;padding:12px 22px;text-align:center;">
+              <div style="font-size:1em;font-weight:700;color:#5b21b6;">Policy</div>
+              <div style="font-size:0.75em;color:#7c3aed;margin-top:3px;">(LLM)</div>
+            </div>
+            <div style="font-size:0.68em;color:#94a3b8;margin-top:5px;">the model</div>
+          </div>
+
+          <div style="color:#94a3b8;font-size:1.6em;flex-shrink:0;">&rarr;</div>
+
+          <div style="text-align:center;flex-shrink:0;">
+            <div style="font-size:0.75em;font-weight:700;color:#b45309;margin-bottom:8px;">&pi;<sub>&theta;</sub>(u<sub>i</sub> | s<sub>i</sub>)</div>
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 12px 8px;">
+              <div id="arbars" style="display:flex;align-items:flex-end;gap:5px;height:72px;justify-content:center;"></div>
+              <div id="arbarlabels" style="display:flex;gap:5px;justify-content:center;margin-top:5px;"></div>
+            </div>
+            <div style="font-size:0.68em;color:#94a3b8;margin-top:5px;">prob. over vocabulary</div>
+          </div>
+
+          <div style="color:#94a3b8;font-size:1.6em;flex-shrink:0;">&rarr;</div>
+
+          <div style="text-align:center;flex-shrink:0;">
+            <div id="aractionlabel" style="font-size:0.75em;font-weight:700;color:#16a34a;margin-bottom:8px;">u<sub>0</sub></div>
+            <div id="aractionbox" style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:12px 22px;font-size:1.1em;font-weight:700;color:#15803d;min-width:80px;text-align:center;"></div>
+            <div style="font-size:0.68em;color:#94a3b8;margin-top:5px;">sampled token (action)</div>
+          </div>
+
+        </div>
+
+        <div id="artransition" style="text-align:center;margin-top:22px;font-size:0.83em;border-top:1px solid #e2e8f0;padding-top:16px;color:#64748b;"></div>
+
+      </div>
+      <figcaption>Three autoregressive steps. At each step, the model samples one token from the vocabulary. Click the tabs to follow the generation.</figcaption>
+    </figure>
+
+    <script>
+    (function(){
+      var AR=[
+        {state:"Reinforcement learning",words:["trains","is","can","helps","needs","uses"],heights:[82,40,28,20,14,24],sampled:0},
+        {state:"Reinforcement learning trains",words:["an","agents","the","policy","any","each"],heights:[75,50,36,22,16,28],sampled:0},
+        {state:"Reinforcement learning trains an",words:["agent","AI","optimal","policy","model","RL"],heights:[84,34,24,26,18,14],sampled:0}
+      ];
+      var arCur=0;
+      function arRender(){
+        var d=AR[arCur];
+        document.getElementById('arstatelabel').innerHTML='s<sub>'+arCur+'</sub>';
+        document.getElementById('arstatebox').textContent=d.state;
+        document.getElementById('aractionlabel').innerHTML='u<sub>'+arCur+'</sub>';
+        document.getElementById('aractionbox').textContent=d.words[d.sampled];
+        var bEl=document.getElementById('arbars'),lEl=document.getElementById('arbarlabels');
+        bEl.innerHTML='';lEl.innerHTML='';
+        d.words.forEach(function(w,i){
+          var s=i===d.sampled;
+          var b=document.createElement('div');
+          b.style.cssText='width:26px;height:'+d.heights[i]+'px;border-radius:4px 4px 0 0;background:'+(s?'#f59e0b':'#e2e8f0')+';border:1px solid '+(s?'#fbbf24':'#d1d5db')+';transition:height 0.35s ease;';
+          bEl.appendChild(b);
+          var l=document.createElement('div');
+          l.style.cssText='width:26px;font-size:0.65em;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:'+(s?'#d97706':'#9ca3af')+';font-weight:'+(s?'700':'400')+';';
+          l.title=w;l.textContent=w;lEl.appendChild(l);
+        });
+        var tr=document.getElementById('artransition');
+        if(arCur<AR.length-1){
+          var nxt=d.state+' '+d.words[d.sampled];
+          tr.innerHTML='s<sub>'+(arCur+1)+'</sub> = s<sub>'+arCur+'</sub> + u<sub>'+arCur+'</sub> &nbsp;=&nbsp; <span style="color:#1d4ed8;font-weight:600;">&ldquo;'+nxt+'&rdquo;</span> &nbsp;&rarr;&nbsp; click Step '+(arCur+1)+' to continue';
+        } else {
+          tr.innerHTML='<span style="color:#15803d;font-weight:600;">Full trajectory: &ldquo;Reinforcement learning trains an agent&rdquo;</span>';
+        }
+        for(var j=0;j<3;j++){
+          var t=document.getElementById('artab'+j);
+          if(j===arCur){t.style.background='#e74c3c';t.style.borderColor='#e74c3c';t.style.color='#fff';}
+          else{t.style.background='#f1f5f9';t.style.borderColor='#cbd5e1';t.style.color='#64748b';}
+        }
+      }
+      window.arGo=function(n){arCur=n;arRender();};
+      arRender();
+    })();
+    </script>
+
+    <p>
+      We start with a prompt, defined as a state $s$, and the model, defined as the policy and denoted $\pi_\theta$. When we pass the prompt to the model, the model takes an action $u$ by sampling from the policy given the current state. The process is autoregressive, so we add a subscript to refer to the current step. The full trajectory ends when the model generates the &lt;EOS&gt; token:
+    </p>
+
+    <div class="math-block">
+      $$\tau = (s_0, u_0, \; s_1, u_1, \; \ldots, \; s_{H-1}, u_{H-1})$$
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 24px;margin-top:1.2em;font-size:0.92em;color:#555;line-height:1.7;">
+        <span>$s_i$</span>   <span><strong>state</strong> — the prompt plus all tokens generated so far</span>
+        <span>$u_i$</span>   <span><strong>action</strong> — the token sampled at step $i$</span>
+        <span>$\pi_\theta$</span> <span><strong>policy</strong> — the model, with parameters $\theta$</span>
+        <span>$H$</span>    <span><strong>horizon</strong> — the sequence length, ends when the model generates &lt;EOS&gt;</span>
+      </div>
+    </div>
+
+    <p>
+      And at each time step, the environment can give us a scalar reward. The total reward over a full trajectory is:
+    </p>
+
+    <div class="math-block">
+      $$R(\tau) = \sum_{t=0}^{H-1} r(s_t, u_t)$$
+    </div>
+
+    <p>
+      The reward function is the only way we can communicate to the model what we want it to do. It is a function that takes the current state and action, and outputs a number that tells us how good or bad that action was in that state. For example, if we want the model to generate a correct answer to a question, we can give it a reward of +1 for a correct answer and 0 for an incorrect one.
+    </p>
+
+    <p>
+      The reward can be sparse (only given at the end of the trajectory), for example when training a LLM to reason, or dense (given at every step), such as teaching an agent to play a game.
+    </p>
+
+    <p>
+      Now that the setup is formalized, the goal becomes clear: we want a model that takes the best action $u_t$ given a state $s_t$, so it maximizes the reward.
+    </p>
+
+    <p>
+      Let's write that out:
+    </p>
+
+    <div class="math-block">
+      $$U(\theta) = \mathbb{E}_{\tau \sim \pi_\theta}[R(\tau)] = \sum_{\tau} P(\tau; \theta) \, R(\tau)$$
+      <p style="margin-top:1em; margin-bottom:0; font-size:0.95em; color:#555;">
+        where $P(\tau;\theta)$ is the probability of trajectory $\tau$ under policy $\pi_\theta$.
+      </p>
+    </div>
+
+    <p>therefore:</p>
+
+    <div class="math-block">
+      $$\max_\theta \; U(\theta) = \max_\theta \sum_{\tau} P(\tau; \theta) \, R(\tau)$$
+      <p style="margin-top:1em; margin-bottom:0; font-size:0.95em; color:#555;">
+        The Objective Function: we want to find the parameters $\theta$ that maximize the expected reward over <b>all possible trajectories</b>.
+      </p>
+    </div>
+
+    <h3>The Policy Gradient</h3>
+
+    <p>
+      So how do we achieve that? Like any other optimization problem: compute the gradient of the utility, and update the parameters in that direction. The plot below illustrates that idea visually.
+    </p>
+
+    <figure style="margin:2em 0; background:#f8f9fa; border-radius:12px; padding:20px 16px 14px; border:1px solid #e2e8f0;">
+      <canvas id="uplot-canvas" width="640" height="268"
+        style="width:100%; max-width:640px; display:block; margin:0 auto; border-radius:8px;"></canvas>
+      <figcaption style="color:#64748b; font-size:0.85em; text-align:center; margin-top:12px; font-style:italic;">
+        Gradient ascent on $U(\theta)$: the amber dot follows $\nabla_\theta U(\theta)$ at each step, climbing toward $\theta^*$.
+      </figcaption>
+    </figure>
+    <script>
+    (function(){
+      var cvs = document.getElementById('uplot-canvas');
+      var ctx = cvs.getContext('2d');
+      var W = 640, H = 268;
+
+      var pad = {l:54, r:26, t:24, b:42};
+      var pw = W - pad.l - pad.r;
+      var ph = H - pad.t - pad.b;
+
+      var T0=0.5, T1=9.5, U0=-0.5, U1=3.6;
+
+      function Uf(t){ return -(t-5)*(t-5)/5 + 3 + 0.1*Math.sin(1.5*t); }
+      function dUf(t){ return -2*(t-5)/5 + 0.15*Math.cos(1.5*t); }
+
+      function tx(t){ return pad.l + (t-T0)/(T1-T0)*pw; }
+      function ty(u){ return pad.t + ph*(1-(u-U0)/(U1-U0)); }
+
+      var tStar = 5.0;
+      var theta = 1.5, lr = 0.055;
+      var phase = 'climb', wait = 0;
+
+      function advance(){
+        if(phase==='climb'){
+          theta += lr * dUf(theta);
+          if(theta >= tStar - 0.15){ phase='wait'; wait=90; }
+        } else {
+          wait--;
+          if(wait<=0){ theta=1.5; phase='climb'; }
+        }
+      }
+
+      function drawArrowH(x1, y, x2, color){
+        var dir = x2>x1?1:-1;
+        ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=2;
+        ctx.beginPath(); ctx.moveTo(x1,y); ctx.lineTo(x2-dir*8,y); ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x2,y);
+        ctx.lineTo(x2-dir*9,y-5);
+        ctx.lineTo(x2-dir*9,y+5);
+        ctx.closePath(); ctx.fill();
+      }
+
+      function render(){
+        ctx.clearRect(0,0,W,H);
+        ctx.fillStyle='#f8f9fa'; ctx.fillRect(0,0,W,H);
+
+        // grid
+        ctx.lineWidth=1;
+        [0,1,2,3].forEach(function(u){
+          var y=ty(u);
+          ctx.strokeStyle='#e9ecef';
+          ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+pw,y); ctx.stroke();
+          ctx.fillStyle='#94a3b8'; ctx.font='11px Inter,sans-serif'; ctx.textAlign='right';
+          ctx.fillText(u, pad.l-8, y+4);
+        });
+
+        // axes
+        ctx.strokeStyle='#94a3b8'; ctx.lineWidth=1.5;
+        ctx.beginPath();
+        ctx.moveTo(pad.l,pad.t); ctx.lineTo(pad.l,pad.t+ph); ctx.lineTo(pad.l+pw,pad.t+ph);
+        ctx.stroke();
+
+        // axis labels
+        ctx.fillStyle='#64748b'; ctx.font='13px Inter,sans-serif';
+        ctx.textAlign='center'; ctx.fillText('θ', pad.l+pw/2, H-5);
+        ctx.save(); ctx.translate(14,pad.t+ph/2+10); ctx.rotate(-Math.PI/2);
+        ctx.fillText('U(θ)',0,0); ctx.restore();
+
+        // theta* dashed marker
+        var xS=tx(tStar), yS=ty(Uf(tStar));
+        ctx.strokeStyle='#cbd5e1'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+        ctx.beginPath(); ctx.moveTo(xS,yS); ctx.lineTo(xS,pad.t+ph); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle='#94a3b8'; ctx.font='13px Inter,sans-serif'; ctx.textAlign='center';
+        ctx.fillText('θ*', xS, pad.t+ph+17);
+
+        // curve
+        ctx.strokeStyle='#3b82f6'; ctx.lineWidth=2.5; ctx.lineJoin='round';
+        ctx.beginPath();
+        var first=true;
+        for(var t=T0; t<=T1+0.01; t+=0.04){
+          var x=tx(t), y=ty(Uf(t));
+          if(first){ ctx.moveTo(x,y); first=false; } else { ctx.lineTo(x,y); }
+        }
+        ctx.stroke();
+
+        // dot
+        var dx=tx(theta), dy=ty(Uf(theta));
+        var grad=dUf(theta);
+
+        // tangent line
+        var slopeP = -grad*(ph/pw)*((T1-T0)/(U1-U0));
+        var tlen=46, norm=Math.sqrt(1+slopeP*slopeP);
+        var dtx=tlen/norm, dty_=slopeP*tlen/norm;
+        ctx.strokeStyle='#cbd5e1'; ctx.lineWidth=1.2; ctx.setLineDash([4,3]);
+        ctx.beginPath(); ctx.moveTo(dx-dtx,dy-dty_); ctx.lineTo(dx+dtx,dy+dty_); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle='#94a3b8'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='left';
+        ctx.fillText('dU/dθ', dx+dtx+4, dy+dty_+3);
+
+        // gradient arrow
+        if(phase==='climb'){
+          var dir=grad>0?1:-1;
+          var alen=Math.min(Math.abs(grad)*40+8,42);
+          drawArrowH(dx, dy-20, dx+dir*alen, '#e74c3c');
+          ctx.font='11px Inter,sans-serif';
+          ctx.textAlign=dir>0?'left':'right';
+          ctx.fillStyle='#e74c3c';
+          ctx.fillText('∇U(θ)', dx+dir*(alen+5), dy-16);
+        }
+
+        // drop line
+        ctx.strokeStyle='rgba(245,158,11,0.3)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+        ctx.beginPath(); ctx.moveTo(dx,dy+8); ctx.lineTo(dx,pad.t+ph); ctx.stroke();
+        ctx.setLineDash([]);
+
+        // dot circle
+        ctx.beginPath(); ctx.arc(dx,dy,6.5,0,Math.PI*2);
+        ctx.fillStyle='#f59e0b'; ctx.fill();
+        ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.lineWidth=1.5; ctx.stroke();
+
+        // arrived label
+        if(phase==='wait'){
+          ctx.fillStyle='#16a34a'; ctx.font='bold 11px Inter,sans-serif'; ctx.textAlign='center';
+          ctx.fillText('θ*', dx, dy-21);
+        }
+      }
+
+      function loop(){ advance(); render(); requestAnimationFrame(loop); }
+      render();
+      requestAnimationFrame(loop);
+    })();
+    </script>
+
+    <p>Let's compute this gradient step by step.</p>
+
+    <div class="derivation-block">
+      <p><strong>Step 1.</strong> Linearity of differentiation: push the gradient inside the sum. $R(\tau)$ doesn't depend on $\theta$, so it just tags along:</p>
+      $$\nabla_\theta U(\theta) = \nabla_\theta \sum_\tau P(\tau;\theta) \, R(\tau) = \sum_\tau \nabla_\theta P(\tau;\theta) \, R(\tau)$$
+
+      <p><strong>Step 2.</strong> We have $\nabla_\theta P(\tau;\theta)$ floating around, but no distribution to sample from. Multiply and divide by $P(\tau;\theta)$ to introduce one:</p>
+      $$= \sum_\tau P(\tau;\theta) \cdot \frac{\nabla_\theta P(\tau;\theta)}{P(\tau;\theta)} \cdot R(\tau)$$
+
+      <p><strong>Step 3.</strong> The fraction $\frac{\nabla_\theta P(\tau;\theta)}{P(\tau;\theta)}$ is exactly $\nabla_\theta \log P(\tau;\theta)$ by the log-derivative identity. Swap it in:</p>
+      $$= \sum_\tau P(\tau;\theta) \cdot \nabla_\theta \log P(\tau;\theta) \cdot R(\tau)$$
+
+      <p><strong>Step 4.</strong> Now the form $\sum_\tau P(\tau;\theta)(\cdot)$ is just an expectation over trajectories sampled from $\pi_\theta$:</p>
+      $$\nabla_\theta U(\theta) = \mathbb{E}_{\tau \sim \pi_\theta}\!\left[ \nabla_\theta \log P(\tau;\theta) \cdot R(\tau) \right]$$
+    </div>
+
+    <p>
+      The log-derivative identity used in Step 3 is just the chain rule applied to the log. You have $\theta \to P(\tau;\theta) \to \log P(\tau;\theta)$, and the chain rule gives:
+    </p>
+
+    <div class="math-block">
+      $$\nabla_\theta \log P(\tau;\theta) = \frac{1}{P(\tau;\theta)} \cdot \nabla_\theta P(\tau;\theta)$$
+    </div>
+
+    <p>
+      What we did in Step 3 is use this in the <em>opposite direction</em>: we started with $\nabla_\theta P$ and rewrote it as $P \cdot \nabla_\theta \log P$. Same chain rule, just rearranged. The "normal" chain rule goes $x \to g(\cdot) \to y \to h(\cdot) \to z$ and tells you how to get $\frac{dz}{dx}$ from the parts. Here we're working backwards: we know the derivative of the composed function ($\nabla_\theta \log P$), and we recover the ingredient we need ($\nabla_\theta P$).
+    </p>
+
+    <p>
+      Two things happened in that four-step derivation, and both matter.
+    </p>
+
+    <p>
+      <strong>First, we got the expectation back.</strong> That's the whole reason we can train at all: instead of summing over all possible trajectories (intractable), we can now <em>sample</em> from $\pi_\theta$ and average. We'll come back to this in a second.
+    </p>
+
+    <p>
+      <strong>Second, we replaced $P(\tau;\theta)$ with $\log P(\tau;\theta)$.</strong> This is a huge win for numerical stability. Remember that $P(\tau;\theta)$ is a product of token-level probabilities over the full trajectory:
+    </p>
+
+    <div class="math-block">
+      $$P(\tau;\theta) = \prod_{t=0}^{H-1} \left[\pi_\theta(u_t \mid s_t) \cdot \underbrace{p(s_{t+1} \mid s_t, u_t)}_{\text{env dynamics, no } \theta}\right]$$
+    </div>
+
+    <p>
+      Each $\pi_\theta(u_t \mid s_t)$ is a probability in $[0, 1]$. You are chaining $H$ of these multiplications together. For a long sequence, that product becomes astronomically small. The kind of number that underflows to zero in floating point before you can do anything useful with it.
+    </p>
+
+    <p>
+      Taking the log converts that product into a sum:
+    </p>
+
+    <div class="math-block">
+      $$\log P(\tau;\theta) = \sum_{t=0}^{H-1} \log \pi_\theta(u_t \mid s_t) + \text{const}$$
+    </div>
+
+    <!-- Interactive: product vs log -->
+    <div style="background:#f8f9fa; border-radius:12px; padding:24px 24px 18px; margin:2em 0; border:1px solid #e2e8f0;">
+
+      <div style="margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;">
+          <span style="color:#555; font-size:0.9em;">Sequence length</span>
+          <span style="color:#1e293b; font-family:monospace;">H = <span id="h-val">1</span></span>
+        </div>
+        <input type="range" id="h-slider" min="1" max="400" value="1"
+          style="width:100%; height:6px; accent-color:#e74c3c; cursor:pointer;">
+        <div style="display:flex; justify-content:space-between; color:#999; font-size:0.75em; margin-top:5px;">
+          <span>1</span><span>100</span><span>200</span><span>300</span><span>400</span>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+
+        <div style="background:#fff; border-radius:8px; padding:18px; border:1px solid #e2e8f0;">
+          <div style="color:#888; font-size:0.75em; letter-spacing:0.5px; text-transform:uppercase; margin-bottom:6px;">Without log</div>
+          <div style="font-family:monospace; font-size:0.82em; color:#555; margin-bottom:14px;">P(&tau;) = (0.1)<sup>H</sup></div>
+          <div id="prod-val" style="font-size:1.5em; font-weight:700; font-family:monospace; word-break:break-all; transition:color 0.2s; color:#555;"></div>
+          <div id="badge-f32" style="display:none; margin-top:10px; background:#fffbeb; border:1px solid #f59e0b; color:#b45309; font-size:0.72em; padding:3px 8px; border-radius:4px; line-height:1.6;">&#9888; Too small for float32</div>
+          <div id="badge-f64" style="display:none; margin-top:10px; background:#fff1f2; border:1px solid #e74c3c; color:#e74c3c; font-size:0.72em; padding:3px 8px; border-radius:4px; line-height:1.6;">&#10007; Underflow &mdash; gradient is exactly zero</div>
+        </div>
+
+        <div style="background:#fff; border-radius:8px; padding:18px; border:1px solid #e2e8f0;">
+          <div style="color:#888; font-size:0.75em; letter-spacing:0.5px; text-transform:uppercase; margin-bottom:6px;">With log</div>
+          <div style="font-family:monospace; font-size:0.82em; color:#555; margin-bottom:14px;">log P(&tau;) = H &times; log(0.1)</div>
+          <div id="log-val" style="font-size:1.5em; font-weight:700; font-family:monospace; color:#16a34a;"></div>
+          <div style="display:inline-block; margin-top:10px; background:#f0fdf4; border:1px solid #16a34a; color:#16a34a; font-size:0.72em; padding:3px 8px; border-radius:4px; line-height:1.6;">&#10003; Always computable</div>
+        </div>
+
+      </div>
+
+      <div style="color:#999; font-size:0.78em; text-align:center; margin-top:14px;">
+        assumes each token probability &asymp; 0.1 &mdash; realistic for large-vocabulary models
+      </div>
+
+    </div>
+    <script>
+    (function(){
+      var slider  = document.getElementById('h-slider');
+      var hVal    = document.getElementById('h-val');
+      var prodEl  = document.getElementById('prod-val');
+      var logEl   = document.getElementById('log-val');
+      var bF32    = document.getElementById('badge-f32');
+      var bF64    = document.getElementById('badge-f64');
+      var logUnit = Math.log(0.1); // ≈ -2.3026
+
+      function update(){
+        var H = +slider.value;
+        hVal.textContent = H;
+        logEl.textContent = (H * logUnit).toFixed(2);
+
+        var P = Math.pow(0.1, H);
+        if(P === 0){
+          prodEl.textContent = '0';
+          prodEl.style.color = '#e74c3c';
+          bF32.style.display = 'none';
+          bF64.style.display = 'inline-block';
+        } else if(P < 1.2e-38){
+          prodEl.textContent = P.toExponential(2);
+          prodEl.style.color = '#f59e0b';
+          bF32.style.display = 'inline-block';
+          bF64.style.display = 'none';
+        } else {
+          prodEl.textContent = P.toExponential(2);
+          prodEl.style.color = '#555';
+          bF32.style.display = 'none';
+          bF64.style.display = 'none';
+        }
+      }
+
+      slider.addEventListener('input', update);
+      update();
+    })();
+    </script>
+
+    <p>
+      Sums of log-probabilities stay in a perfectly manageable range no matter how long the sequence gets. If you have done maximum likelihood estimation before, this is exactly the same principle. We always maximize the log-likelihood precisely because the log turns the product into a sum.
+    </p>
+
+    <p>
+      Back to the other half of what the derivation gave us: the expectation. Look at the exact form of the gradient we now want to compute: $\mathbb{E}_{\tau \sim \pi_\theta}[\cdots]$. Computing this expectation <em>exactly</em> means summing over every possible trajectory $\tau$. A trajectory is a sequence of $H$ tokens, and at each step the model can generate any of the $V$ tokens in its vocabulary. The total number of distinct trajectories is:
+    </p>
+
+    <div class="math-block">
+      $$|\mathcal{T}| = V^H$$
+    </div>
+
+    <div style="background:#f8f9fa; border-radius:12px; padding:24px 24px 18px; margin:2em 0; border:1px solid #e2e8f0;">
+
+      <div style="margin-bottom:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;">
+          <span style="color:#555; font-size:0.9em;">Response length</span>
+          <span style="color:#1e293b; font-family:monospace;">H = <span id="traj-h">10</span> tokens</span>
+        </div>
+        <input type="range" id="traj-slider" min="1" max="200" value="10"
+          style="width:100%; height:6px; accent-color:#e74c3c; cursor:pointer;">
+        <div style="display:flex; justify-content:space-between; color:#999; font-size:0.75em; margin-top:5px;">
+          <span>1</span><span>50</span><span>100</span><span>150</span><span>200</span>
+        </div>
+      </div>
+
+      <div style="background:#fff; border-radius:8px; padding:20px; border:1px solid #e2e8f0; margin-bottom:12px;">
+        <div style="color:#888; font-size:0.75em; letter-spacing:0.5px; text-transform:uppercase; margin-bottom:8px;">Total possible trajectories (V = 50,257)</div>
+        <div id="traj-val" style="font-size:2em; font-weight:700; font-family:monospace; color:#e74c3c;"></div>
+        <div id="traj-warning" style="display:none; margin-top:10px; font-size:0.8em; color:#b45309; line-height:1.5; background:#fffbeb; border:1px solid #f59e0b; padding:4px 10px; border-radius:4px;">
+          &#9888; Already more trajectories than atoms in the observable universe (&sim;10<sup>80</sup>)
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+        <div style="background:#f8f9fa; border-radius:6px; padding:10px; text-align:center; border:1px solid #e2e8f0;">
+          <div style="color:#64748b; font-size:0.7em; margin-bottom:4px;">Grains of sand on Earth</div>
+          <div style="color:#1e293b; font-family:monospace; font-size:0.85em;">~10<sup>19</sup></div>
+        </div>
+        <div style="background:#f8f9fa; border-radius:6px; padding:10px; text-align:center; border:1px solid #e2e8f0;">
+          <div style="color:#64748b; font-size:0.7em; margin-bottom:4px;">Atoms in observable universe</div>
+          <div style="color:#1e293b; font-family:monospace; font-size:0.85em;">~10<sup>80</sup></div>
+        </div>
+        <div style="background:#f8f9fa; border-radius:6px; padding:10px; text-align:center; border:1px solid #e2e8f0;">
+          <div style="color:#64748b; font-size:0.7em; margin-bottom:4px;">Planck times since Big Bang</div>
+          <div style="color:#1e293b; font-family:monospace; font-size:0.85em;">~10<sup>61</sup></div>
+        </div>
+      </div>
+
+      <div style="color:#999; font-size:0.78em; text-align:center; margin-top:14px;">
+        V = 50,257 (GPT-2 vocabulary). Modern models go up to 200k tokens.
+      </div>
+    </div>
+    <script>
+    (function(){
+      var slider = document.getElementById('traj-slider');
+      var hEl    = document.getElementById('traj-h');
+      var valEl  = document.getElementById('traj-val');
+      var warnEl = document.getElementById('traj-warning');
+      var log10V = Math.log10(50257); // ≈ 4.701
+
+      function update(){
+        var H   = +slider.value;
+        hEl.textContent = H;
+        var exp = Math.round(H * log10V);
+        valEl.innerHTML = '&#x2248;&thinsp;10<sup>' + exp + '</sup>';
+        warnEl.style.display = (H * log10V > 80) ? 'block' : 'none';
+      }
+
+      slider.addEventListener('input', update);
+      update();
+    })();
+    </script>
+
+    <p>
+      So we need to approximate. And this is exactly why recovering the expectation form matters: we can now estimate it by <strong>Monte Carlo sampling</strong>. Instead of summing over all trajectories, we sample $N$ trajectories from $\pi_\theta$ and average. This gives an unbiased estimator of the true gradient:
+    </p>
+
+    <div class="math-block">
+      $$\nabla_\theta U(\theta) \approx \frac{1}{N} \sum_{i=1}^{N} \nabla_\theta \log P(\tau^{(i)};\theta) \cdot R(\tau^{(i)})$$
+      <p style="margin-top:1em; margin-bottom:0; font-size:0.95em; color:#555;">
+        where $\tau^{(i)} \sim \pi_\theta$ are trajectories rolled out from the current policy.
+      </p>
+    </div>
+
+    <p>And the intuition is simple:</p>
+
+    <div class="math-block">
+      $$\begin{aligned}
+        R(\tau^{(i)}) \text{ high} &\;\Longrightarrow\; \log P(\tau^{(i)};\theta)\uparrow \quad \text{(trajectory becomes more likely)} \\[6pt]
+        R(\tau^{(i)}) \text{ low}  &\;\Longrightarrow\; \log P(\tau^{(i)};\theta)\downarrow \quad \text{(trajectory becomes less likely)}
+      \end{aligned}$$
+      <p style="margin-top:1em; margin-bottom:0; font-size:0.95em; color:#555;">
+        Reinforce what worked, punish what didn't.
+      </p>
+    </div>
+
+    <h3>The REINFORCE Estimator</h3>
+
+    <p>
+      Now, our model takes the state as input, and predicts the probability over the possible actions. If we dive deeper by decomposing the path as a sequence of state-action pairs:
+    </p>
+
+    <div class="math-block">
+      $$\nabla_\theta \log P(\tau^{(i)};\theta) = \nabla_\theta \log \left[\prod_{t=0}^{H-1} \left(\underbrace{P(s_{t+1}^{(i)} \mid s_t^{(i)}, u_t^{(i)})}_{\text{Bucket 1 — environment}} \cdot \underbrace{\pi_\theta(u_t^{(i)} \mid s_t^{(i)})}_{\text{Bucket 2 — policy}}\right)\right]$$
+    </div>
+
+    <p>
+      We can see two buckets. The first is the dynamic model: the probability of transitioning from one state to another given the action taken (the environment, outside our control). The second is the policy: the probability of the model choosing action $u_t$ given the current state.
+    </p>
+
+    <div class="derivation-block">
+      <p>Distribute the log (product becomes a sum):</p>
+      $$= \nabla_\theta \left[\,\sum_{t=0}^{H-1} \log P(s_{t+1}^{(i)} \mid s_t^{(i)}, u_t^{(i)}) \;+\; \sum_{t=0}^{H-1} \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)})\right]$$
+      <p>Distribute the gradient inside the sum:</p>
+      $$= \underbrace{\sum_{t=0}^{H-1} \nabla_\theta \log P(s_{t+1}^{(i)} \mid s_t^{(i)}, u_t^{(i)})}_{\text{Bucket 1 — environment}} \;+\; \underbrace{\sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)})}_{\text{Bucket 2 — policy}}$$
+    </div>
+
+    <p>
+      Now, because the first bucket is the probability of transition from the environment, it is independent of $\theta$, which means $\nabla_\theta$ of a constant equals zero. We can then simplify:
+    </p>
+
+    <div class="derivation-block">
+      $$= \underbrace{\sum_{t=0}^{H-1} \nabla_\theta \log P(s_{t+1}^{(i)} \mid s_t^{(i)}, u_t^{(i)})}_{\displaystyle 0\;(\text{no }\theta)} \;+\; \sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)})$$
+    </div>
+
+    <div class="math-block">
+      $$\nabla_\theta \log P(\tau^{(i)};\theta) = \sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)})$$
+    </div>
+
+    <p>And rewriting our equation by substitution, transitioning to the $\hat{g}$ estimator notation:</p>
+
+    <div class="math-block">
+      $$\boxed{\nabla_\theta U(\theta) \approx \hat{g} \;=\; \frac{1}{N} \sum_{i=1}^{N} \sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)}) \cdot R(\tau^{(i)})}$$
+    </div>
+
+    <h3>Reward-to-Go</h3>
+
+    <p>
+      One might recognise a lurking issue with the reward definition. Look at what $R(\tau^{(i)})$ actually is:
+    </p>
+
+    <div class="math-block">
+      $$R(\tau^{(i)}) = \sum_{t=0}^{H-1} r(s_t^{(i)}, u_t^{(i)})$$
+    </div>
+
+    <p>
+      For each time step $t$, we weight the gradient by the cumulative reward for the <em>whole trajectory</em>. But this breaks a very simple causality principle: an action taken at time $t$ cannot be blamed for rewards collected before $t$. The past is already fixed. Causally, an action can only be blamed for the rewards it provokes in the future, not actions taken in the past.
+    </p>
+
+    <p>
+      So for a given step $t$, we can split the trajectory reward into two parts:
+    </p>
+
+    <div class="math-block">
+      $$R(\tau^{(i)}) = \underbrace{\sum_{k=0}^{t-1} r(s_k^{(i)}, u_k^{(i)})}_{\text{past (causally irrelevant at } t \text{)}} \;+\; \underbrace{\sum_{k=t}^{H-1} r(s_k^{(i)}, u_k^{(i)})}_{\text{reward-to-go}}$$
+    </div>
+
+    <p>
+      It can be shown that in expectation, the past terms contribute nothing to the gradient. They are independent of the action taken at $t$, so they only add variance without adding any useful signal. We can safely drop them. What remains is the <strong>reward-to-go</strong>:
+    </p>
+
+    <div class="math-block">
+      $$\hat{R}_t^{(i)} \;=\; \sum_{k=t}^{H-1} r(s_k^{(i)}, u_k^{(i)})$$
+    </div>
+
+    <p>Plugging this back in, our estimator becomes:</p>
+
+    <div class="math-block">
+      $$\boxed{\hat{g} \;=\; \frac{1}{N} \sum_{i=1}^{N} \sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)}) \cdot \sum_{k=t}^{H-1} r(s_k^{(i)}, u_k^{(i)})}$$
+    </div>
+
+    <p>
+      Same idea, less noise. Each gradient step is now weighted only by what actually follows from the action, not by the whole episode history.
+    </p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 3: ACTOR-CRITIC                               -->
+  <!-- ====================================================== -->
+  <section id="baseline">
+    <h2>Actor-Critic</h2>
+
+    <p>Imagine an agent playing a game where the goal is to stay alive as long as possible. If the agent learns to run into a corner at the start of the episode (no strategy, no reasoning) it will survive for a while and collect positive reward. Now imagine another agent trying diverse, brilliant strategies that are not yet refined and sometimes get it killed early. Which one should we reward?</p>
+
+    <p>With our current estimator, the corner-runner gets reinforced because it collected reward. The brilliant-but-imprecise agent gets penalised. We have no referential to tell if an outcome is expected or actually brilliant.</p>
+
+    <p>The fix is to subtract a <strong>baseline</strong> $b(s_t)$ from the reward-to-go. The mathematical key: as long as the baseline only depends on the state and not the specific action taken, subtracting it does not introduce any bias into the gradient in expectation. So we can safely center our estimator:</p>
+
+    <div class="math-block">
+      $$\boxed{\hat{g} \;=\; \frac{1}{N} \sum_{i=1}^{N} \sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)}) \cdot \left(\sum_{k=t}^{H-1} r(s_k^{(i)}, u_k^{(i)}) - b(s_t^{(i)})\right)}$$
+    </div>
+
+    <h3>What Should the Baseline Be?</h3>
+
+    <p>The natural choice is the expected reward-to-go from state $s_t^{(i)}$: what would a typical trajectory collect from here? This is exactly the definition of the <strong>value function</strong>:</p>
+
+    <div class="math-block">
+      $$b(s_t^{(i)}) \;=\; \mathbb{E}\!\left[r_t + r_{t+1} + \cdots + r_{H-1}\right] \;=\; V^\pi(s_t^{(i)})$$
+    </div>
+
+    <p>There is a huge computational constraint on this definition: to compute the expected value, we would need to consider every possible trajectory from each state $s_t^{(i)}$, at every timestep. Even with Monte Carlo approximation, this becomes an exponential branching problem, infeasible at scale.</p>
+
+    <p>The way to tackle this is to use a model to <strong>approximate</strong> this expectation: a value function parametrized by $\phi$, that directly predicts the expected reward-to-go:</p>
+
+    <div class="math-block">
+      $$\underbrace{V_\phi^\pi(s_t^{(i)})}_{\text{value function}} \;\approx\; \mathbb{E}\!\left[r_t + r_{t+1} + \cdots + r_{H-1}\right]$$
+    </div>
+
+    <h3>The Critic</h3>
+
+    <p>In practice, we simply clone the LLM weights and add a small projection head on top to predict a scalar. This gives us a second model with its own parameters $\phi$, called the <strong>critic</strong>. The policy being optimized is called the <strong>actor</strong>. Together they form the <strong>Actor-Critic</strong> family of algorithms.</p>
+
+    <div class="algorithm-box">
+      <h4>The Two Players</h4>
+      <p><strong>Actor</strong> $\pi_\theta$: the policy network. Looks at a state and outputs a probability distribution over actions. Updated to maximize the Advantage.</p>
+      <p><strong>Critic</strong> $V_\phi^\pi$: the value network. Looks at a state and outputs a single scalar: the predicted expected reward-to-go. Updated by minimizing prediction error (MSE).</p>
+    </div>
+
+    <p>The training objective is intuitive: we want $V_\phi^\pi$ to predict the actual cumulative reward as accurately as possible, so we minimize the squared error between the value estimate and the observed reward-to-go across all sampled trajectories:</p>
+
+    <div class="math-block" style="overflow-x:auto;">
+      <div style="display:flex; align-items:center; justify-content:center; gap:0.6em; flex-wrap:nowrap; min-width:560px; padding:0.5em 0;">
+        <div style="text-align:center;">
+          <div>$s_t^{(i)}$</div>
+          <div style="font-size:0.8em; color:#7f8c8d; margin-top:0.4em;">State</div>
+        </div>
+        <div style="font-size:1.3em; color:#555;">&rarr;</div>
+        <div style="text-align:center;">
+          <div style="border:2px solid #555; border-radius:4px; padding:4px 10px; display:inline-block;">$V_\phi^\pi$</div>
+          <div style="font-size:0.8em; color:#7f8c8d; margin-top:0.4em;">Value model (critic)</div>
+        </div>
+        <div style="font-size:1.3em; color:#555;">&rarr;</div>
+        <div style="text-align:center;">
+          <div>$V_\phi^\pi(s_t^{(i)})$</div>
+          <div style="font-size:0.8em; color:#7f8c8d; margin-top:0.4em;">Value estimate</div>
+        </div>
+        <div style="font-size:1.3em; color:#555;">&rarr;</div>
+        <div style="text-align:center;">
+          <div style="background:#e0e0e0; border-radius:4px; padding:4px 12px; display:inline-block;">Loss</div>
+        </div>
+        <div style="font-size:1.3em; color:#555;">&larr;</div>
+        <div style="text-align:center;">
+          <div>$\displaystyle\sum_{k=t}^{H-1} r(s_k^{(i)}, u_k^{(i)})$</div>
+          <div style="font-size:0.8em; color:#7f8c8d; margin-top:0.4em;">Cumulative reward after $t$</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="math-block">
+      $$\mathcal{E}_{\text{Value-Func}}(\phi) \;=\; \frac{1}{m} \sum_{i=1}^{m} \sum_{t=0}^{H-1} \left( V_\phi^\pi(s_t^{(i)}) - \left(\sum_{k=t}^{H-1} r(s_k^{(i)}, u_k^{(i)})\right) \right)^{\!2}$$
+    </div>
+
+    <h3>The Advantage</h3>
+
+    <p>With the Critic in place, we can now name the quantity we are actually computing. The difference between the observed reward-to-go and the Critic's prediction is called the <strong>Advantage</strong>: how much better or worse than average was this specific action?</p>
+
+    <div class="math-block">
+      $$\hat{A}_t^{(i)} \;=\; \underbrace{\sum_{k=t}^{H-1} r(s_k^{(i)}, u_k^{(i)})}_{\text{actual reward-to-go}} \;-\; \underbrace{V_\phi^\pi(s_t^{(i)})}_{\text{critic's prediction}}$$
+    </div>
+
+    <p>This directly gives us the reinforce-what-worked signal:</p>
+
+    <div class="math-block">
+      $$\hat{A}_t^{(i)} > 0 \quad\Rightarrow\quad \text{Increase } \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)})$$
+      $$\textit{Better than average} \hspace{8em} \textit{Take it more often}$$
+      $$\hat{A}_t^{(i)} < 0 \quad\Rightarrow\quad \text{Decrease } \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)})$$
+      $$\textit{Worse than average} \hspace{8em} \textit{Take it less often}$$
+    </div>
+
+    <h3>The Critic as the Average</h3>
+
+    <p>You might be curious if there is any issue with the Critic trying to approximate the Reward-to-Go. What if the Critic becomes a perfect oracle and predicts the exact value every time, completely canceling out the reward?</p>
+
+    <p>Well, the great point is that we are working with single stochastic samples at a time, which means very high variance. Given the Critic's objective function is to minimize the MSE against the actual Reward-to-Go, the best way it has to minimize its loss across thousands of random samples is to learn the exact average of the distribution.</p>
+
+    <p>Everything locks into place now. By design, we want the Critic to provide a baseline. Because of the random variance of the environment, the Critic cannot do better than predicting the average, which is exactly the baseline we need. Furthermore, this high variance makes it unstable for the Actor to learn without a baseline. But now, we can subtract the Critic's average from the actual Reward-to-Go, allowing the Actor to learn directly from the deviation.</p>
+
+    <h3>The Untrained Critic</h3>
+
+    <p>You might point out that the Critic needs to be trained, because at initialization its predictions will just be random noise. And you would be perfectly right.</p>
+
+    <p>However, the great twist is that the baseline is strictly state-dependent. Because of this, subtracting the Critic's guess mathematically cannot introduce any bias into the expected learning direction of the Actor. It only affects the variance.</p>
+
+    <p>At worst, an untrained Critic simply injects extra variance, causing the gradients to be noisy and unstable. This is fairly similar to not using a baseline at all. But as the Critic quickly learns and becomes accurate, it dramatically shrinks that variance and provides a perfectly smooth, centered signal. In other words, a bad Critic cannot teach the Actor the wrong thing, but a good Critic guarantees stable and rapid convergence.</p>
+
+    <div class="analysis-block">
+      <p>There is an interesting circularity here: the Critic is trained to predict its own future value (bootstrapping). The only thing keeping it grounded is the real reward $r_t$ anchoring each update step. Without it, the network would collapse to predicting 0 everywhere, which is always consistent with itself.</p>
+    </div>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 4: (merged into section 3)                    -->
+  <!-- ====================================================== -->
+  <section id="actor-critic" style="display:none;"></section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 5: GAE — SMOOTHING THE ADVANTAGE              -->
+  <!-- ====================================================== -->
+  <section id="gae">
+    <h2>GAE</h2>
+
+    <h3>The Bias-Variance Problem</h3>
+
+    <p>Something worth pausing on: $\sum_{k=t}^{H-1} r(s_k^{(i)}, u_k^{(i)})$ is the reward-to-go computed on a single sampled trajectory. This is an unbiased estimator of the true expected return, but it comes with very high variance. Every rollout takes a different random path through the environment, so the signal is extremely noisy.</p>
+
+    <p>You are surely aware of the bias-variance tradeoff, and you would agree that neither extreme is the answer. Using the raw single-sample return gives us zero bias but high variance. Using the Critic alone gives us low variance but introduces bias, since the Critic is an imperfect approximation that carries its own errors into every update. We need to find a way to balance these.</p>
+
+    <p>To set up that balance properly, we first need to introduce one more function.</p>
+
+    <h3>The Q-Function</h3>
+
+    <p>So far, $V^\pi(s)$ tells us the expected reward-to-go from a state, averaged over all actions the policy might take. But we can condition more precisely: the <strong>action-state value function</strong>, or <strong>Q-function</strong>, fixes both the state and the action taken at that step, then averages over everything that follows:</p>
+
+    <div class="math-block">
+      <p style="margin:0 0 0.5em; font-weight:600; color:#555;">Action-state value function / Q-function</p>
+      $$Q^\pi(s, u) \;=\; \mathbb{E}\!\left[r_t + r_{t+1} + r_{t+2} + \cdots \;\middle|\; s_t = s,\; u_t = u\right]$$
+    </div>
+
+    <p>The relationship between $Q^\pi$ and $V^\pi$ is clean: the value of a state is just the Q-value averaged over the policy's action distribution.</p>
+
+    <p>Now look at the Q-function more carefully. It is the expectation of the cumulative reward from $t$ onward, attributing uniform credit to every future state-action pair based on the single action taken at time $t$. This is a source of variance: we are assigning equal blame to events that are increasingly less causally connected to $u_t$. Variance is entering the expectation along the temporal axis.</p>
+
+    <p>We can reasonably address this by introducing a temporal weighting: actions taken at time $t$ have a stronger causal impact on the near future than on the distant future, so we discount future rewards by a factor $\gamma \in (0, 1]$ raised to the number of steps elapsed. This gives us the discounted Q-function:</p>
+
+    <div class="math-block">
+      <p style="margin:0 0 0.5em; font-weight:600; color:#555;">Action-state value function / Q-function (discounted)</p>
+      $$Q^{\pi,\gamma}(s, u) \;=\; \mathbb{E}\!\left[r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \cdots \;\middle|\; s_t = s,\; u_t = u\right]$$
+    </div>
+
+    <p>Now we can plug this back into our gradient estimator. The raw reward-to-go becomes $Q^{\pi,\gamma}$, the Critic baseline becomes $V_\phi^{\pi,\gamma}$, and the difference collapses into a single named quantity: the <strong>Advantage</strong>.</p>
+
+    <div class="math-block">
+      $$\hat{g} \;=\; \frac{1}{m} \sum_{i=1}^{m} \sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)}) \left(\sum_{k=t}^{H-1} r(s_k^{(i)}, u_k^{(i)}) \;-\; V_\phi^\pi(s_t^{(i)})\right)$$
+      $$\Downarrow$$
+      $$\hat{g} \;=\; \frac{1}{m} \sum_{i=1}^{m} \sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)}) \left(Q^{\pi,\gamma}(s_t^{(i)}, u_t^{(i)}) \;-\; V_\phi^{\pi,\gamma}(s_t^{(i)})\right)$$
+      $$\Downarrow$$
+      $$\boxed{\hat{g} \;=\; \frac{1}{m} \sum_{i=1}^{m} \sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)}) \;\hat{A}_t(s_t^{(i)}, u_t^{(i)})}$$
+      $$\hat{A}_t(s_t, u_t) \;=\; Q^{\pi,\gamma}(s_t, u_t) \;-\; V^{\pi,\gamma}(s_t)$$
+    </div>
+
+    <p>Back to the Advantage definition. To actually compute $\hat{A}_t(s_t, u_t) = Q^{\pi,\gamma}(s_t, u_t) - V^{\pi,\gamma}(s_t)$, we need an estimate of $Q^{\pi,\gamma}$. The simplest approach: run the trajectory and use the actual discounted cumulative reward from $t$ onward as a single-sample estimate. This is Monte Carlo.</p>
+
+    <div class="math-block">
+      <p style="margin:0 0 0.5em; font-weight:600; color:#555;">Monte-Carlo</p>
+      $$\hat{A}_t^{\text{MC}} = -V(s_t) + r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \cdots + \gamma^{H-1} r_{H-1}$$
+    </div>
+
+    <p>Accurate, low bias. But still high variance: a single trajectory is a single random draw through the environment, and the reward-to-go is noisy.</p>
+
+    <p>Now look at the terms from $t+1$ onward: $r_{t+1} + \gamma r_{t+2} + \cdots + \gamma^{H-2} r_{H-1}$. Factor $\gamma$ out front:</p>
+
+    <div class="math-block">
+      $$\hat{A}_t^{(1)} = -V(s_t) + r_t + \gamma\bigl(r_{t+1} + \gamma r_{t+2} + \cdots + \gamma^{H-2} r_{H-1}\bigr)$$
+    </div>
+
+    <p>That parenthesised tail is the discounted return from state $s_{t+1}$ onward, which is exactly what $V(s_{t+1})$ is trained to estimate. Substitute it in:</p>
+
+    <div class="math-block">
+      $$\hat{A}_t^{(1)} = -V(s_t) + r_t + \gamma V(s_{t+1})$$
+    </div>
+
+    <p>One real reward step, then the Critic absorbs the rest. We traded the high variance of a full noisy rollout for the low variance of the Critic's smooth average, at the cost of carrying whatever bias the Critic holds. And nothing is special about stopping after one step: we can take $n$ actual reward steps and only then hand off to the Critic for what remains.</p>
+
+    <div class="math-block">
+      <p style="margin:0 0 0.5em; font-weight:600; color:#555;">Monte-Carlo</p>
+      $$\hat{A}_t^{\text{MC}} = -V(s_t) + r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \cdots + \gamma^{H-1} r_{H-1}$$
+      <p style="margin:0.8em 0 0.4em; font-weight:600; color:#555;">Temporal-Difference</p>
+      $$\hat{A}_t^{(1)} = -V(s_t) + r_t + \gamma V(s_{t+1})$$
+      $$\hat{A}_t^{(2)} = -V(s_t) + r_t + \gamma r_{t+1} + \gamma^2 V(s_{t+2})$$
+      $$\hat{A}_t^{(3)} = -V(s_t) + r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \gamma^3 V(s_{t+3})$$
+      <p style="margin:0.6em 0 0; font-size:0.85em; color:#888; text-align:right;">Async Advantage Actor-Critic (A3C)</p>
+    </div>
+
+    <p>Each additional real step reduces variance (we trust the environment over the Critic for one more timestep) and also reduces bias (we rely less on the Critic's approximation error). More steps: less bias, more variance. Fewer steps: more bias, less variance. The question becomes: which $n$?</p>
+
+    <p>Instead of committing to a single $n$, we can generalise the temporal-difference idea into a single framework: <strong>Generalised Advantage Estimation</strong>. With one parameter $\lambda$, all $n$-step estimates get an exponentially decaying weight, and the bias-variance tradeoff becomes a continuous knob rather than a discrete choice.</p>
+
+    <div class="math-block">
+      $$\hat{A}_t^{\text{GAE}(\gamma,\lambda)} = (1 - \lambda)\!\left(\hat{A}_t^{(1)} + \lambda\,\hat{A}_t^{(2)} + \lambda^2\hat{A}_t^{(3)} + \cdots\right)$$
+      <p style="margin:0.6em 0 0; font-size:0.85em; color:#888;">Generalised Advantage Estimation (GAE) &nbsp;&nbsp; $0 &lt; \lambda &lt; 1$</p>
+    </div>
+
+    <p>When $\lambda \to 0$, the series collapses to the 1-step TD estimate: fully trust the Critic, low variance, biased. When $\lambda \to 1$, all $n$-step estimates contribute equally and we recover Monte Carlo: zero bias, high variance. At intermediate values, $\lambda$ smoothly interpolates. In practice, $\lambda \approx 0.95$ is the default; it gives enough variance reduction to stabilise training without letting Critic errors dominate.</p>
+
+    <h3>How the Critic Trains Under GAE</h3>
+
+    <p>One might wonder how the Critic training still works in this expression. We are now training the Critic to match the immediate reward plus its own guess from time $t+1$ onward. This is no longer the full sequence of real rewards. The loss becomes:</p>
+
+    <div class="math-block">
+      $$\mathcal{L}(\phi) = \frac{1}{m}\sum_{i=1}^{m}\sum_{t=0}^{H-1}\left(V_\phi^\pi(s_t^{(i)}) \;-\; \Bigl(r_t^{(i)} + \gamma\,\text{sg}\!\left[V_\phi^\pi(s_{t+1}^{(i)})\right]\Bigr)\right)^{\!2}$$
+      <p style="margin:0.6em 0 0; font-size:0.85em; color:#888;">$\text{sg}[\cdot]$ = stop-gradient (detach from computation graph)</p>
+    </div>
+
+    <p>The main difference from before is that instead of waiting for the end of the trajectory, the Critic is updated step by step. It uses the actual observed reward plus its own expectation of all future rewards as the target. This creates a low-variance but high-bias setup, and it makes optimisation trickier: the Critic now relies on its own assumptions about the future, constantly self-correcting as the trajectory rolls out.</p>
+
+    <p>Finally, a crucial implementation detail. To keep gradients stable and avoid an infinite computational loop (the Critic trying to differentiate through its own future prediction), the target $V_\phi^\pi(s_{t+1})$ is detached from the computation graph. We freeze it and use only its hard numerical value as the training target for the current step. This is the $\text{sg}[\cdot]$ in the loss above.</p>
+
+    <h3>Putting It Together</h3>
+
+    <p>The full Actor-Critic training loop is now three clean steps that repeat until convergence.</p>
+
+    <div class="algorithm-box">
+      <h4>Actor-Critic Methods</h4>
+      <p><strong>Initialize</strong> policy network $\pi_{\theta_0}$ and value network $V_{\phi_0}$</p>
+      <p style="margin-top:1em;"><strong>Collect rollouts</strong> $\bigl\{s_t^{(k)},\, u_t^{(k)},\, s_{t+1}^{(k)},\, r_t^{(k)}\bigr\}_{t=0}^{H-1}$ and compute $\hat{Q}^{\pi,\gamma}(s_t^{(k)}, u_t^{(k)})$</p>
+      <p style="margin-top:1em;"><strong>Update value network</strong></p>
+      $$\phi_{i+1} \leftarrow \min_{\phi} \sum_{\{s_t,\, u_t,\, s_{t+1},\, r_t\}} \left\|\hat{Q}^{\pi,\gamma}(s_t^{(k)}, u_t^{(k)}) - V_\phi^{\pi,\gamma}(s_t^{(k)})\right\|_2^2 + \lambda\|\phi - \phi_i\|_2^2$$
+      <p style="margin-top:1em;"><strong>Update policy network</strong></p>
+      $$\theta_{i+1} \leftarrow \theta_i + \alpha\,\frac{1}{m}\sum_{k=1}^{m}\sum_{t=0}^{H-1} \nabla_{\theta_i}\!\log\pi_{\theta_i}(u_t^{(k)} \mid s_t^{(k)}) \left(\hat{Q}^{\pi,\gamma}(s_t^{(k)}, u_t^{(k)}) - V_{\phi_i}^{\pi,\gamma}(s_t^{(k)})\right)$$
+    </div>
+
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 6: TRPO — THE MATHEMATICAL IDEAL              -->
+  <!-- ====================================================== -->
+  <section id="trpo">
+    <h2>TRPO</h2>
+
+    <p>We now have a working framework for updating policy parameters. But it still has a critical dependence on step size. Too small, and training is painfully slow. Too large, and the policy degenerates: a single bad update can push the parameters into a region from which recovery is very hard.</p>
+
+    <p>The deeper issue is that policy updates are completely unbounded. The gradient step has no ceiling. If a single rollout happens to return an unusually high or low reward (one lucky or unlucky Monte Carlo draw), the resulting gradient can be enormous, and the update will trash the policy in a single step. There is nothing in the algorithm preventing this.</p>
+
+    <p>On top of that, the framework is extremely inefficient. We collect a full episode, make a single gradient update, then throw the data away and collect again. The reason is subtle but important. Let us look at what our gradient estimator is actually computing.</p>
+
+    <div class="math-block">
+      $$\frac{1}{m}\sum_{k=1}^{m}\sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(k)} \mid s_t^{(k)}) \left(\hat{Q}^{\pi,\gamma}(s_t^{(k)}, u_t^{(k)}) - V_\phi^{\pi,\gamma}(s_t^{(k)})\right)$$
+    </div>
+
+    <p>Replacing the Q minus V term with the Advantage $\hat{A}_t$, and as $m \to \infty$, this sample average converges to an expectation:</p>
+
+    <div class="math-block">
+      $$\frac{1}{m}\sum_{k=1}^{m} \nabla_\theta \log \pi_\theta(u_t^{(k)} \mid s_t^{(k)})\, \hat{A}_t(s_t^{(k)}, u_t^{(k)})$$
+      $$\Downarrow$$
+      $$\sum_{(s_t,\, u_t)} P_\theta(s_t, u_t) \left(\nabla_\theta \log \pi_\theta(u_t \mid s_t)\, \hat{A}_t(s_t, u_t)\right)$$
+    </div>
+
+    <p>The distribution we are summing over is $P_\theta(s_t, u_t)$: the joint probability of visiting state $s_t$ and taking action $u_t$ <em>under the current policy $\theta$</em>. The sampling distribution and the policy being optimised are the same object. This is <strong>on-policy learning</strong>: you cannot reuse data collected under any other policy without corrupting the gradient estimate.</p>
+
+    <p>Every time $\theta$ changes, the old trajectories become samples from the wrong distribution. One update, one episode, discard. This is what makes vanilla Actor-Critic so expensive.</p>
+
+    <h3>Importance Sampling</h3>
+
+    <p>To break the on-policy constraint, we can use a classical statistical trick: <strong>Importance Sampling</strong>.</p>
+
+    <p>The general problem: we want to estimate the expected value of some function $f(x)$ under a distribution $P(x)$, but we want to draw our samples from a completely different distribution $Q(x)$. To correct for the mismatch, we apply an importance weight to each sample: the ratio $\frac{P(x)}{Q(x)}$. If $Q$ rarely visits a region where $P$ is large, those rare samples get a high weight to compensate. The expectation is preserved.</p>
+
+    <p>The reason it works is a simple algebraic trick. Start from the definition of expectation as an integral, multiply by the dummy term $\frac{Q(x)}{Q(x)} = 1$, then rearrange so $Q(x)$ sits out front. The resulting integral is exactly an expectation under $Q$.</p>
+
+    <div class="math-block">
+      $$\mathbb{E}_{x \sim P(x)}[f(x)] = \int P(x)\, f(x)\, \mathrm{d}x$$
+      $$\Downarrow \quad \times\, \frac{Q(x)}{Q(x)} = 1$$
+      $$= \int P(x)\; \frac{Q(x)}{Q(x)}\, f(x)\, \mathrm{d}x$$
+      $$\Downarrow \quad \text{rearrange}$$
+      $$= \int Q(x)\; \frac{P(x)}{Q(x)}\, f(x)\, \mathrm{d}x$$
+      $$\Downarrow \quad \text{recognise as expectation under } Q$$
+      $$\boxed{\mathbb{E}_{x \sim P(x)}[f(x)] \;=\; \mathbb{E}_{x \sim Q(x)}\!\left[\frac{P(x)}{Q(x)}\, f(x)\right]}$$
+    </div>
+
+    <p>In practice the integral is replaced by a sample average. The two equivalent estimators side by side:</p>
+
+    <div class="math-block">
+      <p style="margin:0 0 0.4em; font-weight:600; color:#555;">Sampling directly from P</p>
+      $$\mathbb{E}_{x \sim P(x)}[f(x)] \approx \frac{1}{n}\sum_{i=1}^{n} f(x^{(i)}), \qquad x^{(i)} \sim P(x)$$
+      <p style="margin:1em 0 0.4em; font-weight:600; color:#555;">Sampling from Q &nbsp;(Importance Sampling)</p>
+      $$\mathbb{E}_{x \sim P(x)}[f(x)] \approx \frac{1}{n}\sum_{i=1}^{n} \frac{P(x^{(i)})}{Q(x^{(i)})} \, f(x^{(i)}), \qquad x^{(i)} \sim Q(x)$$
+    </div>
+
+    <p>The visualisation below shows this. $P$ is fixed (blue), $Q$ is the sampling distribution (green, shift it with the slider), and $f(x) = x$ is the linear target (yellow). Samples drawn from $Q$ appear as dots below the axis; dot size is proportional to the importance weight $P(x^{(i)})/Q(x^{(i)})$. Despite all samples coming from the wrong distribution, the Importance-Sampling-weighted average still converges to the true expectation under $P$.</p>
+
+    <!-- ── Importance Sampling interactive visualisation ── -->
+    <div style="background:#f9f9f9; border:1px solid #e9ecef; border-left:4px solid #e74c3c; border-radius:6px; padding:1.2em 1.4em; margin:1.8em 0;">
+      <canvas id="is-canvas" width="680" height="258" style="display:block; width:100%; max-width:680px; background:#fff; border-radius:4px;"></canvas>
+      <div style="display:flex; align-items:center; gap:1.4em; margin-top:0.9em; flex-wrap:wrap; font-size:0.88em; color:#555;">
+        <label style="display:flex; align-items:center; gap:0.55em;">
+          Q shift:
+          <input type="range" id="q-shift" min="-2.5" max="2.5" step="0.1" value="1.5"
+                 style="width:130px; accent-color:#27ae60; cursor:pointer;">
+          <code id="q-shift-label" style="color:#27ae60; min-width:3.2em; display:inline-block; font-weight:600;">+1.5</code>
+        </label>
+        <button id="is-play"
+          style="padding:0.25em 0.9em; background:#fff; color:#2c3e50; border:1px solid #ccc; border-radius:4px; cursor:pointer; font-size:0.95em;">Pause</button>
+        <button id="is-reset"
+          style="padding:0.25em 0.9em; background:#fff; color:#2c3e50; border:1px solid #ccc; border-radius:4px; cursor:pointer; font-size:0.95em;">Reset</button>
+        <span style="margin-left:auto; color:#7f8c8d; font-size:0.82em;">dot size ∝ importance weight P(x)/Q(x)</span>
+      </div>
+    </div>
+    <script>
+    (function () {
+      var canvas = document.getElementById('is-canvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var W = canvas.width, H = canvas.height;
+
+      var X_MIN = -5, X_MAX = 5;
+      var P_MU = -1, P_SIG = 1;
+      var Q_SIG = 1;
+      var qMu = 1.5;
+      var TRUE_E = P_MU;
+
+      // Blog palette
+      var C_P    = '#3498db';   // P(x) — blue
+      var C_Q    = '#27ae60';   // Q(x) — green
+      var C_F    = '#e74c3c';   // f(x) — red
+      var C_DOT  = '#27ae60';   // sample dots — green
+      var C_AXIS = 'rgba(44,62,80,0.2)';
+      var C_TEXT = '#2c3e50';
+
+      function gauss(x, mu, sig) {
+        return Math.exp(-0.5 * Math.pow((x - mu) / sig, 2)) / (sig * Math.sqrt(2 * Math.PI));
+      }
+
+      function randNormal(mu, sig) {
+        var u, v, s;
+        do { u = Math.random() * 2 - 1; v = Math.random() * 2 - 1; s = u * u + v * v; }
+        while (s >= 1 || s === 0);
+        return mu + sig * u * Math.sqrt(-2 * Math.log(s) / s);
+      }
+
+      function xC(x) { return (x - X_MIN) / (X_MAX - X_MIN) * W; }
+
+      var samples = [], running = true;
+
+      function addBatch() {
+        for (var i = 0; i < 4; i++) {
+          var x  = randNormal(qMu, Q_SIG);
+          var px = gauss(x, P_MU, P_SIG);
+          var qx = Math.max(gauss(x, qMu, Q_SIG), 1e-12);
+          samples.push({ x: x, w: px / qx });
+        }
+        if (samples.length > 320) samples.splice(0, samples.length - 320);
+      }
+
+      function isEst() {
+        if (samples.length < 2) return null;
+        var sw = 0, swf = 0;
+        for (var i = 0; i < samples.length; i++) { sw += samples[i].w; swf += samples[i].w * samples[i].x; }
+        return sw > 0 ? swf / sw : null;
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+
+        var yBase = H - 52;
+        var distH = 130;
+        var fK    = 28;
+
+        // x-axis
+        ctx.strokeStyle = C_AXIS;
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(0, yBase); ctx.lineTo(W, yBase); ctx.stroke();
+
+        // f(x) = x  (red)
+        ctx.save();
+        ctx.strokeStyle = C_F;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(xC(X_MIN), yBase - X_MIN * fK);
+        ctx.lineTo(xC(X_MAX), yBase - X_MAX * fK);
+        ctx.stroke();
+        ctx.fillStyle = C_F;
+        ctx.font = 'italic 14px Georgia,serif';
+        ctx.textAlign = 'right';
+        ctx.fillText('f(x)', W - 6, yBase - X_MAX * fK + 16);
+        ctx.restore();
+
+        // P(x)  (blue)
+        ctx.save();
+        ctx.strokeStyle = C_P;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        for (var px = 0; px <= W; px++) {
+          var x = X_MIN + (px / W) * (X_MAX - X_MIN);
+          var y = yBase - gauss(x, P_MU, P_SIG) * distH;
+          px === 0 ? ctx.moveTo(px, y) : ctx.lineTo(px, y);
+        }
+        ctx.stroke();
+        ctx.fillStyle = C_P;
+        ctx.font = 'italic 14px Georgia,serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('P(x)', xC(P_MU - 1.55), yBase - gauss(P_MU - 1.55, P_MU, P_SIG) * distH - 8);
+        ctx.restore();
+
+        // Q(x)  (green)
+        ctx.save();
+        ctx.strokeStyle = C_Q;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        for (var px = 0; px <= W; px++) {
+          var x = X_MIN + (px / W) * (X_MAX - X_MIN);
+          var y = yBase - gauss(x, qMu, Q_SIG) * distH;
+          px === 0 ? ctx.moveTo(px, y) : ctx.lineTo(px, y);
+        }
+        ctx.stroke();
+        var qLX = Math.min(Math.max(qMu + 1.15, X_MIN + 0.8), X_MAX - 1.2);
+        ctx.fillStyle = C_Q;
+        ctx.font = 'italic 14px Georgia,serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('Q(x)', xC(qLX), yBase - gauss(qLX, qMu, Q_SIG) * distH - 8);
+        ctx.restore();
+
+        // Sample dots
+        if (samples.length) {
+          var maxW = 0;
+          for (var i = 0; i < samples.length; i++) if (samples[i].w > maxW) maxW = samples[i].w;
+          for (var i = 0; i < samples.length; i++) {
+            var s = samples[i];
+            var norm  = maxW > 0 ? s.w / maxW : 0;
+            var r     = 2 + norm * 10;
+            var alpha = (0.15 + norm * 0.75).toFixed(2);
+            ctx.beginPath();
+            ctx.arc(xC(s.x), yBase + 22, r, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(39,174,96,' + alpha + ')';
+            ctx.fill();
+          }
+        }
+
+        // Stats overlay (light, matches blog)
+        var est = isEst();
+        ctx.fillStyle = 'rgba(249,249,249,0.92)';
+        ctx.fillRect(8, 6, 310, 48);
+        ctx.strokeStyle = 'rgba(44,62,80,0.12)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(8, 6, 310, 48);
+        ctx.font = '13px monospace';
+        ctx.textAlign = 'left';
+        ctx.fillStyle = C_TEXT;
+        ctx.fillText('True  E[f(x)] under P:  ' + TRUE_E.toFixed(2), 14, 22);
+        if (est !== null) {
+          var err = Math.abs(est - TRUE_E);
+          ctx.fillStyle = err < 0.15 ? '#27ae60' : err < 0.5 ? '#f39c12' : '#e74c3c';
+          ctx.fillText('IS Estimate:  ' + est.toFixed(3) + '   (n = ' + samples.length + ')', 14, 42);
+        } else {
+          ctx.fillStyle = '#7f8c8d';
+          ctx.fillText('IS Estimate:  —', 14, 42);
+        }
+      }
+
+      function loop() {
+        if (running) addBatch();
+        draw();
+        requestAnimationFrame(loop);
+      }
+
+      document.getElementById('q-shift').addEventListener('input', function () {
+        qMu = parseFloat(this.value);
+        document.getElementById('q-shift-label').textContent =
+          (qMu >= 0 ? '+' : '') + qMu.toFixed(1);
+        samples = [];
+      });
+
+      document.getElementById('is-play').addEventListener('click', function () {
+        running = !running;
+        this.textContent = running ? 'Pause' : 'Play';
+      });
+
+      document.getElementById('is-reset').addEventListener('click', function () { samples = []; });
+
+      loop();
+    })();
+    </script>
+
+    <p>There is one important caveat. When $Q$ is very far from $P$, most samples land in a region where $P$ is tiny, so they receive near-zero weights (small dots). The rare samples that do land near $P$'s peak receive enormous weights (large dots) to compensate. The estimate stays unbiased in theory, but a single outlier sample can dominate the sum and variance explodes. Slide $Q$ to an extreme to see this directly. This is why Importance Sampling only works reliably when $P$ and $Q$ are not too far apart.</p>
+
+    <h3>Applying Importance Sampling to the Policy Gradient</h3>
+
+    <p>We now apply the exact same trick to our on-policy gradient. The sampling distribution is $P_\theta(s_t, u_t)$, the old policy is our new $Q$, and the function being evaluated is $\nabla_\theta \log \pi_\theta \cdot \hat{A}_t$. Multiply by $\frac{P_{\theta_\text{old}}}{P_{\theta_\text{old}}} = 1$, swap, and the expectation shifts to samples from $\pi_\text{old}$.</p>
+
+    <div class="math-block">
+      $$\sum_{(s_t,\, u_t)} P_\theta(s_t, u_t) \Bigl(\nabla_\theta \log \pi_\theta(u_t \!\mid\! s_t)\, \hat{A}_t(s_t, u_t)\Bigr)$$
+      $$\Downarrow \quad \times\; \frac{P_{\theta_\text{old}}(s_t, u_t)}{P_{\theta_\text{old}}(s_t, u_t)} = 1 \quad \Rightarrow \quad \text{swap: } P_{\theta_\text{old}} \text{ to front}$$
+      $$\mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\frac{P_\theta(s_t, u_t)}{P_{\theta_\text{old}}(s_t, u_t)} \Bigl(\nabla_\theta \log \pi_\theta(u_t \!\mid\! s_t)\, \hat{A}_t^{\pi_\text{old}}(s_t, u_t)\Bigr)\right]$$
+    </div>
+
+    <p>Now factorize the joint state-action probability: $P_\theta(s_t, u_t) = \pi_\theta(u_t \mid s_t)\, P_\theta(s_t)$, and the same for old. The Importance-Sampling ratio splits into a policy ratio and a state-marginal ratio:</p>
+
+    <div class="math-block">
+      $$\mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\frac{\pi_\theta(u_t \!\mid\! s_t)\; P_\theta(s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)\; P_{\theta_\text{old}}(s_t)} \Bigl(\nabla_\theta \log \pi_\theta(u_t \!\mid\! s_t)\, \hat{A}_t^{\pi_\text{old}}(s_t, u_t)\Bigr)\right]$$
+    </div>
+
+    <div class="analysis-block">
+      <p><strong>Key assumption</strong> (remember this): $P_\theta(s_t) \approx P_{\theta_\text{old}}(s_t)$. If the policy does not change too much, the state visitation distributions stay close and their ratio is approximately 1. Under this assumption, the state marginals cancel. This assumption will come back.</p>
+    </div>
+
+    <p>After cancellation, the state marginals vanish and we are left with the surrogate objective:</p>
+
+    <div class="math-block">
+      $$\boxed{U(\theta) = \mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\frac{\pi_\theta(u_t \!\mid\! s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)}\, \hat{A}_t^{\pi_\text{old}}(s_t, u_t)\right]}$$
+    </div>
+
+    <p>We can verify that differentiating $U(\theta)$ recovers the correct gradient. Push $\nabla_\theta$ inside the expectation (the sampling distribution $\pi_\text{old}$ does not depend on $\theta$), then differentiate only the $\pi_\theta$ in the numerator:</p>
+
+    <div class="math-block">
+      $$\nabla_\theta U(\theta) = \nabla_\theta\, \mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\frac{\pi_\theta(u_t \!\mid\! s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)}\, \hat{A}_t^{\pi_\text{old}}(s_t, u_t)\right]$$
+      $$\Downarrow \quad \nabla_\theta \text{ inside expectation, differentiate } \pi_\theta$$
+      $$= \mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\frac{\nabla_\theta\, \pi_\theta(u_t \!\mid\! s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)}\, \hat{A}_t^{\pi_\text{old}}(s_t, u_t)\right]$$
+      $$\Downarrow \quad \times\; \frac{\pi_\theta(u_t \!\mid\! s_t)}{\pi_\theta(u_t \!\mid\! s_t)} = 1$$
+      $$= \mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\frac{\pi_\theta(u_t \!\mid\! s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)}\cdot\frac{\nabla_\theta\, \pi_\theta(u_t \!\mid\! s_t)}{\pi_\theta(u_t \!\mid\! s_t)}\, \hat{A}_t^{\pi_\text{old}}(s_t, u_t)\right]$$
+      $$\Downarrow \quad \textbf{log-derivative trick: } \frac{\nabla_\theta\, \pi_\theta}{\pi_\theta} = \nabla_\theta \log \pi_\theta$$
+      $$= \mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\frac{\pi_\theta(u_t \!\mid\! s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)}\, \nabla_\theta \log \pi_\theta(u_t \!\mid\! s_t)\, \hat{A}_t^{\pi_\text{old}}(s_t, u_t)\right]$$
+    </div>
+
+    <p>We just proved something important. We can use this surrogate objective to run gradient-based optimisation on our policy model using data collected from an older version of that same model. The rollout cost is paid once; $\theta$ can then be updated many times against that fixed batch before collecting new data. The on-policy bottleneck is broken.</p>
+
+    <p>However, this rests entirely on the assumption that the old and new policy do not drift too much, that is, the ratio $\frac{\pi_\theta}{\pi_{\theta_\text{old}}}$ stays close to 1. As we saw directly in the Importance-Sampling visualisation, when $P$ and $Q$ diverge, two distinct failure modes appear.</p>
+
+    <h4>Two Failure Modes When the Policy Drifts Too Far</h4>
+    <p><strong>1. Importance-Sampling variance explosion.</strong> When the new and old policies differ substantially, the ratio $\frac{\pi_\theta}{\pi_{\theta_\text{old}}}$ can be very large for some state-action pairs and near zero for others. Exactly as we saw with $P$ and $Q$ in the visualisation: a few samples dominate the sum, the gradient estimate becomes extremely noisy, and training destabilises.</p>
+    <p><strong>2. Advantage function staleness.</strong> $\hat{A}_t^{\pi_\text{old}}$ was estimated under the old policy. If the new policy has moved far from $\pi_\text{old}$, the state-action pairs it visits are drawn from a different distribution than the one used to compute the Advantages. The signal telling the policy what is better or worse than average is now based on a world the policy no longer inhabits. The gradient is pointing in the wrong direction.</p>
+    <p>Both problems have the same root: we need to keep $\theta$ close to $\theta_\text{old}$ during each update. We need a principled way to enforce that constraint.</p>
+
+    <h3>The Constrained Objective</h3>
+
+    <p>The fix is 'simple' in theory. We can turn the "don't drift too far" into a constraint. We still maximize the surrogate objective $U(\theta)$, but we are not allowed to move to a new policy that is "too different" from the old one.</p>
+
+    <p>The measure of difference between two policies is the KL divergence, averaged over the states the old policy visits:</p>
+
+    <div class="math-block">
+      $$\mathbb{E}_{\pi_\text{old}}\!\left[\mathrm{KL}\!\left(\pi_\theta(u_t \!\mid\! s_t)\;\big\|\;\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)\right)\right] \leq \varepsilon$$
+    </div>
+
+    <p>The full TRPO optimization problem is then:</p>
+
+    <div class="math-block">
+      $$\max_{\theta}\; \mathbb{E}_{\pi_\text{old}}\!\left[\frac{\pi_\theta(u_t \!\mid\! s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)}\, \hat{A}_t^{\pi_\text{old}}\right]$$
+      $$\text{subject to}\quad \mathbb{E}_{\pi_\text{old}}\!\left[\mathrm{KL}\!\left(\pi_\theta(u_t \!\mid\! s_t)\;\big\|\;\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)\right)\right] \leq \varepsilon$$
+    </div>
+
+    <p>We can imagine the policy parameters as a point in a high-dimensional space. The KL constraint draws a bubble around the current policy $\pi_{\theta_\text{old}}$: you are free to move anywhere inside that bubble, but not outside it. TRPO finds the point inside the bubble that maximizes the surrogate objective.</p>
+
+    <figure style="text-align:center; margin:2em 0;">
+      <svg width="520" height="290" viewBox="0 0 520 290" style="max-width:100%; font-family:inherit;">
+        <!-- Background reward landscape (contour lines) -->
+        <ellipse cx="340" cy="130" rx="200" ry="140" fill="none" stroke="#f39c12" stroke-width="1" stroke-dasharray="4,3" opacity="0.35"/>
+        <ellipse cx="340" cy="130" rx="145" ry="100" fill="none" stroke="#f39c12" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+        <ellipse cx="340" cy="130" rx="90" ry="62" fill="none" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.7"/>
+        <ellipse cx="340" cy="130" rx="42" ry="28" fill="none" stroke="#f39c12" stroke-width="2" stroke-dasharray="3,2" opacity="0.9"/>
+        <!-- Reward maximum star -->
+        <text x="340" y="108" text-anchor="middle" font-size="18" fill="#f39c12" opacity="0.8">★</text>
+        <text x="340" y="98" text-anchor="middle" font-size="10" fill="#f39c12" opacity="0.7">reward peak</text>
+
+        <!-- Trust region circle -->
+        <circle cx="185" cy="175" r="72" fill="rgba(39,174,96,0.08)" stroke="#27ae60" stroke-width="2.2" stroke-dasharray="6,3"/>
+        <text x="185" y="114" text-anchor="middle" font-size="11" fill="#27ae60" font-weight="600">trust region</text>
+        <text x="185" y="127" text-anchor="middle" font-size="10" fill="#27ae60">KL ≤ ε</text>
+
+        <!-- Current policy point -->
+        <circle cx="185" cy="175" r="7" fill="#e74c3c"/>
+        <text x="185" y="200" text-anchor="middle" font-size="11" fill="#e74c3c" font-weight="600">θ_old</text>
+
+        <!-- Unconstrained gradient arrow (goes outside trust region, toward peak) -->
+        <defs>
+          <marker id="arr-red" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#e74c3c" opacity="0.7"/>
+          </marker>
+          <marker id="arr-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#27ae60"/>
+          </marker>
+        </defs>
+        <line x1="185" y1="175" x2="305" y2="118" stroke="#e74c3c" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr-red)" opacity="0.7"/>
+        <text x="258" y="133" text-anchor="middle" font-size="10" fill="#e74c3c" opacity="0.85">unconstrained</text>
+        <text x="258" y="145" text-anchor="middle" font-size="10" fill="#e74c3c" opacity="0.85">gradient step</text>
+
+        <!-- TRPO arrow (stays inside trust region, points toward peak but clipped) -->
+        <line x1="185" y1="175" x2="245" y2="147" stroke="#27ae60" stroke-width="2.2" marker-end="url(#arr-green)"/>
+        <text x="224" y="195" text-anchor="middle" font-size="10" fill="#27ae60" font-weight="600">TRPO step</text>
+        <text x="224" y="207" text-anchor="middle" font-size="10" fill="#27ae60">(constrained)</text>
+
+        <!-- New theta point -->
+        <circle cx="245" cy="147" r="5.5" fill="#27ae60"/>
+        <text x="262" y="143" font-size="11" fill="#27ae60" font-weight="600">θ_new</text>
+
+        <!-- Label: policy parameter space -->
+        <text x="10" y="280" font-size="11" fill="#999" font-style="italic">policy parameter space</text>
+      </svg>
+      <figcaption style="font-size:0.85em; color:#888; margin-top:0.4em;">TRPO constrains each update to stay inside a trust region around the current policy. The unconstrained gradient would overshoot; TRPO finds the best point still within the KL budget.</figcaption>
+    </figure>
+
+    <h3>Solving the Constraint</h3>
+
+    <p>Solving this exactly requires knowing the <em>curvature</em> of the KL around the current policy. Not just which way is uphill, but how steeply the terrain curves in every direction. That curvature is captured by the Fisher Information Matrix.</p>
+
+    <p>For a network with $N$ parameters, that matrix is $N \times N$. For a 7B-parameter LLM, that is roughly $5 \times 10^{19}$ entries, about the number of grains of sand on Earth. There are clever ways around it (Schulman's original paper avoids ever building the matrix explicitly by using conjugate gradient on Fisher-vector products), but even with the tricks, TRPO is slow, fragile, and never really made the jump to large networks.</p>
+
+    <p>So that is where we are stuck. TRPO is mathematically beautiful. It gives a guaranteed monotonic improvement under the trust region constraint. In theory, it is exactly what we want. In practice, the second-order machinery is just too heavy. We need something cheaper that keeps the spirit of the constraint but throws out the matrix algebra.</p>
+
+    <p style="margin-top: 1.5em; font-size: 0.92em; color: #666;"><em>If you are curious about the gory details (the full FIM memory table, the conjugate gradient trick, why TRPO never scales), see the <a href="#appendix-trpo">appendix</a> at the end of the post.</em></p>
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 7: PPO — THE ENGINEERING BREAKTHROUGH         -->
+  <!-- ====================================================== -->
+  <section id="ppo">
+    <h2>PPO</h2>
+
+    <p>TRPO's problem is clear: second-order optimization. The Fisher Information Matrix makes the exact constrained solution intractable. But what if we simply got rid of the constraint altogether?</p>
+
+    <p>The standard trick in constrained optimization is the <strong>Lagrangian relaxation</strong>: instead of enforcing a hard constraint, fold it into the objective as a penalty weighted by a coefficient $\beta$. A constraint violation now costs you objective value rather than being forbidden outright. The optimization problem becomes unconstrained, and you can solve it with plain gradient descent.</p>
+
+    <div class="math-block" style="text-align:center;">
+      <p style="margin:0 0 1em; font-weight:600; color:#555;">TRPO &nbsp;—&nbsp; constrained</p>
+      $$\max_{\theta}\; \mathbb{E}_{\pi_\text{old}}\!\left[\frac{\pi_\theta(u_t \!\mid\! s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)}\, \hat{A}_t^{\pi_\text{old}}\right]$$
+      $$\text{subject to}\quad \mathbb{E}_{\pi_\text{old}}\!\left[\mathrm{KL}\!\left(\pi_\theta \;\big\|\; \pi_{\theta_\text{old}}\right)\right] \leq \varepsilon$$
+      $$\Downarrow \quad \text{Lagrangian relaxation} \quad \times\; \beta$$
+      <p style="margin:0 0 1em; font-weight:600; color:#555;">PPO-penalty &nbsp;—&nbsp; unconstrained</p>
+      $$\max_{\theta}\; \mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\frac{\pi_\theta(u_t \!\mid\! s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)}\, \hat{A}_t^{\pi_\text{old}}(s_t, u_t)\right] - \beta\left(\mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\mathrm{KL}\!\left(\pi_\theta(u_t \!\mid\! s_t) \;\big\|\; \pi_{\theta_\text{old}}(u_t \!\mid\! s_t)\right)\right]\right)$$
+    </div>
+
+    <p>This is Proximal Policy Optimization, or PPO, also known as PPO-penalty. The hard constraint is gone. The second-order solver is gone. The conjugate gradient loop is gone. What remains is a single objective you can differentiate and optimize with Adam in one line. The parameter $\beta$ controls how heavily you penalise KL divergence from the old policy: large $\beta$ keeps the update cautious, small $\beta$ lets it move more freely.</p>
+
+    <p>If you are paying attention, an alarm should be going off. We escaped second-order optimization, but we just introduced a hyperparameter. And $\beta$ is not an easy one to set. Too large: the KL penalty dominates and the policy barely moves, learning grinds to a halt. Too small: the penalty is too weak to prevent drift, the Importance-Sampling ratios explode, and we are right back to the original failure mode.</p>
+
+    <p>One proposed fix is to make $\beta$ adaptive: measure the actual KL divergence after each update, and adjust $\beta$ accordingly.</p>
+
+    <div class="math-block">
+      <p style="margin:0 0 0.9em; font-weight:600; color:#555;">Adaptive KL Penalty</p>
+      $$\text{If}\;\; \mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\mathrm{KL}\!\left(\pi_\theta \;\|\; \pi_{\theta_\text{old}}\right)\right] > \mathrm{KL}_\text{max}, \quad \text{then}\;\; \beta \leftarrow \beta \times 2$$
+      $$\text{If}\;\; \mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\mathrm{KL}\!\left(\pi_\theta \;\|\; \pi_{\theta_\text{old}}\right)\right] < \mathrm{KL}_\text{min}, \quad \text{then}\;\; \beta \leftarrow \beta \,/\, 2$$
+    </div>
+
+    <p>Drifting too far? Tighten the leash. Staying too close? Loosen it. The idea is sound, but it still feels brittle in practice. Now you have traded one hyperparameter for three: $\beta$, $\mathrm{KL}_\text{max}$, and $\mathrm{KL}_\text{min}$. And the controller is reactive by design: it can only correct a KL violation <em>after</em> the update has already happened, not before.</p>
+
+    <p>Let's zoom out. What are we actually trying to do? Increase the probability of advantageous actions, decrease it for bad ones, and keep the updated policy close to the old one. The KL divergence was our attempt at enforcing that third goal. But KL is a rubber band. It pulls $\theta$ back toward $\theta_\text{old}$ with increasing force as the policy drifts, and the adaptive version makes it tighter or looser based on recent history. But a rubber band can always be stretched. If we get a lucky or unlucky Monte Carlo sample, nothing stops the policy from being fully trashed in that single update.</p>
+
+    <p>We do not want a rubber band. We want a wall. To build the intuition for that wall, let's first rewrite the surrogate objective in terms of the probability ratio $r_t(\theta)$:</p>
+
+    <div class="math-block">
+      $$\mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\, r_t(\theta)\, \hat{A}_t^{\pi_\text{old}}(s_t, u_t)\right] \qquad\qquad r_t(\theta) \;=\; \frac{\pi_\theta(u_t \!\mid\! s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)}$$
+    </div>
+
+    <p>The ratio $r_t(\theta) = 1$ when the new policy assigns the same probability as the old one: that is the starting point of every update, marked by the red dot in each plot below. The objective is linear in $r_t(\theta)$. Looking at the two cases:</p>
+
+    <div style="display:flex; justify-content:space-around; align-items:center; margin:1.8em 0 0.4em; padding:0 2em;">
+      <span style="color:#27ae60; font-weight:600;">$\hat{A}_t^{\pi_\text{old}}(s_t, u_t) > 0$</span>
+      <span style="color:#e74c3c; font-weight:600;">$\hat{A}_t^{\pi_\text{old}}(s_t, u_t) < 0$</span>
+    </div>
+
+    <figure style="margin:0 0 1.8em; text-align:center;">
+      <svg width="580" height="270" viewBox="0 0 580 270" style="max-width:100%; font-family:inherit;">
+
+        <!-- ===== LEFT PLOT: Advantage > 0 ===== -->
+        <!-- x axis -->
+        <line x1="55" y1="218" x2="250" y2="218" stroke="#2c3e50" stroke-width="1.5"/>
+        <polygon points="250,214 258,218 250,222" fill="#2c3e50"/>
+        <text x="261" y="222" font-size="11" fill="#2c3e50" font-style="italic">r<tspan dy="3" font-size="9">t</tspan><tspan dy="-3">(θ)</tspan></text>
+        <!-- y axis -->
+        <line x1="55" y1="218" x2="55" y2="30" stroke="#2c3e50" stroke-width="1.5"/>
+        <polygon points="51,33 55,26 59,33" fill="#2c3e50"/>
+        <!-- line: positive slope, from (r=0,f=0) upward -->
+        <line x1="55" y1="218" x2="250" y2="32" stroke="#3498db" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- yellow dashed reference at r=1 -->
+        <line x1="55" y1="135" x2="148" y2="135" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <line x1="148" y1="218" x2="148" y2="135" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <!-- red dot at r=1 -->
+        <circle cx="148" cy="135" r="5.5" fill="#e74c3c"/>
+        <!-- axis labels -->
+        <text x="46" y="230" font-size="11" fill="#2c3e50">0</text>
+        <text x="143" y="234" font-size="11" fill="#2c3e50">1</text>
+
+        <!-- ===== RIGHT PLOT: Advantage < 0 ===== -->
+        <!-- x axis at TOP (y-axis goes downward for negative f) -->
+        <line x1="325" y1="55" x2="528" y2="55" stroke="#2c3e50" stroke-width="1.5"/>
+        <polygon points="528,51 536,55 528,59" fill="#2c3e50"/>
+        <text x="539" y="59" font-size="11" fill="#2c3e50" font-style="italic">r<tspan dy="3" font-size="9">t</tspan><tspan dy="-3">(θ)</tspan></text>
+        <!-- y axis pointing DOWN -->
+        <line x1="325" y1="55" x2="325" y2="248" stroke="#2c3e50" stroke-width="1.5"/>
+        <polygon points="321,248 325,256 329,248" fill="#2c3e50"/>
+        <!-- line: from (r=0,f=0) downward to the right -->
+        <line x1="325" y1="55" x2="520" y2="240" stroke="#3498db" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- yellow dashed reference at r=1 -->
+        <line x1="325" y1="142" x2="418" y2="142" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <line x1="418" y1="55" x2="418" y2="142" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <!-- red dot at r=1 -->
+        <circle cx="418" cy="142" r="5.5" fill="#e74c3c"/>
+        <!-- axis labels above x axis -->
+        <text x="314" y="47" font-size="11" fill="#2c3e50">0</text>
+        <text x="413" y="47" font-size="11" fill="#2c3e50">1</text>
+
+      </svg>
+    </figure>
+
+    <p>When the advantage is positive (left), gradient ascent pushes $r_t$ to the right, increasing the probability of taking this action. Keep going, keep gaining reward. There is no ceiling. When the advantage is negative (right), the gradient pushes $r_t$ toward zero. There is no floor. In both cases the gradient is constant: the slope never changes no matter how far $r_t$ has already moved from 1. A single sample with a large advantage can send the policy ratio anywhere, and nothing slows it down.</p>
+
+    <p>The wall we want: once $r_t(\theta)$ has moved far enough from 1, the gradient becomes exactly zero. Zero, not "very small". Past that boundary, no sample, however extreme, can push the policy further in that direction.</p>
+
+    <p>The clip achieves exactly that. Instead of multiplying directly by $r_t(\theta)$, we cap the ratio to $[1-\varepsilon,\, 1+\varepsilon]$ before multiplying. Past either boundary, the clipped value is constant. A constant times $\hat{A}_t$ is a constant, and a constant has zero gradient. Any sample extreme enough to push the ratio outside the trust region is treated as noise from luck or bad luck, and its gradient is killed entirely.</p>
+
+    <div class="math-block">
+      $$\mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\,\mathrm{clip}\!\left(r_t(\theta),\; 1-\varepsilon,\; 1+\varepsilon\right) \hat{A}_t^{\pi_\text{old}}(s_t, u_t)\right]$$
+    </div>
+
+    <p>The same two cases, now with walls on both sides:</p>
+
+    <div style="display:flex; justify-content:space-around; align-items:center; margin:1.8em 0 0.4em; padding:0 2em;">
+      <span style="color:#27ae60; font-weight:600;">$\hat{A}_t^{\pi_\text{old}}(s_t, u_t) > 0$</span>
+      <span style="color:#e74c3c; font-weight:600;">$\hat{A}_t^{\pi_\text{old}}(s_t, u_t) < 0$</span>
+    </div>
+
+    <figure style="margin:0 0 1.8em; text-align:center;">
+      <svg width="580" height="270" viewBox="0 0 580 270" style="max-width:100%; font-family:inherit;">
+
+        <!-- ===== LEFT PLOT: Advantage > 0, clipped ===== -->
+        <line x1="55" y1="218" x2="250" y2="218" stroke="#2c3e50" stroke-width="1.5"/>
+        <polygon points="250,214 258,218 250,222" fill="#2c3e50"/>
+        <text x="261" y="222" font-size="11" fill="#2c3e50" font-style="italic">r<tspan dy="3" font-size="9">t</tspan><tspan dy="-3">(θ)</tspan></text>
+        <line x1="55" y1="218" x2="55" y2="30" stroke="#2c3e50" stroke-width="1.5"/>
+        <polygon points="51,33 55,26 59,33" fill="#2c3e50"/>
+        <!-- clipped line: flat → linear rise → flat -->
+        <polyline points="55,150 127,150 163,116 250,116" fill="none" stroke="#27ae60" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- yellow dashed reference at r=1 -->
+        <line x1="55" y1="133" x2="145" y2="133" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <line x1="145" y1="218" x2="145" y2="133" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <circle cx="145" cy="133" r="5.5" fill="#e74c3c"/>
+        <text x="46" y="230" font-size="11" fill="#2c3e50">0</text>
+        <text x="141" y="234" font-size="11" fill="#2c3e50">1</text>
+        <!-- wall tick marks -->
+        <line x1="127" y1="218" x2="127" y2="213" stroke="#2c3e50" stroke-width="1"/>
+        <text x="108" y="233" font-size="10" fill="#888">1−ε</text>
+        <line x1="163" y1="218" x2="163" y2="213" stroke="#2c3e50" stroke-width="1"/>
+        <text x="158" y="233" font-size="10" fill="#888">1+ε</text>
+
+        <!-- ===== RIGHT PLOT: Advantage < 0, clipped ===== -->
+        <line x1="325" y1="55" x2="528" y2="55" stroke="#2c3e50" stroke-width="1.5"/>
+        <polygon points="528,51 536,55 528,59" fill="#2c3e50"/>
+        <text x="539" y="59" font-size="11" fill="#2c3e50" font-style="italic">r<tspan dy="3" font-size="9">t</tspan><tspan dy="-3">(θ)</tspan></text>
+        <line x1="325" y1="55" x2="325" y2="248" stroke="#2c3e50" stroke-width="1.5"/>
+        <polygon points="321,248 325,256 329,248" fill="#2c3e50"/>
+        <!-- clipped line: flat → linear drop → flat -->
+        <polyline points="325,123 397,123 433,157 525,157" fill="none" stroke="#27ae60" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- yellow dashed reference at r=1 -->
+        <line x1="325" y1="140" x2="415" y2="140" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <line x1="415" y1="55" x2="415" y2="140" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <circle cx="415" cy="140" r="5.5" fill="#e74c3c"/>
+        <text x="314" y="47" font-size="11" fill="#2c3e50">0</text>
+        <text x="410" y="47" font-size="11" fill="#2c3e50">1</text>
+        <!-- wall tick marks -->
+        <line x1="397" y1="55" x2="397" y2="61" stroke="#2c3e50" stroke-width="1"/>
+        <text x="378" y="44" font-size="10" fill="#888">1−ε</text>
+        <line x1="433" y1="55" x2="433" y2="61" stroke="#2c3e50" stroke-width="1"/>
+        <text x="428" y="44" font-size="10" fill="#888">1+ε</text>
+
+      </svg>
+    </figure>
+
+    <p>Inside the trust region $[1-\varepsilon,\, 1+\varepsilon]$, the gradient behaves exactly as before: the policy learns freely. Outside it, the gradient is zero. This is the wall. No hyperparameter to tune beyond $\varepsilon$, no adaptive controller, no second-order math. Just a hard limit on how far the probability ratio can move in a single update.</p>
+
+    <p>But the clip alone has a problem. Consider the left plot with $\hat{A} > 0$: a brilliant action was taken, but the current model is highly pessimistic about it and assigns it a probability ratio of $r_t = 0.5$. That puts us on the far left side of the graph, deep in the flat region: zero gradient. The optimizer sees nothing to learn here. A brilliant move is silently discarded, and the model stays pessimistic. The same issue appears on the right side for $\hat{A} < 0$: if the model was too optimistic about a bad action ($r_t$ very large), it falls off the right edge of the clipped graph and again learns nothing.</p>
+
+    <p>We only need the wall on the side that could <em>trash</em> the policy. For $\hat{A} > 0$, the dangerous side is the right (the model over-reinforces a good action, drifting too far). The left side is perfectly safe: learning more from a pessimistic model only corrects the policy in the right direction. For $\hat{A} < 0$, it is the opposite: the dangerous side is the left (collapsing the probability to zero), while the right side safely unlearns an over-represented bad action.</p>
+
+    <p>We want the wall only where we need it. Take the minimum of the unclipped surrogate and the clipped surrogate at every point. The $\min$ is pessimistic by construction: it selects whichever objective is lower. On the safe side it picks the unclipped value, preserving the learning signal. On the dangerous side it picks the clipped value, enforcing the wall.</p>
+
+    <div class="math-block">
+      $$\mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\min\!\left(\, r_t(\theta)\,\hat{A}_t^{\pi_\text{old}}(s_t, u_t),\;\; \mathrm{clip}\!\left(r_t(\theta), 1-\varepsilon, 1+\varepsilon\right)\hat{A}_t^{\pi_\text{old}}(s_t, u_t)\,\right)\right]$$
+    </div>
+
+    <div style="display:flex; justify-content:space-around; align-items:center; margin:1.8em 0 0.4em; padding:0 2em;">
+      <span style="color:#27ae60; font-weight:600;">$\hat{A}_t^{\pi_\text{old}}(s_t, u_t) > 0$</span>
+      <span style="color:#e74c3c; font-weight:600;">$\hat{A}_t^{\pi_\text{old}}(s_t, u_t) < 0$</span>
+    </div>
+
+    <figure style="margin:0 0 1.8em; text-align:center;">
+      <svg width="580" height="270" viewBox="0 0 580 270" style="max-width:100%; font-family:inherit;">
+
+        <!-- ===== LEFT PLOT: Advantage > 0, min(unclipped, clipped) ===== -->
+        <line x1="55" y1="218" x2="250" y2="218" stroke="#2c3e50" stroke-width="1.5"/>
+        <polygon points="250,214 258,218 250,222" fill="#2c3e50"/>
+        <text x="261" y="222" font-size="11" fill="#2c3e50" font-style="italic">r<tspan dy="3" font-size="9">t</tspan><tspan dy="-3">(θ)</tspan></text>
+        <line x1="55" y1="218" x2="55" y2="30" stroke="#2c3e50" stroke-width="1.5"/>
+        <polygon points="51,33 55,26 59,33" fill="#2c3e50"/>
+        <!-- green: clipped (background reference) -->
+        <polyline points="55,150 127,150 163,116 250,116" fill="none" stroke="#27ae60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+        <!-- blue: unclipped (background reference) -->
+        <line x1="55" y1="218" x2="253" y2="30" stroke="#3498db" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+        <!-- yellow: min — rises from origin, then flat at 1+ε -->
+        <polyline points="55,218 163,116 250,116" fill="none" stroke="#f39c12" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- yellow dashed reference at r=1 -->
+        <line x1="55" y1="133" x2="145" y2="133" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.6"/>
+        <line x1="145" y1="218" x2="145" y2="133" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.6"/>
+        <circle cx="145" cy="133" r="5.5" fill="#e74c3c"/>
+        <text x="46" y="230" font-size="11" fill="#2c3e50">0</text>
+        <text x="141" y="234" font-size="11" fill="#2c3e50">1</text>
+        <line x1="163" y1="218" x2="163" y2="213" stroke="#2c3e50" stroke-width="1"/>
+        <text x="158" y="233" font-size="10" fill="#888">1+ε</text>
+
+        <!-- ===== RIGHT PLOT: Advantage < 0, min(unclipped, clipped) ===== -->
+        <line x1="325" y1="55" x2="528" y2="55" stroke="#2c3e50" stroke-width="1.5"/>
+        <polygon points="528,51 536,55 528,59" fill="#2c3e50"/>
+        <text x="539" y="59" font-size="11" fill="#2c3e50" font-style="italic">r<tspan dy="3" font-size="9">t</tspan><tspan dy="-3">(θ)</tspan></text>
+        <line x1="325" y1="55" x2="325" y2="248" stroke="#2c3e50" stroke-width="1.5"/>
+        <polygon points="321,248 325,256 329,248" fill="#2c3e50"/>
+        <!-- green: clipped (background reference) -->
+        <polyline points="325,123 397,123 433,157 525,157" fill="none" stroke="#27ae60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+        <!-- blue: unclipped (background reference) -->
+        <line x1="325" y1="55" x2="522" y2="242" stroke="#3498db" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+        <!-- yellow: min — flat at 1−ε, then follows unclipped slope -->
+        <polyline points="325,123 397,123 522,242" fill="none" stroke="#f39c12" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- yellow dashed reference at r=1 -->
+        <line x1="325" y1="140" x2="415" y2="140" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.6"/>
+        <line x1="415" y1="55" x2="415" y2="140" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.6"/>
+        <circle cx="415" cy="140" r="5.5" fill="#e74c3c"/>
+        <text x="314" y="47" font-size="11" fill="#2c3e50">0</text>
+        <text x="410" y="47" font-size="11" fill="#2c3e50">1</text>
+        <line x1="397" y1="55" x2="397" y2="61" stroke="#2c3e50" stroke-width="1"/>
+        <text x="378" y="44" font-size="10" fill="#888">1−ε</text>
+
+      </svg>
+      <figcaption style="font-size:0.85em; color:#888; margin-top:0.5em;">
+        Blue: unclipped &nbsp;|&nbsp; Green: clipped &nbsp;|&nbsp; <span style="color:#f39c12; font-weight:600;">Yellow: min (PPO-clip)</span>
+      </figcaption>
+    </figure>
+
+    <p>On the left plot, the yellow line rises freely from the origin: a pessimistic model still gets its full learning signal. It only flattens once the ratio exceeds $1+\varepsilon$, blocking over-reinforcement. On the right plot, the yellow line stays flat on the left to prevent probability collapse, then follows the unclipped slope on the right: an over-optimistic model keeps unlearning a bad action past $1+\varepsilon$ without hitting any wall. The $\min$ places the wall exactly where the policy could be trashed, and nowhere else. Awesome, you just invented PPO-clip!</p>
+
+    <h3>The Full Pipeline</h3>
+
+    <p>Let's put the full picture together. A prompt $s_0$ goes into the old policy $\pi_{\theta_\text{old}}$, which generates a trajectory $\tau$. A frozen reward model scores each step. A value network $V_\phi^\pi$ estimates the expected return from each state. GAE combines the two into per-step advantages. The PPO-clip objective then updates the policy using all of that:</p>
+
+    <div class="math-block">
+      $$\mathbb{E}_{\tau \sim \pi_\text{old}}\!\left[\frac{1}{H}\sum_{t=0}^{H-1}\min\!\left(\, r_t(\theta)\,\hat{A}_t^{\pi_\text{old}}(s_t, u_t),\;\; \mathrm{clip}\!\left(r_t(\theta), 1-\varepsilon, 1+\varepsilon\right)\hat{A}_t^{\pi_\text{old}}(s_t, u_t)\,\right)\right]$$
+      $$r_t(\theta) = \frac{\pi_\theta(u_t \!\mid\! s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)}$$
+    </div>
+
+    <figure style="margin:1.8em 0; text-align:center;">
+      <svg width="720" height="285" viewBox="0 0 720 285" style="max-width:100%; font-family:inherit; overflow:visible;">
+        <defs>
+          <marker id="ppo-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <polygon points="0,0 7,3.5 0,7" fill="#2c3e50"/>
+          </marker>
+        </defs>
+
+        <!-- s₀ box -->
+        <rect x="14" y="128" width="54" height="34" rx="8" fill="white" stroke="#2c3e50" stroke-width="2"/>
+        <text x="41" y="150" text-anchor="middle" font-size="15" fill="#2c3e50" font-style="italic">s&#x2080;</text>
+        <text x="41" y="177" text-anchor="middle" font-size="10" fill="#888">Prompt</text>
+
+        <!-- s₀ → Policy -->
+        <line x1="69" y1="145" x2="106" y2="145" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#ppo-arr)"/>
+
+        <!-- Policy model (nested green) -->
+        <rect x="110" y="113" width="66" height="64" rx="7" fill="#27ae60"/>
+        <rect x="118" y="121" width="50" height="48" rx="5" fill="white"/>
+        <rect x="126" y="129" width="34" height="32" rx="3" fill="#27ae60"/>
+        <text x="143" y="147" text-anchor="middle" font-size="12" fill="white" font-style="italic">π</text>
+        <text x="143" y="158" text-anchor="middle" font-size="8" fill="white" font-style="italic">θ<tspan font-size="7">old</tspan></text>
+        <text x="143" y="190" text-anchor="middle" font-size="10" fill="#27ae60">Policy model</text>
+
+        <!-- Policy → τ -->
+        <line x1="177" y1="145" x2="216" y2="145" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#ppo-arr)"/>
+
+        <!-- τ box -->
+        <rect x="221" y="128" width="44" height="34" rx="8" fill="white" stroke="#e74c3c" stroke-width="2"/>
+        <text x="243" y="151" text-anchor="middle" font-size="15" fill="#e74c3c" font-style="italic">τ</text>
+        <text x="243" y="177" text-anchor="middle" font-size="10" fill="#888">Output</text>
+
+        <!-- τ → Reward model (diagonal up) -->
+        <line x1="266" y1="136" x2="308" y2="84" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#ppo-arr)"/>
+        <!-- τ → Value model (diagonal down) -->
+        <line x1="266" y1="156" x2="316" y2="202" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#ppo-arr)"/>
+
+        <!-- Reward model box -->
+        <rect x="312" y="63" width="108" height="34" rx="7" fill="#3498db"/>
+        <text x="366" y="85" text-anchor="middle" font-size="11" fill="white" font-weight="600">Reward model</text>
+
+        <!-- Reward → {r_t} -->
+        <line x1="421" y1="80" x2="450" y2="80" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#ppo-arr)"/>
+        <!-- {r_t} box -->
+        <rect x="455" y="61" width="76" height="38" rx="6" fill="white" stroke="#3498db" stroke-width="1.8"/>
+        <text x="493" y="83" text-anchor="middle" font-size="11" fill="#3498db">{r<tspan dy="3" font-size="8">t</tspan><tspan dy="-3">}</tspan></text>
+        <text x="493" y="111" text-anchor="middle" font-size="10" fill="#888">Reward</text>
+
+        <!-- Value model (nested purple) -->
+        <rect x="320" y="192" width="62" height="60" rx="7" fill="#8e44ad"/>
+        <rect x="328" y="200" width="46" height="44" rx="5" fill="white"/>
+        <rect x="335" y="207" width="32" height="30" rx="3" fill="#8e44ad"/>
+        <text x="351" y="225" text-anchor="middle" font-size="12" fill="white" font-style="italic">V<tspan dy="-5" font-size="8">π</tspan><tspan dy="7" dx="-5" font-size="8">φ</tspan></text>
+        <text x="351" y="266" text-anchor="middle" font-size="10" fill="#8e44ad">Value model</text>
+
+        <!-- Value → {V_t} -->
+        <line x1="383" y1="222" x2="450" y2="210" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#ppo-arr)"/>
+        <!-- {V_t} box -->
+        <rect x="455" y="191" width="76" height="38" rx="6" fill="white" stroke="#8e44ad" stroke-width="1.8"/>
+        <text x="493" y="213" text-anchor="middle" font-size="11" fill="#8e44ad">{V<tspan dy="3" font-size="8">t</tspan><tspan dy="-3">}</tspan></text>
+        <text x="493" y="241" text-anchor="middle" font-size="10" fill="#888">Value</text>
+
+        <!-- {r_t} → GAE -->
+        <line x1="532" y1="84" x2="558" y2="133" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#ppo-arr)"/>
+        <!-- {V_t} → GAE -->
+        <line x1="532" y1="206" x2="558" y2="162" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#ppo-arr)"/>
+
+        <!-- GAE box -->
+        <rect x="562" y="125" width="58" height="45" rx="7" fill="#16a085"/>
+        <text x="591" y="152" text-anchor="middle" font-size="14" fill="white" font-weight="700">GAE</text>
+
+        <!-- GAE → {Â_t} -->
+        <line x1="621" y1="147" x2="643" y2="147" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#ppo-arr)"/>
+        <!-- {Â_t} box -->
+        <rect x="648" y="128" width="68" height="38" rx="6" fill="white" stroke="#16a085" stroke-width="1.8"/>
+        <text x="682" y="150" text-anchor="middle" font-size="11" fill="#16a085">{Â<tspan dy="3" font-size="8">t</tspan><tspan dy="-3">}</tspan></text>
+        <text x="682" y="178" text-anchor="middle" font-size="10" fill="#888">Advantage</text>
+
+      </svg>
+    </figure>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 8: RLHF — PPO FOR LANGUAGE MODELS             -->
+  <!-- ====================================================== -->
+  <section id="rlhf">
+    <h2>RLHF</h2>
+
+    <p>In PPO, you might have noticed a potential issue. We have created a hard wall, such that a single update cannot completely trash the model. But have you considered what happens after enough training steps? Each update stays within the wall, but those small allowed steps accumulate. The policy ends up drifting far from where it started.</p>
+
+    <p>The min-clip is an absolute defense, but it is only local, completely blind to the full dynamic of training. We need something to handle the long term. This is where the KL divergence comes back in. You might point out that KL divergence is exactly what we wanted to avoid in PPO, both because of the second-order optimization in TRPO and because of the brittle $\beta$ tuning in the unconstrained form. Fair. The difference here is that we are not using KL to constrain the update step. We are using it to anchor the policy to a fixed reference.</p>
+
+    <p>Historically, PPO was designed for agents trained to play video games, where we actually wanted the agent to explore freely. Drifting far from the original policy was sometimes the whole point. Language modeling is different. If our model drifts too far from where it started, it can quite literally forget how to speak.</p>
+
+    <div class="algorithm-box">
+      <h4>The RLHF Pipeline</h4>
+      <p><strong>Step 1 — Supervised Fine-Tuning (SFT):</strong> Train a base language model on high-quality demonstration data to produce a capable assistant baseline &pi;<sup>SFT</sup>.</p>
+      <p><strong>Step 2 — Reward Model Training:</strong> Collect human rankings of different model outputs. Train a separate network r<sub>&theta;</sub>(x, y) to score how much a human would prefer response y to prompt x.</p>
+      <p><strong>Step 3 — RL Optimization:</strong> Use PPO to optimize &pi;<sup>SFT</sup> to maximize r<sub>&theta;</sub>(x, y), with a KL penalty to stop it from drifting. This is where everything from the previous sections applies.</p>
+    </div>
+
+    <p>The fix is to add a KL term directly to the PPO objective, anchored not to the previous checkpoint (as in PPO-KL) but to the <em>frozen original policy</em> &pi;<sub>ref</sub>, the SFT model from Step 1.</p>
+
+    <div class="math-block">
+      <p style="margin: 0 0 0.5em 0; font-weight: 600; color: #555;">RLHF objective: PPO-clip with a global KL anchor</p>
+      $$\mathbb{E}_{\pi_\text{old}}\!\left[\min\!\left(r_t(\theta)\,\hat{A}_t,\;\mathrm{clip}\!\left(r_t(\theta),1-\varepsilon,1+\varepsilon\right)\hat{A}_t\right)\right] - \beta\,D_{\text{KL}}\!\left(\pi_\theta \;\big\|\; \pi_{\text{ref}}\right)$$
+    </div>
+
+    <p>The KL divergence between two distributions over the full vocabulary is defined as:</p>
+
+    <div class="math-block">
+      $$D_{\text{KL}}\!\left(\pi_\theta \;\big\|\; \pi_{\text{ref}}\right) = \sum_{w \,\in\, V} \pi_\theta(w \mid x, y_{\lt t})\!\left[\log \pi_\theta(w \mid x, y_{\lt t}) - \log \pi_{\text{ref}}(w \mid x, y_{\lt t})\right]$$
+      <p style="margin-top: 0.7em; font-size: 0.9em; color: #555;">
+        This requires summing over the entire vocabulary V at every token step. For a 100k-token vocabulary, computing this exactly is expensive.
+      </p>
+    </div>
+
+    <p>In practice, we avoid the full sum by computing the KL contribution only for the sampled token at each step. This is the token-level penalty, often called the k<sub>1</sub> estimator:</p>
+
+    <div class="math-block">
+      <p style="margin: 0 0 0.5em 0; font-weight: 600; color: #555;">Practical implementation: token-level KL penalty (k<sub>1</sub>)</p>
+      $$R_t = r_t - \beta\!\left(\log \pi_\theta(y_t \mid x, y_{\lt t}) - \log \pi_{\text{ref}}(y_t \mid x, y_{\lt t})\right)$$
+      <p style="margin-top: 0.7em; font-size: 0.9em; color: #555;">
+        This looks like it only evaluates the sampled token y<sub>t</sub>. But in expectation under &pi;<sub>&theta;</sub>, it recovers the exact KL divergence. It is an unbiased estimator of the true KL gradient.
+      </p>
+    </div>
+
+    <p>We now have two defenses with two different jobs. The min-clip is our absolute wall: it protects us from trashing the policy on a single bad update. It is the local, per-step defense. The KL divergence is our rubber band: it keeps the policy close to the original frozen reference, and pulls harder the further it drifts. That is the global, long-term defense.</p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 9: GRPO — KILLING THE CRITIC                  -->
+  <!-- ====================================================== -->
+  <section id="grpo">
+    <h2>GRPO</h2>
+
+    <p>If you are still here, you are motivated. It has been a long road, and hopefully each step felt like a natural fix to what came before.</p>
+
+    <p>I have bad news. In GRPO, the authors looked at everything we just built and asked a different question: what if we threw a big chunk of it out?</p>
+
+    <p>In fairness, the biggest bottleneck in PPO is the Critic. In total, PPO keeps four copies of full model weights in memory at once: the Actor being trained, the Critic providing baselines, the frozen Reward model, and the frozen Reference model for the KL anchor. For large language models, that is not a trivial resource budget.</p>
+
+    <p>It is hard to imagine a mathematically sound way to patch PPO into something leaner without breaking its guarantees. So instead of patching, GRPO starts from a different angle. Since the leap is large, let's lay out the full design first and then interpret it piece by piece.</p>
+
+    <div class="math-block">
+      $$\mathbb{E}_{\tau^{(i)} \sim \pi_\text{old}}\!\left[\frac{1}{G}\sum_{i=1}^{G}\frac{1}{H^{(i)}}\sum_{t=0}^{H^{(i)}-1}\min\!\left(\, r_t(\theta)\,\hat{A}_t^{(i)},\;\; \mathrm{clip}\!\left(r_t(\theta), 1-\varepsilon, 1+\varepsilon\right)\hat{A}_t^{(i)}\,\right) - \beta\, D_\text{KL}\!\left(\pi_\theta \,\big\|\, \pi_\text{ref}\right)\right]$$
+      <p style="margin:1em 0 0.5em; font-weight:600; color:#555;">where</p>
+      $$\hat{A}_t^{(i)} = \hat{A}^{(i)} = \frac{r^{(i)} - \mathrm{mean}\!\left(\{r^{(i)}\}\right)}{\mathrm{std}\!\left(\{r^{(i)}\}\right)} \qquad\qquad r_t(\theta) = \frac{\pi_\theta(u_t \!\mid\! s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)}$$
+    </div>
+
+    <figure style="margin:1.8em 0; text-align:center;">
+      <svg width="720" height="285" viewBox="0 0 720 285" style="max-width:100%; font-family:inherit; overflow:visible;">
+        <defs>
+          <marker id="grpo-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <polygon points="0,0 7,3.5 0,7" fill="#2c3e50"/>
+          </marker>
+        </defs>
+
+        <!-- s₀ box, centered at y=157 -->
+        <rect x="14" y="140" width="52" height="34" rx="8" fill="white" stroke="#2c3e50" stroke-width="2"/>
+        <text x="40" y="162" text-anchor="middle" font-size="15" fill="#2c3e50" font-style="italic">s&#x2080;</text>
+        <text x="40" y="187" text-anchor="middle" font-size="10" fill="#888">Prompt</text>
+
+        <!-- s₀ → Policy -->
+        <line x1="67" y1="157" x2="79" y2="157" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+
+        <!-- Policy model (nested green), center y=157 -->
+        <rect x="83" y="126" width="64" height="62" rx="7" fill="#27ae60"/>
+        <rect x="91" y="134" width="48" height="46" rx="5" fill="white"/>
+        <rect x="98" y="141" width="34" height="32" rx="3" fill="#27ae60"/>
+        <text x="115" y="159" text-anchor="middle" font-size="12" fill="white" font-style="italic">π</text>
+        <text x="115" y="170" text-anchor="middle" font-size="8" fill="white" font-style="italic">θ<tspan font-size="7">old</tspan></text>
+        <text x="115" y="200" text-anchor="middle" font-size="10" fill="#27ae60">Policy model</text>
+
+        <!-- Policy fan-out: right edge x=147 -->
+        <!-- → row 1 (y=72) -->
+        <line x1="148" y1="145" x2="222" y2="72" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+        <!-- → row 2 (y=157) -->
+        <line x1="148" y1="157" x2="222" y2="152" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+        <!-- → row G (y=242) -->
+        <line x1="148" y1="170" x2="222" y2="242" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+
+        <!-- ===== ROW 1 (y=72) ===== -->
+        <!-- τ^(1) box -->
+        <rect x="227" y="57" width="52" height="30" rx="7" fill="white" stroke="#e74c3c" stroke-width="1.8"/>
+        <text x="253" y="76" text-anchor="middle" font-size="12" fill="#e74c3c" font-style="italic">τ<tspan dy="-5" font-size="8">(1)</tspan></text>
+        <!-- τ → Reward -->
+        <line x1="280" y1="72" x2="301" y2="72" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+        <!-- Reward model -->
+        <rect x="305" y="57" width="90" height="30" rx="7" fill="#3498db"/>
+        <text x="350" y="76" text-anchor="middle" font-size="11" fill="white" font-weight="600">Reward model</text>
+        <!-- Reward → r^(1) -->
+        <line x1="396" y1="72" x2="424" y2="72" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+        <!-- r^(1) box -->
+        <rect x="428" y="57" width="46" height="30" rx="7" fill="white" stroke="#3498db" stroke-width="1.8"/>
+        <text x="451" y="76" text-anchor="middle" font-size="12" fill="#3498db" font-style="italic">r<tspan dy="-5" font-size="8">(1)</tspan></text>
+
+        <!-- ===== ROW 2 (y=152) ===== -->
+        <rect x="227" y="137" width="52" height="30" rx="7" fill="white" stroke="#e74c3c" stroke-width="1.8"/>
+        <text x="253" y="156" text-anchor="middle" font-size="12" fill="#e74c3c" font-style="italic">τ<tspan dy="-5" font-size="8">(2)</tspan></text>
+        <line x1="280" y1="152" x2="301" y2="152" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+        <rect x="305" y="137" width="90" height="30" rx="7" fill="#3498db"/>
+        <text x="350" y="156" text-anchor="middle" font-size="11" fill="white" font-weight="600">Reward model</text>
+        <line x1="396" y1="152" x2="424" y2="152" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+        <rect x="428" y="137" width="46" height="30" rx="7" fill="white" stroke="#3498db" stroke-width="1.8"/>
+        <text x="451" y="156" text-anchor="middle" font-size="12" fill="#3498db" font-style="italic">r<tspan dy="-5" font-size="8">(2)</tspan></text>
+
+        <!-- ===== DOTS row ===== -->
+        <text x="253" y="202" text-anchor="middle" font-size="18" fill="#aaa">⋮</text>
+        <text x="350" y="202" text-anchor="middle" font-size="18" fill="#aaa">⋮</text>
+        <text x="451" y="202" text-anchor="middle" font-size="18" fill="#aaa">⋮</text>
+
+        <!-- ===== ROW G (y=242) ===== -->
+        <rect x="227" y="227" width="52" height="30" rx="7" fill="white" stroke="#e74c3c" stroke-width="1.8"/>
+        <text x="253" y="246" text-anchor="middle" font-size="12" fill="#e74c3c" font-style="italic">τ<tspan dy="-5" font-size="8">(G)</tspan></text>
+        <line x1="280" y1="242" x2="301" y2="242" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+        <rect x="305" y="227" width="90" height="30" rx="7" fill="#3498db"/>
+        <text x="350" y="246" text-anchor="middle" font-size="11" fill="white" font-weight="600">Reward model</text>
+        <line x1="396" y1="242" x2="424" y2="242" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+        <rect x="428" y="227" width="46" height="30" rx="7" fill="white" stroke="#3498db" stroke-width="1.8"/>
+        <text x="451" y="246" text-anchor="middle" font-size="12" fill="#3498db" font-style="italic">r<tspan dy="-5" font-size="8">(G)</tspan></text>
+
+        <!-- Bottom labels -->
+        <text x="253" y="272" text-anchor="middle" font-size="10" fill="#888">Output</text>
+        <text x="451" y="272" text-anchor="middle" font-size="10" fill="#888">Reward</text>
+
+        <!-- Fan-in to Group Computation -->
+        <line x1="475" y1="76" x2="517" y2="147" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+        <line x1="475" y1="152" x2="517" y2="152" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+        <line x1="475" y1="242" x2="517" y2="162" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+
+        <!-- Group Computation box, center (557, 155) -->
+        <rect x="521" y="132" width="72" height="46" rx="7" fill="#e67e22"/>
+        <text x="557" y="152" text-anchor="middle" font-size="10" fill="white" font-weight="700">Group</text>
+        <text x="557" y="166" text-anchor="middle" font-size="10" fill="white" font-weight="700">Computation</text>
+
+        <!-- Fan-out from Group Computation -->
+        <line x1="594" y1="145" x2="627" y2="72" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+        <line x1="594" y1="155" x2="627" y2="152" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+        <line x1="594" y1="165" x2="627" y2="242" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#grpo-arr)"/>
+
+        <!-- Â^(i) boxes -->
+        <rect x="631" y="57" width="54" height="30" rx="7" fill="white" stroke="#16a085" stroke-width="1.8"/>
+        <text x="658" y="76" text-anchor="middle" font-size="12" fill="#16a085">Â<tspan dy="-5" font-size="8">(1)</tspan></text>
+
+        <rect x="631" y="137" width="54" height="30" rx="7" fill="white" stroke="#16a085" stroke-width="1.8"/>
+        <text x="658" y="156" text-anchor="middle" font-size="12" fill="#16a085">Â<tspan dy="-5" font-size="8">(2)</tspan></text>
+
+        <text x="658" y="202" text-anchor="middle" font-size="18" fill="#aaa">⋮</text>
+
+        <rect x="631" y="227" width="54" height="30" rx="7" fill="white" stroke="#16a085" stroke-width="1.8"/>
+        <text x="658" y="246" text-anchor="middle" font-size="12" fill="#16a085">Â<tspan dy="-5" font-size="8">(G)</tspan></text>
+
+        <text x="658" y="272" text-anchor="middle" font-size="10" fill="#888">Advantage</text>
+
+      </svg>
+    </figure>
+
+    <p>$\mathbb{E}_{\tau^{(i)} \sim \pi_\text{old}}$ is the same off-policy setup as before: trajectories are collected from an old snapshot of the policy, and the PPO-clip ratio handles the distribution mismatch. Nothing new there.</p>
+
+    <p>For each prompt $s_0$, the policy generates not one but $G$ full trajectories. That is the core of GRPO. Instead of one answer, ask the model the same question $G$ times and collect all the responses.</p>
+
+    <p>In PPO, the advantage came from GAE: a weighted mix of n-step returns, requiring a Critic to estimate $V(s_t)$ at every step. GRPO replaces this entirely with a group statistic. The reward of each response is normalized relative to the other $G-1$ responses in the group:</p>
+
+    <div class="math-block">
+      $$\hat{A}^{(i)} = \frac{r^{(i)} - \mathrm{mean}\!\left(\{r^{(i)}\}\right)}{\mathrm{std}\!\left(\{r^{(i)}\}\right)}$$
+    </div>
+
+    <p>This is a z-score within the group. If your response scored higher than average, you get a positive advantage. If lower, a negative one. The mean of the group is the baseline, taking the place of the Critic's $V_\phi^\pi(s_t)$. The intuition is direct: the Critic was always trying to estimate the expected reward from this state. With $G$ rollouts of the same prompt, the group mean <em>is</em> that estimate, computed by Monte Carlo sampling rather than a learned neural network.</p>
+
+    <p>Notice that $\hat{A}_t^{(i)} = \hat{A}^{(i)}$: the same scalar is applied to every token in response $i$, regardless of where in the response that token appears. In PPO with GAE, each timestep $t$ had its own advantage, accounting for how much credit belonged to the actions taken at that specific step. GRPO has no per-step signal. A winning response gets a uniform positive push across all its tokens; a losing response gets a uniform negative push. Credit assignment within a trajectory is left entirely implicit.</p>
+
+    <p>There is one more component in the equation: $-\beta\, D_\text{KL}(\pi_\theta \| \pi_\text{ref})$. You already know this term from the RLHF section. The KL rubber band anchors the policy to a frozen reference model $\pi_\text{ref}$, preventing it from drifting away from the language distribution it started with. GRPO carries this anchor forward unchanged.</p>
+
+    <p>The wall and the rubber band now work together without conflict. The clip wall disarms any dangerously large gradient before it can overpower the KL penalty: in the flat regions of the clip, the gradient is exactly zero, so it cannot fight anything. The two mechanisms operate at different timescales. The wall handles short-term, per-step absolute safety. The KL handles long-term cumulative drift. The $\beta$ hyperparameter still needs tuning, but its job is now narrower: not preventing policy collapse on a single bad batch (the wall handles that), but ensuring the model does not slowly forget it is a language model.</p>
+
+    <p>Computing the true KL divergence requires summing over every token in the vocabulary at every position, which is expensive. In practice, it is approximated per token using an estimator that only requires evaluating the two policies at the token actually generated:</p>
+
+    <div class="math-block">
+      $$D_\text{KL}\!\left(\pi_\theta(u_t \!\mid\! s_t) \;\big\|\; \pi_\text{ref}(u_t \!\mid\! s_t)\right) \approx \frac{\pi_\text{ref}(u_t \!\mid\! s_t)}{\pi_\theta(u_t \!\mid\! s_t)} - \log \frac{\pi_\text{ref}(u_t \!\mid\! s_t)}{\pi_\theta(u_t \!\mid\! s_t)} - 1$$
+    </div>
+
+    <div class="analysis-block">
+      <p>GRPO gives up per-step credit assignment in exchange for eliminating the Critic. For language model tasks where an entire response is evaluated as a unit (did the reasoning lead to the correct answer?), this is often a reasonable trade. The group baseline is noisier than a learned value function, and the uniform per-trajectory advantage is coarser than GAE. But the system is dramatically simpler, faster, and cheaper to run, and in practice it trains reasoning models effectively.</p>
+    </div>
+
+    <div class="algorithm-box">
+      <h4>GAE vs GRPO: Credit Assignment</h4>
+
+      <p><strong>GAE — temporal and local.</strong> GAE computes a separate advantage $\hat{A}_t$ for every single token at every step $t$. It knows that token 5 might have been a brilliant word choice while token 90 was a poor one, and it assigns credit accordingly. The Critic's value estimates provide a per-step baseline, and the exponential weighting over n-step returns gives a fine-grained, local signal all the way down the trajectory.</p>
+
+      <p><strong>GRPO — global and sparse.</strong> GRPO produces a single scalar $\hat{A}^{(i)}$ for the entire trajectory. Every token in the response, from the first word to the last, receives that same number as its advantage. There is no temporal signal, no local credit, no distinction between a token that was pivotal and one that was filler. The only information available is: did this response score above or below the group average?</p>
+
+      <p>This is a significant assumption. GRPO implicitly relies on the policy model being capable of distributing a global scalar signal across its attention: reinforcing the specific tokens that actually deserved credit and suppressing those that did not, all without being told which is which. For large, well-pretrained language models this often works in practice. But it is a real loss of precision compared to GAE, and worth keeping in mind clearly before reading what comes next.</p>
+    </div>
+
+    <div class="analysis-block">
+      <p><strong>The bigger picture.</strong> Something subtle has happened over the last two sections. TRPO had a real guarantee: monotonic improvement under the trust region. PPO inherited the spirit of that guarantee, the clip was a principled approximation of the constraint. GRPO has none of it. The group mean as a baseline is a reasonable Monte Carlo estimate, not the consequence of any theorem. The uniform per-trajectory advantage is not justified by a credit assignment principle, it is justified by "the model is large enough to figure out which tokens deserved it." Std normalization and length normalization are not derived from optimization theory, they are just statistical hygiene applied because the numbers looked too big or too small.</p>
+
+      <p>This is the moment we leave rigor behind and enter engineering territory. GRPO works because the models are big enough and the rewards are clean enough that the noise washes out. The same approach on a small network with sparse, noisy rewards would not. We have traded mathematical guarantees for a system simple enough to scale to billions of parameters. That is the deal modern reasoning training is built on, and it is worth being honest about, because everything we are about to do in Dr.GRPO follows the same logic: small, intuitive fixes to statistical hygiene that happen to make training work better.</p>
+    </div>
+
+    <p>The group normalization looks statistically clean. Two familiar-looking terms, the division by standard deviation and the per-token averaging over $H^{(i)}$, seem like reasonable practices borrowed from statistics. But in the specific context of training reasoning models, each one introduces a concrete bias that actively works against learning. That is where Dr.GRPO comes in.</p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 10: DR.GRPO — THE FINAL FIX                   -->
+  <!-- ====================================================== -->
+  <section id="dr-grpo">
+    <h2>Dr.GRPO</h2>
+
+    <p>As mentioned above, GRPO carries two subtle flaws hiding in plain sight. Both look like reasonable statistical housekeeping. Both create concrete, harmful biases when training reasoning models.</p>
+
+    <h3>Bias 1: Length Normalization</h3>
+
+    <p>Notice the division by the trajectory length? This means we are actively diluting the reward per token. When the model gets it right (\(\hat{A}&gt;0\)), every additional, non-necessary token increases the denominator and dilutes the reward, so the model learns it is safer to be very direct and short. On the other hand, if the model is wrong (\(\hat{A}&lt;0\)), a long trajectory spreads the negative penalty across so many tokens that the punishment per token becomes microscopically small. The model learns to ramble to avoid concentrated punishment.</p>
+
+    <h3>Bias 2: Difficulty Normalization</h3>
+
+    <p>We are calculating the z-score over a batch of trajectories for the same prompt. When the question is simple, it is highly likely that over \(G\) trajectories we have very low reward variance. Oppositely, in complex scenarios, the model might not always be correct, so the variance increases. By dividing by the standard deviation over the group, we inadvertently reward simpler questions. Dividing by a tiny variance (easy question) causes the final update scalar to explode, while dividing by a large variance (hard question) shrinks the update.</p>
+
+    <p>Looking at the GRPO objective, we can now see exactly where both biases are hiding:</p>
+
+    <div class="math-block">
+      $$\mathbb{E}_{\tau^{(i)} \sim \pi_\text{old}}\!\left[\frac{1}{G}\sum_{i=1}^{G}\textcolor{#e74c3c}{\frac{1}{H^{(i)}}}\sum_{t=0}^{H^{(i)}-1}\min\!\left(\, r_t(\theta)\,\hat{A}^{(i)},\;\; \mathrm{clip}\!\left(r_t(\theta), 1-\varepsilon, 1+\varepsilon\right)\hat{A}^{(i)}\,\right) - \beta\, D_\text{KL}\!\left(\pi_\theta \,\big\|\, \pi_\text{ref}\right)\right]$$
+      $$\hat{A}^{(i)} = \frac{r^{(i)} - \text{mean}\!\left(\{r^{(j)}\}_{j=1}^{G}\right)}{\textcolor{#3498db}{\text{std}\!\left(\{r^{(j)}\}_{j=1}^{G}\right)}}$$
+      <div style="display: flex; gap: 3em; justify-content: center; margin-top: 0.8em; font-size: 0.9em; font-weight: 600;">
+        <span style="color: #e74c3c;">&#9679; Length Bias</span>
+        <span style="color: #3498db;">&#9679; Difficulty Bias</span>
+      </div>
+    </div>
+
+    <p>The fix is almost insultingly simple: remove both normalization terms.</p>
+
+    <div class="math-block">
+      <p style="margin: 0 0 0.5em 0; font-size: 0.9em; font-weight: 600; color: #333;">Dr.GRPO</p>
+      $$\mathbb{E}_{\tau^{(i)} \sim \pi_\text{old}}\!\left[\frac{1}{G}\sum_{i=1}^{G}\sum_{t=0}^{H^{(i)}-1}\min\!\left(\, r_t(\theta)\,\hat{A}^{(i)},\;\; \mathrm{clip}\!\left(r_t(\theta), 1-\varepsilon, 1+\varepsilon\right)\hat{A}^{(i)}\,\right) - \beta\, D_\text{KL}\!\left(\pi_\theta \,\big\|\, \pi_\text{ref}\right)\right]$$
+      $$\hat{A}^{(i)} = r^{(i)} - \text{mean}\!\left(\{r^{(j)}\}_{j=1}^{G}\right)$$
+    </div>
+
+    <h3>A worked example</h3>
+
+    <p>It is one thing to see two biases written as terms in an equation. It is another to watch them actually warp the gradient signal a model receives. Let's run a tiny example.</p>
+
+    <p>Take a prompt with $G = 4$ rollouts. Rewards are binary: 1 for the right final answer, 0 otherwise.</p>
+
+    <div style="background:#f8f9fa; border-radius:10px; padding:18px 20px; margin:1.5em 0; border:1px solid #e2e8f0; overflow-x:auto;">
+      <div style="font-family:monospace; color:#1e293b; margin-bottom:14px; font-size:0.95em;">Prompt: &ldquo;What is 12 &times; 13?&rdquo;</div>
+
+      <table style="width:100%; border-collapse:collapse; font-size:0.9em; min-width:560px;">
+        <thead>
+          <tr style="background:#fff; border-bottom:2px solid #e2e8f0;">
+            <th style="padding:0.6em 0.8em; text-align:left;">Rollout</th>
+            <th style="padding:0.6em 0.4em; text-align:center; width:60px;">$H^{(i)}$</th>
+            <th style="padding:0.6em 0.4em; text-align:center; width:60px;">$r^{(i)}$</th>
+          </tr>
+        </thead>
+        <tbody style="font-family:monospace;">
+          <tr style="border-bottom:1px solid #eee;">
+            <td style="padding:0.6em 0.8em;">A &mdash; &ldquo;12 &times; 13 = 156&rdquo; <span style="color:#16a34a; font-family:inherit;">&#10003; short correct</span></td>
+            <td style="text-align:center;">7</td>
+            <td style="text-align:center; color:#16a34a; font-weight:700;">1</td>
+          </tr>
+          <tr style="border-bottom:1px solid #eee;">
+            <td style="padding:0.6em 0.8em;">B &mdash; &ldquo;Let me compute. 12&times;13 = 12&times;10 + 12&times;3 = 120 + 36 = 156&rdquo; <span style="color:#16a34a; font-family:inherit;">&#10003; long correct</span></td>
+            <td style="text-align:center;">22</td>
+            <td style="text-align:center; color:#16a34a; font-weight:700;">1</td>
+          </tr>
+          <tr style="border-bottom:1px solid #eee;">
+            <td style="padding:0.6em 0.8em;">C &mdash; &ldquo;12 &times; 13 = 144&rdquo; <span style="color:#e74c3c; font-family:inherit;">&#10007; short wrong</span></td>
+            <td style="text-align:center;">7</td>
+            <td style="text-align:center; color:#e74c3c; font-weight:700;">0</td>
+          </tr>
+          <tr>
+            <td style="padding:0.6em 0.8em;">D &mdash; &ldquo;Hmm... 12 &times; 13... 12&times;10 is 120, plus 12&times;3 which is... 30? So 150? Actually let me try... 144.&rdquo; <span style="color:#e74c3c; font-family:inherit;">&#10007; long wrong</span></td>
+            <td style="text-align:center;">35</td>
+            <td style="text-align:center; color:#e74c3c; font-weight:700;">0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Group statistics: $\mathrm{mean}(r) = 0.5$, $\mathrm{std}(r) = 0.5$. Now compute the per-token signal each token of each rollout actually sees, side by side.</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:1.5em 0;">
+
+      <div style="background:#fff8f8; border:1px solid #f59e0b; border-radius:10px; padding:16px 18px;">
+        <div style="font-weight:700; color:#b45309; margin-bottom:4px; font-size:1.05em;">GRPO</div>
+        <div style="font-size:0.78em; color:#666; font-family:monospace; margin-bottom:14px;">per-token signal = $\hat{A}^{(i)} / H^{(i)}$<br>$\hat{A}^{(i)} = (r^{(i)} - \mathrm{mean}) / \mathrm{std}$</div>
+        <table style="width:100%; font-size:0.86em;">
+          <thead>
+            <tr style="border-bottom:1px solid #fbd38d;">
+              <th style="padding:0.4em 0.3em; text-align:left;">i</th>
+              <th style="padding:0.4em 0.3em; text-align:right;">$\hat{A}^{(i)}$</th>
+              <th style="padding:0.4em 0.3em; text-align:right;">$\hat{A}^{(i)}/H^{(i)}$</th>
+            </tr>
+          </thead>
+          <tbody style="font-family:monospace;">
+            <tr><td style="padding:0.35em 0.3em;">A</td><td style="text-align:right; color:#15803d;">+1.000</td><td style="text-align:right; color:#15803d; font-weight:700;">+0.143</td></tr>
+            <tr><td style="padding:0.35em 0.3em;">B</td><td style="text-align:right; color:#15803d;">+1.000</td><td style="text-align:right; color:#15803d;">+0.045</td></tr>
+            <tr><td style="padding:0.35em 0.3em;">C</td><td style="text-align:right; color:#b91c1c;">&minus;1.000</td><td style="text-align:right; color:#b91c1c; font-weight:700;">&minus;0.143</td></tr>
+            <tr><td style="padding:0.35em 0.3em;">D</td><td style="text-align:right; color:#b91c1c;">&minus;1.000</td><td style="text-align:right; color:#b91c1c;">&minus;0.029</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="background:#f0fdf4; border:1px solid #22c55e; border-radius:10px; padding:16px 18px;">
+        <div style="font-weight:700; color:#15803d; margin-bottom:4px; font-size:1.05em;">Dr.GRPO</div>
+        <div style="font-size:0.78em; color:#666; font-family:monospace; margin-bottom:14px;">per-token signal = $\hat{A}^{(i)}$<br>$\hat{A}^{(i)} = r^{(i)} - \mathrm{mean}$</div>
+        <table style="width:100%; font-size:0.86em;">
+          <thead>
+            <tr style="border-bottom:1px solid #86efac;">
+              <th style="padding:0.4em 0.3em; text-align:left;">i</th>
+              <th style="padding:0.4em 0.3em; text-align:right;">$\hat{A}^{(i)}$</th>
+              <th style="padding:0.4em 0.3em; text-align:right;">per token</th>
+            </tr>
+          </thead>
+          <tbody style="font-family:monospace;">
+            <tr><td style="padding:0.35em 0.3em;">A</td><td style="text-align:right; color:#15803d;">+0.500</td><td style="text-align:right; color:#15803d; font-weight:700;">+0.500</td></tr>
+            <tr><td style="padding:0.35em 0.3em;">B</td><td style="text-align:right; color:#15803d;">+0.500</td><td style="text-align:right; color:#15803d; font-weight:700;">+0.500</td></tr>
+            <tr><td style="padding:0.35em 0.3em;">C</td><td style="text-align:right; color:#b91c1c;">&minus;0.500</td><td style="text-align:right; color:#b91c1c; font-weight:700;">&minus;0.500</td></tr>
+            <tr><td style="padding:0.35em 0.3em;">D</td><td style="text-align:right; color:#b91c1c;">&minus;0.500</td><td style="text-align:right; color:#b91c1c; font-weight:700;">&minus;0.500</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <p>Look at the GRPO column. Rollout A (short correct) gets $+0.143$ per token. Rollout B (long correct) gets only $+0.045$. The model receives a <strong>three times weaker reward signal per token</strong> for the longer correct answer, even though it got the same final result. The lesson the model takes: when right, be brief.</p>
+
+    <p>Now compare the wrongs. Rollout C (short wrong) gets $-0.143$ per token. Rollout D (long wrong) gets only $-0.029$. The longer wrong rollout, the one that genuinely rambles, gets a <strong>five times weaker punishment per token</strong> than the short wrong one. The lesson: when uncertain, ramble. The penalty per token shrinks as you stretch.</p>
+
+    <p>Under Dr.GRPO, every token in every rollout gets the same magnitude of signal regardless of length. Short correct and long correct are reinforced equally per token. Short wrong and long wrong are punished equally per token. The model is judged on whether it got the answer right, not on how many tokens it spent doing so. That is the entire fix.</p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 11: CONCLUSION                                -->
+  <!-- ====================================================== -->
+  <section id="conclusion">
+
+    <div class="algorithm-box">
+      <h4>The Chain of Forced Inventions</h4>
+      <p><strong>REINFORCE</strong> — all rewards positive, no baseline → noisy, slow convergence</p>
+      <p>↓ <em>Fix: subtract a baseline</em></p>
+      <p><strong>Baseline + Monte Carlo</strong> — can't estimate $V(s_t)$ cheaply per state → need a second network</p>
+      <p>↓ <em>Fix: train a Critic</em></p>
+      <p><strong>Actor-Critic</strong> — full rollout noisy, pure bootstrapping biased → need a blend</p>
+      <p>↓ <em>Fix: interpolate with GAE ($\lambda$)</em></p>
+      <p><strong>Actor-Critic + GAE</strong> — policy can still take a catastrophic step → need a constraint</p>
+      <p>↓ <em>Fix: hard KL constraint (TRPO)</em></p>
+      <p><strong>TRPO</strong> — KL constraint requires $O(N^2)$ Fisher Matrix → computationally impossible</p>
+      <p>↓ <em>Fix: approximate constraint with a clip (PPO)</em></p>
+      <p><strong>PPO</strong> — clip is a local wall; across thousands of steps the policy drifts, and a language model forgets how to speak</p>
+      <p>↓ <em>Fix: add a global KL anchor against a frozen reference model (RLHF)</em></p>
+      <p><strong>RLHF</strong> — requires a Critic, a Reward Model, and a frozen reference all in memory; unstable online RL loop</p>
+      <p>↓ <em>Fix: replace Critic with group statistics (GRPO)</em></p>
+      <p><strong>GRPO</strong> — standard deviation normalisation penalises hard prompts, length normalisation penalises long reasoning</p>
+      <p>↓ <em>Fix: remove both (Dr.GRPO)</em></p>
+      <p><strong>Dr.GRPO</strong> — reasoning models that actually think.</p>
+    </div>
+
+    <p>You could have invented Dr.GRPO.</p>
+
+    <p>Look back at what we built. We started with one line, "maximize expected reward," and peeled off one assumption at a time. Each defect forced the next algorithm into existence. By the end, we have a training procedure that turns a pretrained model into something that can actually reason through a math problem.</p>
+
+    <p>There is a pattern worth noticing. Each algorithm was the right answer for its decade. TRPO worked when networks were small enough to do matrix algebra on. PPO scaled the trust region idea to larger networks but kept a full Critic in memory. GRPO is what you get when you push past that assumption. The mathematical purity has progressively given way to engineering pragmatism, because the systems we train have become large enough that even crude approximations work.</p>
+
+    <p>None of this is the end of the story. New methods keep appearing: GRPO has been refined into GRPO-v2 and DAPO, and there are alternative tracks like DPO that skip the RL loop entirely and treat alignment as a supervised learning problem. The chain we walked through is alive and producing new links every few months. But if you understood why each step was forced by the previous one's flaws, you now have what you need to read the next paper as it appears, and to predict the kind of move it will make. The math evolves, the structure of the argument does not.</p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  REFERENCES                                            -->
+  <!-- ====================================================== -->
+  <section id="references">
+    <h2>References</h2>
+    <ol class="references">
+      <li>Williams, R. J. (1992). <em>Simple statistical gradient-following algorithms for connectionist reinforcement learning.</em> Machine Learning. — <strong>REINFORCE</strong></li>
+      <li>Mnih, V. et al. (2016). <em>Asynchronous Methods for Deep Reinforcement Learning.</em> ICML. — <strong>Actor-Critic (A3C)</strong></li>
+      <li>Schulman, J. et al. (2016). <em>High-Dimensional Continuous Control Using Generalized Advantage Estimation.</em> ICLR. — <strong>GAE</strong></li>
+      <li>Schulman, J. et al. (2015). <em>Trust Region Policy Optimization.</em> ICML. — <strong>TRPO</strong></li>
+      <li>Schulman, J. et al. (2017). <em>Proximal Policy Optimization Algorithms.</em> arXiv:1707.06347. — <strong>PPO</strong></li>
+      <li>Ouyang, L. et al. (2022). <em>Training language models to follow instructions with human feedback.</em> NeurIPS 2022. arXiv:2203.02155. — <strong>RLHF / InstructGPT</strong></li>
+      <li>Shao, Z. et al. (2024). <em>DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models.</em> arXiv:2402.03300. — <strong>GRPO</strong></li>
+      <li>DeepSeek-AI (2025). <em>DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning.</em> arXiv:2501.12948.</li>
+      <li>Liu, Z. et al. (2025). <em>Understanding R1-Zero-Like Training: A Critical Perspective.</em> arXiv:2503.20783. — <strong>Dr.GRPO</strong> ("GRPO Done Right")</li>
+    </ol>
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  APPENDIX: WHY TRPO DOESN'T SCALE                       -->
+  <!-- ====================================================== -->
+  <section id="appendix-trpo">
+    <h2>Appendix: Why TRPO Doesn't Scale</h2>
+
+    <p>This is the detour the main post skips. If you were curious why exactly the second-order machinery of TRPO never made the jump to large networks, here it is.</p>
+
+    <p>Recall the setup. TRPO wants to maximize the surrogate objective subject to a KL constraint of size $\varepsilon$. Solving the constrained optimization exactly requires knowing the local curvature of the KL around the current policy. That curvature is the Fisher Information Matrix, defined as the Hessian of the KL divergence evaluated at $\theta_\text{old}$:</p>
+
+    <div class="math-block">
+      $$F(\theta_\text{old}) = \mathbb{E}_{\pi_\text{old}}\!\left[\nabla_\theta \log \pi_\theta\; \nabla_\theta \log \pi_\theta^\top\right]_{\theta = \theta_\text{old}}$$
+    </div>
+
+    <h3>The size problem</h3>
+
+    <p>For a policy network with $N$ parameters, the FIM is an $N \times N$ matrix. The numbers get out of hand fast.</p>
+
+    <table style="width:100%; border-collapse:collapse; margin:1.4em 0; font-size:0.93em;">
+      <thead>
+        <tr style="background:#f4f4f4; border-bottom:2px solid #ddd;">
+          <th style="padding:0.6em 1em; text-align:left;">Model size</th>
+          <th style="padding:0.6em 1em; text-align:right;">Parameters $N$</th>
+          <th style="padding:0.6em 1em; text-align:right;">FIM entries ($N^2$)</th>
+          <th style="padding:0.6em 1em; text-align:right;">Memory (float32)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #eee;">
+          <td style="padding:0.55em 1em;">Tiny network</td>
+          <td style="padding:0.55em 1em; text-align:right;">1 million</td>
+          <td style="padding:0.55em 1em; text-align:right;">1 trillion</td>
+          <td style="padding:0.55em 1em; text-align:right; color:#f39c12; font-weight:600;">4 TB</td>
+        </tr>
+        <tr style="border-bottom:1px solid #eee; background:#fafafa;">
+          <td style="padding:0.55em 1em;">Small network</td>
+          <td style="padding:0.55em 1em; text-align:right;">10 million</td>
+          <td style="padding:0.55em 1em; text-align:right;">100 trillion</td>
+          <td style="padding:0.55em 1em; text-align:right; color:#e74c3c; font-weight:600;">400 TB</td>
+        </tr>
+        <tr>
+          <td style="padding:0.55em 1em;">Small LLM</td>
+          <td style="padding:0.55em 1em; text-align:right;">7 billion</td>
+          <td style="padding:0.55em 1em; text-align:right;">49 quintillion</td>
+          <td style="padding:0.55em 1em; text-align:right; color:#c0392b; font-weight:600;">physically impossible</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>You cannot store this matrix. You cannot invert it. Even computing it is out of the question.</p>
+
+    <h3>Schulman's conjugate gradient trick</h3>
+
+    <p>The key insight in the original TRPO paper is that you never need to build the full FIM. Think about what TRPO actually needs: it needs to solve the linear system $F^{-1} g$, where $g$ is the gradient of the surrogate objective. You can solve a linear system without ever materialising the matrix, using the conjugate gradient method, as long as you can compute the product $F \cdot v$ for any vector $v$.</p>
+
+    <p>And here is the clever part. A Fisher-vector product $F \cdot v$ can be computed in $O(N)$ time using just two backward passes through the network. No quintillion-entry matrix, just two extra backprop calls per CG iteration. Beautiful.</p>
+
+    <h3>So why doesn't it scale?</h3>
+
+    <p>Because the price for each policy update is no longer a single gradient step. It is:</p>
+
+    <ol style="margin-left:1.4em;">
+      <li>A conjugate gradient inner loop (typically 10&ndash;20 iterations, each requiring a Fisher-vector product, which is two extra backprop calls).</li>
+      <li>A line search to verify the KL constraint is actually satisfied after the proposed update. If it is violated, halve the step size and try again.</li>
+      <li>Careful numerical-stability tricks for the Fisher-vector products to avoid ill-conditioning, especially as the network gets deeper.</li>
+    </ol>
+
+    <p>For a small network in a clean simulation environment, all of this is fine. For a multi-billion-parameter language model with noisy reward signals and limited compute, this becomes a nightmare. Every step is 20&times; slower, every step can fail the line search, and every step risks numerical issues. The wall-clock cost to train anything serious becomes prohibitive.</p>
+
+    <p>TRPO is mathematically beautiful. It has a guaranteed monotonic improvement property under the trust region constraint. The constrained-optimization framing it introduced is genuinely the right way to think about safe policy updates. But the second-order optimization machinery it requires never made the jump to the scale where modern language models live. PPO is what happens when you ask: what is the cheapest first-order approximation that keeps the same intuition?</p>
+
+    <p><a href="#trpo">&larr; Back to the TRPO section</a></p>
+
+  </section>
+
+  <a href="../blog.html" class="back-link" style="margin-top: 50px;">&larr; Back to Projects & Writing Hub</a>
+
+</body>
+</html>

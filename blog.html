@@ -17,14 +17,20 @@
     header a:hover { text-decoration: underline; }
     footer { margin-top: 60px; padding-top: 30px; text-align: center; font-size: 0.9em; color: #7f8c8d; border-top: 1px solid #eee; }
 
-    /* Project Hub Grid */
-    .project-hub {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 30px;
+    /* Category Section */
+    .section-block { margin-bottom: 60px; }
+    .section-block:last-of-type { margin-bottom: 30px; }
+    .section-heading {
+      font-size: 1.35em;
+      color: #2c3e50;
+      margin: 0 0 25px 0;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e74c3c;
+      font-weight: 600;
+      letter-spacing: -0.01em;
     }
 
-    /* Project Card Styling */
+    /* Featured card: horizontal layout, full width */
     .project-card {
       background: #fff;
       border-radius: 12px;
@@ -41,14 +47,6 @@
       transform: translateY(-6px);
       box-shadow: 0 10px 24px rgba(0,0,0,0.1);
     }
-    .project-card img,
-    .project-card video {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      border-bottom: 1px solid #e8e8e8;
-      background-color: #000;
-    }
     .card-content {
       padding: 25px;
       flex-grow: 1;
@@ -62,12 +60,6 @@
       margin-bottom: 12px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-    }
-    .card-category.academic {
-      color: #9b59b6; /* Purple for academic projects */
-    }
-    .card-category.open-source {
-        color: #27ae60; /* A strong, clear green */
     }
     .card-content h3 {
       font-size: 1.4em;
@@ -96,8 +88,120 @@
       font-size: 0.85em;
       margin: 0 5px 5px 0;
     }
+
+    .project-card.featured {
+      flex-direction: row;
+      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.15);
+      border: 1px solid #f5b7b1;
+    }
+    .project-card.featured > div:first-child,
+    .project-card.featured > img:first-child {
+      width: 42%;
+      min-height: 280px;
+      height: auto;
+      object-fit: cover;
+      flex-shrink: 0;
+      border-right: 1px solid #e8e8e8;
+      border-bottom: none;
+    }
+    .project-card.featured .card-content {
+      padding: 35px 40px;
+    }
+    .project-card.featured h3 {
+      font-size: 1.7em;
+      line-height: 1.25;
+    }
+    .project-card.featured p {
+      font-size: 1.05em;
+    }
+
+
+    /* Category Navigation Cards */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .category-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e8e8e8;
+      padding: 28px 26px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      position: relative;
+      overflow: hidden;
+    }
+    .category-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      background: #3498db;
+    }
+    .category-card.academic::before { background: #9b59b6; }
+    .category-card.open-source::before { background: #27ae60; }
+    .category-card.technical::before { background: #3498db; }
+    .category-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+      border-color: #d0d0d0;
+    }
+    .category-card .cat-label {
+      font-size: 0.78em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #3498db;
+      margin-bottom: 8px;
+    }
+    .category-card.academic .cat-label { color: #9b59b6; }
+    .category-card.open-source .cat-label { color: #27ae60; }
+    .category-card.technical .cat-label { color: #3498db; }
+    .category-card h3 {
+      font-size: 1.3em;
+      color: #2c3e50;
+      margin: 0 0 12px 0;
+      font-weight: 600;
+    }
+    .category-card p {
+      font-size: 0.95em;
+      color: #555;
+      margin: 0 0 18px 0;
+      flex-grow: 1;
+    }
+    .category-card .cat-cta {
+      font-size: 0.92em;
+      font-weight: 600;
+      color: #2c3e50;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .category-card .cat-cta .arrow {
+      transition: transform 0.2s;
+    }
+    .category-card:hover .cat-cta .arrow {
+      transform: translateX(4px);
+    }
+
     @media (max-width: 768px) {
         body { padding: 20px 15px; }
+        .project-card.featured { flex-direction: column; }
+        .project-card.featured > div:first-child,
+        .project-card.featured > img:first-child {
+          width: 100%;
+          height: 220px;
+          min-height: 0;
+          border-right: none;
+          border-bottom: 1px solid #e8e8e8;
+        }
+        .project-card.featured .card-content { padding: 25px; }
+        .project-card.featured h3 { font-size: 1.45em; }
     }
   </style>
 </head>
@@ -109,143 +213,63 @@
 </header>
 
 <main>
-  <div class="project-hub">
 
-    <a href="blog/cellpaintr.html" target="_blank" class="project-card">
-      <img src="img/proj_cellpaintr/cellpainting.avif" alt="Microscopy image of glowing cells">
+  <!-- ====================================================== -->
+  <!--  FEATURED POST                                         -->
+  <!-- ====================================================== -->
+  <section class="section-block">
+
+    <a href="blog/dr_grpo.html" class="project-card featured">
+      <img src="img/rl_drgrpo/watercolor_1.png" alt="Watercolor illustration for the Dr.GRPO post">
       <div class="card-content">
-        <div class="card-category academic">Academic Project</div>
-        <h3>Foundation Model for Cell Painting (CellPainTR)</h3>
+        <div class="card-category">Technical Write-up</div>
+        <h3>You Could Have Invented Dr.GRPO Yourself</h3>
         <p>
-          A novel contrastive learning framework to explicitly disentangle biological signals from nuisance variables (like batch effects) in high-content imaging data.
+          A ground-up walkthrough of modern RL for LLMs: from REINFORCE to Dr.GRPO, showing how each algorithm was forced by exactly one broken thing in the previous one.
         </p>
         <div class="card-tags">
-          <span class="tag">Transformers</span>
-          <span class="tag">Self-Supervised</span>
-          <span class="tag">Bio-informatics</span>
+          <span class="tag">Reinforcement Learning</span>
+          <span class="tag">PPO</span>
+          <span class="tag">GRPO</span>
+          <span class="tag">LLMs</span>
         </div>
       </div>
     </a>
+  </section>
 
-    <a href="blog/project_fairness.html" class="project-card">
-      <video controls autoplay loop muted playsinline>
-        <source src="img/proj_fairness/comparison.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      <div class="card-content">
-        <div class="card-category academic">Academic Project</div>
-        <h3>Mitigating Racial Bias in Face Age Progression</h3>
-        <p>
-          An investigation into fairness for generative models. We modified a StyleGAN-based age progression model to mitigate racial bias by promoting more equitable transformations across demographics.
-        </p>
-        <div class="card-tags">
-          <span class="tag">Generative Models</span>
-          <span class="tag">Fairness in AI</span>
-          <span class="tag">StyleGAN</span>
-        </div>
-      </div>
-    </a>
 
-    <a href="blog/neural_style_transfer.html" class="project-card">
-        <img src="img/nst/cells_picasso.png" alt="A photo of cells stylized in the manner of Picasso.">
-        <div class="card-content">
-            <div class="card-category">Technical Write-up</div>
-            <h3>A Deep Dive into Neural Style Transfer</h3>
-            <p>
-            An implementation and explanation of the seminal 2015 paper by Gatys et al., breaking down the concepts of content and style loss.
-            </p>
-            <div class="card-tags">
-                <span class="tag">Style Transfer</span>
-                <span class="tag">Computer Vision</span>
-                <span class="tag">CNNs</span>
-            </div>
-        </div>
-    </a>
+  <!-- ====================================================== -->
+  <!--  BROWSE BY CATEGORY                                    -->
+  <!-- ====================================================== -->
+  <section class="section-block">
+    <h2 class="section-heading">Browse the archive</h2>
 
-    <a href="blog/pannuke_segmentation.html" class="project-card">
-        <img src="img/pannuke_seg/pannuke_streamlit.png" alt="Demonstration of the PanNuke segmentation app">
-        <div class="card-content">
-            <div class="card-category open-source">Open Source Project</div>
-            <h3>Interactive Histopathology Segmentation Playground</h3>
-            <p>
-            An educational toolkit with from-scratch PyTorch implementations of UNet, UNet++, and ResNet-UNet, complete with an interactive Streamlit app for exploring the PanNuke dataset.
-            </p>
-            <div class="card-tags">
-            <span class="tag">PyTorch</span>
-            <span class="tag">Computer Vision</span>
-            <span class="tag">Segmentation</span>
-            </div>
-        </div>
-    </a>
-    
+    <div class="category-grid">
 
-    <a href="blog/word2vec.html" class="project-card">
-        <img src="img/word2vec/word2vec.jpeg" alt="A conceptual figure showing what we expect from word2vec manifold">
-        <div class="card-content">
-            <div class="card-category">Technical Write-up</div>
-            <h3>The Geometry of Words: A Word2Vec Playground</h3>
-            <p>
-            A from-scratch PyTorch implementation that demystifies Word2Vec by exploring successes, corpus biases, and the fascinating geometry of language.
-            </p>
-            <div class="card-tags">
-                <span class="tag">NLP</span>
-                <span class="tag">Embeddings</span>
-                <span class="tag">Word2Vec</span>
-                <span class="tag">Skip-Gram</span>
-            </div>
-        </div>
-    </a>
-
-    <a href="blog/backpropagation.html" class="project-card">
-        <img src="img/backpropagation/backpropagation.png" alt="A diagram showing the backward flow of error in a neural network">
-        <div class="card-content">
-            <div class="card-category">Technical Write-up</div>
-            <h3>The Engine of Learning: A Guide to Backpropagation</h3>
-            <p>
-            A from-scratch guide that demystifies the core algorithm of deep learning. Build the backpropagation algorithm from a single neuron to a full network, with interactive exercises.
-            </p>
-            <div class="card-tags">
-                <span class="tag">Backpropagation</span>
-                <span class="tag">Neural Networks</span>
-                <span class="tag">Calculus</span>
-            </div>
-        </div>
-    </a>
-
-    <a href="blog/attogpt.html" class="project-card">
-      <img src="img/proj_attogpt/punchcard_preview.png" alt="Vintage IBM punch card with neural network code">
-      <div class="card-content">
-        <div class="card-category open-source">Open Source Project</div>
-        <h3>attogpt: A Neural Network on Punch Cards</h3>
-        <p>
-          A complete GPT implementation compressed to just 31 lines of Python, then encoded in vintage IBM punch card format. From 240 lines to 31—an 87% reduction while maintaining full functionality.
-        </p>
-        <div class="card-tags">
-          <span class="tag">Neural Networks</span>
-          <span class="tag">Code Golf</span>
-          <span class="tag">Transformers</span>
-          <span class="tag">Historical Computing</span>
-        </div>
-      </div>
-    </a>
-
-    <!--
-    <a href="#" class="project-card">
-        <img src=" " alt="Placeholder image of a desk with notebooks">
-        <div class="card-content">
-          <div class="card-category">Coming Soon</div>
-          <h3>Title of Your Next Project or Article</h3>
-          <p>
-            A brief and exciting summary of what this project is all about will go here when it's ready.
-          </p>
-          <div class="card-tags">
-            <span class="tag">Deep Learning</span>
-          </div>
-        </div>
+      <a href="blog-technical.html" class="category-card technical">
+        <div class="cat-label">Technical Write-ups</div>
+        <h3>Deep dives &amp; tutorials</h3>
+        <p>Long-form walkthroughs of papers, algorithms, and core ideas in deep learning.</p>
+        <span class="cat-cta">Browse write-ups <span class="arrow">&rarr;</span></span>
       </a>
-    -->
 
-  </div>
+      <a href="blog-academic.html" class="category-card academic">
+        <div class="cat-label">Academic Projects</div>
+        <h3>Research work</h3>
+        <p>University research projects spanning fairness, generative modeling, and bio-imaging.</p>
+        <span class="cat-cta">Browse projects <span class="arrow">&rarr;</span></span>
+      </a>
+
+      <a href="blog-open-source.html" class="category-card open-source">
+        <div class="cat-label">Open Source</div>
+        <h3>Code &amp; tools</h3>
+        <p>Open source projects, educational toolkits, and code experiments.</p>
+        <span class="cat-cta">Browse repositories <span class="arrow">&rarr;</span></span>
+      </a>
+
+    </div>
+  </section>
+
 </main>
 
 <footer>
