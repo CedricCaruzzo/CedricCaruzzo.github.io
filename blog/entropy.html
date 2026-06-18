@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>You Could Have Invented Entropy Yourself</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+  <style>
+    body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
+    h1 { font-size: 2.4em; color: #1a1a1a; margin-bottom: 0.2em; font-weight: 700; }
+    h2 { font-size: 1.6em; color: #2c3e50; margin-top: 2.5em; margin-bottom: 1.2em; font-weight: 600; border-bottom: 2px solid #e74c3c; padding-bottom: 0.3em; }
+    h3 { font-size: 1.3em; color: #34495e; margin-bottom: 0.5em; margin-top: 1.8em; font-weight: 600; }
+    h4 { font-size: 1.1em; color: #2c3e50; margin-bottom: 0.4em; margin-top: 1.4em; font-weight: 600; }
+    p, ul, li { margin-bottom: 1em; font-size: 1.05em; text-align: justify; }
+    a { color: #e74c3c; text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; }
+    code { background: #f1f3f5; padding: 0.1em 0.4em; border-radius: 4px; font-size: 0.9em; }
+    .main-header { text-align: center; margin-bottom: 50px; padding-bottom: 30px; border-bottom: 1px solid #eee; }
+    .back-link { display: block; text-align: center; margin-bottom: 40px; font-weight: 600; }
+    figure { margin: 2.5em 0; text-align: center; }
+    figcaption { font-size: 0.9em; color: #7f8c8d; margin-top: 0.8em; line-height: 1.5; max-width: 80%; margin-left: auto; margin-right: auto; }
+    img { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+
+    /* Equation and derivation blocks */
+    .math-block { margin: 2em auto; padding: 1.5em; background-color: #f9f9f9; border-left: 4px solid #e74c3c; border-radius: 6px; }
+    .derivation-block { margin: 2em auto; padding: 1.5em; background-color: #fff8f8; border-left: 4px solid #c0392b; border-radius: 6px; }
+    .algorithm-box { background-color: #f8f9fa; border: 2px solid #e9ecef; padding: 20px; margin: 2em 0; border-radius: 8px; }
+
+    /* Callout boxes */
+    .insight-box { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; padding: 20px; margin: 2em 0; border-radius: 10px; }
+    .insight-box h4 { color: white; margin-top: 0; }
+    .insight-box p { margin-bottom: 0; }
+    .problem-box { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; padding: 20px; margin: 2em 0; border-radius: 10px; }
+    .problem-box h4 { color: white; margin-top: 0; }
+    .problem-box p { margin-bottom: 0; }
+    .solution-box { background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; padding: 20px; margin: 2em 0; border-radius: 10px; }
+    .solution-box h4 { color: white; margin-top: 0; }
+    .solution-box p { margin-bottom: 0; }
+
+    /* Progression banner between sections */
+    .progression { text-align: center; margin: 3em 0; font-size: 1.1em; color: #7f8c8d; letter-spacing: 0.05em; }
+    .progression strong { color: #e74c3c; }
+
+    /* Analysis/aside block */
+    .analysis-block { margin-top: 1.5em; padding-left: 1.5em; border-left: 3px solid #e74c3c; font-style: italic; }
+
+    /* Inline step counter */
+    .step-counter { color: #e74c3c; font-weight: bold; }
+
+    /* Reference section */
+    .references { font-size: 0.9em; color: #555; }
+    .references li { margin-bottom: 0.5em; }
+  </style>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+  <header class="main-header">
+    <h1>You Could Have Invented Entropy Yourself</h1>
+    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">From a Guessing Game to the Loss of a Language Model, One Question at a Time</p>
+    <p style="font-size: 0.9em; color: #aaa; text-align: center; margin: 0;">June 2026 &nbsp;·&nbsp; Cédric Caruzzo</p>
+  </header>
+
+  <a href="../blog.html" class="back-link">&larr; Back to Projects &amp; Writing Hub</a>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 1: INTRODUCTION                               -->
+  <!-- ====================================================== -->
+  <section id="introduction">
+
+    <div style="background:#fffbeb; border:1px solid #f59e0b; border-left:5px solid #f59e0b; border-radius:6px; padding:1em 1.4em; margin:0 0 2.4em 0; font-size:0.97em;">
+      <p style="margin:0;"><strong style="color:#92400e;">TL;DR.</strong> Entropy, and everything stacked on top of it, derived as one chain that begins with a number-guessing game and ends at the loss function of a language model: <code style="background:transparent; font-family:inherit; font-weight:600;">guess a number &rarr; halve the space &rarr; log&#8322;N questions &rarr; the bit &rarr; questions are a code &rarr; &minus;log&#8322;p per outcome &rarr; entropy &rarr; conditional entropy &rarr; cross-entropy &amp; perplexity &rarr; KL divergence &rarr; forward vs reverse KL</code>. Each link is the obvious next move once the last one clicks, and by the end an LLM's training loss is just bits per token, every piece of it something you could have invented yourself.</p>
+    </div>
+
+    <p>
+      Before any math, let's play a game.
+    </p>
+
+    <p>
+      I chose a number between 1 and 100. Can you guess it? Try to ask the fewest questions you can. Each guess, I will only tell you whether my number is higher or lower.
+    </p>
+
+    <!-- ============================================================ -->
+    <!--  INTERACTIVE: number guessing game                           -->
+    <!-- ============================================================ -->
+    <figure style="margin:2.5em 0; user-select:none;">
+      <div style="background:#f8f9fa; border-radius:14px; padding:26px 24px 22px; border:1px solid #e2e8f0;">
+
+        <div style="text-align:center; color:#475569; font-size:0.95em; margin-bottom:18px;">
+          I'm thinking of a number between <strong style="color:#1e293b;">1</strong> and <strong style="color:#1e293b;">100</strong>.
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:center; align-items:stretch; flex-wrap:wrap; margin-bottom:18px;">
+          <input id="ng-input" type="number" min="1" max="100" placeholder="your guess"
+            style="width:140px; padding:10px 14px; border:2px solid #cbd5e1; border-radius:10px; font-family:inherit; font-size:1em; text-align:center; color:#1e293b; outline:none;">
+          <button id="ng-btn" onclick="ngGuess()"
+            style="padding:10px 22px; border:none; border-radius:10px; background:#e74c3c; color:#fff; font-family:inherit; font-size:0.95em; font-weight:600; cursor:pointer;">Guess</button>
+          <button id="ng-reset" onclick="ngReset()"
+            style="padding:10px 18px; border:1px solid #cbd5e1; border-radius:10px; background:#fff; color:#64748b; font-family:inherit; font-size:0.9em; font-weight:600; cursor:pointer;">New&nbsp;number</button>
+        </div>
+
+        <div id="ng-feedback" style="text-align:center; min-height:32px; font-size:1.05em; font-weight:600; color:#475569; transition:color 0.2s;">
+          Make your first guess.
+        </div>
+
+        <div id="ng-strip" style="display:grid; grid-template-columns:repeat(10,1fr); gap:4px; margin-top:18px;"></div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:14px; border-top:1px solid #e2e8f0; gap:10px;">
+          <div style="color:#94a3b8; font-size:0.8em;">
+            Guesses: <span id="ng-count" style="font-family:monospace; color:#1e293b; font-weight:700;">0</span>
+          </div>
+          <div style="display:flex; gap:14px; color:#94a3b8; font-size:0.72em;">
+            <span><span style="display:inline-block; width:10px; height:10px; background:#fff; border:1px solid #cbd5e1; border-radius:2px; vertical-align:middle; margin-right:4px;"></span>still possible</span>
+            <span><span style="display:inline-block; width:10px; height:10px; background:#f1f5f9; border-radius:2px; vertical-align:middle; margin-right:4px;"></span>ruled out</span>
+          </div>
+        </div>
+
+      </div>
+      <figcaption>Play a few rounds. The strip shows what you still don't know: white cells are still in play, grey cells have been ruled out.</figcaption>
+    </figure>
+
+    <script>
+    (function(){
+      var secret, count, over, lo, hi, guesses;
+      var input = document.getElementById('ng-input');
+      var fb    = document.getElementById('ng-feedback');
+      var cntEl = document.getElementById('ng-count');
+      var strip = document.getElementById('ng-strip');
+      var btn   = document.getElementById('ng-btn');
+
+      function render(){
+        strip.innerHTML = '';
+        for(var n=1; n<=100; n++){
+          var live = (n >= lo && n <= hi);
+          var guessed = (guesses.indexOf(n) !== -1);
+          var isHit = (over && n === secret);
+          var c = document.createElement('div');
+          var css = 'text-align:center; font-family:monospace; font-size:0.62em; padding:4px 0; border-radius:3px; transition:background 0.25s, color 0.25s, border-color 0.25s; border:1px solid ';
+          if(isHit){
+            css += '#16a34a; background:#16a34a; color:#fff; font-weight:700;';
+          } else if(guessed){
+            css += '#e74c3c; background:#fff; color:#e74c3c; font-weight:700;';
+          } else if(live){
+            css += '#e2e8f0; background:#fff; color:#1e293b;';
+          } else {
+            css += 'transparent; background:#f1f5f9; color:#cbd5e1;';
+          }
+          c.style.cssText = css;
+          c.textContent = n;
+          strip.appendChild(c);
+        }
+      }
+
+      function reset(){
+        secret = Math.floor(Math.random()*100)+1;
+        count = 0; over = false; lo = 1; hi = 100; guesses = [];
+        cntEl.textContent = '0';
+        fb.style.color = '#475569';
+        fb.textContent = 'Make your first guess.';
+        btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer';
+        input.value = ''; input.disabled = false;
+        render();
+        input.focus();
+      }
+
+      window.ngGuess = function(){
+        if(over) return;
+        var g = parseInt(input.value, 10);
+        if(isNaN(g) || g < 1 || g > 100){
+          fb.style.color = '#e74c3c';
+          fb.textContent = 'Pick a whole number between 1 and 100.';
+          return;
+        }
+        count++;
+        cntEl.textContent = count;
+        guesses.push(g);
+
+        if(g === secret){
+          over = true;
+          fb.style.color = '#16a34a';
+          fb.innerHTML = '&#127881; Found it: <strong>' + secret + '</strong> in ' + count + (count === 1 ? ' guess.' : ' guesses.');
+          btn.disabled = true; btn.style.opacity = '0.5'; btn.style.cursor = 'default';
+          input.disabled = true;
+        } else if(g < secret){
+          lo = Math.max(lo, g+1);
+          fb.style.color = '#475569';
+          fb.innerHTML = 'Higher &uarr;';
+          input.value = ''; input.focus();
+        } else {
+          hi = Math.min(hi, g-1);
+          fb.style.color = '#475569';
+          fb.innerHTML = 'Lower &darr;';
+          input.value = ''; input.focus();
+        }
+        render();
+      };
+
+      window.ngReset = reset;
+      input.addEventListener('keydown', function(e){ if(e.key === 'Enter') ngGuess(); });
+      reset();
+    })();
+    </script>
+
+    <p>
+      If you find the strategy to solve this game intuitive, then you understand one of the most important principles of AI!
+    </p>
+
+    <blockquote style="margin:1.5em 0; padding:0.6em 1.4em; border-left:4px solid #e2e8f0; color:#64748b; font-style:italic;">
+      In all fairness, this is actually the cornerstone of information theory, rather than only AI.
+    </blockquote>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 2: WHAT IS THE OPTIMAL STRATEGY?              -->
+  <!-- ====================================================== -->
+  <section id="optimal-strategy">
+    <h2>What is the optimal strategy?</h2>
+
+    <p>
+      Let's ask ourselves: what is the probability of picking the right number, given it was picked uniformly at random?
+    </p>
+
+    <div class="math-block">
+      $$P(x) = \frac{1}{100}$$
+    </div>
+
+    <p>
+      These are very low odds. You might also notice that a guess is not just a bid to be right; even a wrong one is <em>informative</em>, because it <em>narrows</em> what is left, and that narrowing is the thing we should really be measuring. Suppose you guess 71: what are the probabilities that my number is exactly 71, less than 71, or more than 71?
+    </p>
+
+    <div class="math-block">
+      $$
+      \begin{aligned}
+        P(x = 71) &= \tfrac{1}{100}  &&\longrightarrow\; \text{0 numbers left to search} \\[6pt]
+        P(x < 71) &= \tfrac{70}{100} &&\longrightarrow\; \text{70 numbers left to search} \\[6pt]
+        P(x > 71) &= \tfrac{29}{100} &&\longrightarrow\; \text{29 numbers left to search}
+      \end{aligned}
+      $$
+    </div>
+
+    <!-- ============================================================ -->
+    <!--  VISUAL: guessing 71 splits the line into 3 lopsided parts   -->
+    <!-- ============================================================ -->
+    <figure style="margin:2.2em 0; user-select:none;">
+      <div style="background:#f8f9fa; border-radius:14px; padding:24px 22px 20px; border:1px solid #e2e8f0;">
+        <div style="display:flex; align-items:stretch; gap:3px; height:46px; font-family:monospace; font-size:0.78em; font-weight:700;">
+          <div style="flex:70; display:flex; align-items:center; justify-content:center; background:#fff; border:1px solid #e2e8f0; border-radius:6px; color:#475569;">
+            x &lt; 71 &nbsp;<span style="color:#94a3b8; font-weight:400;">(70 numbers)</span>
+          </div>
+          <div style="flex:1; min-width:34px; display:flex; align-items:center; justify-content:center; background:#e74c3c; border-radius:6px; color:#fff;">
+            71
+          </div>
+          <div style="flex:29; display:flex; align-items:center; justify-content:center; background:#fff; border:1px solid #e2e8f0; border-radius:6px; color:#475569;">
+            x &gt; 71 &nbsp;<span style="color:#94a3b8; font-weight:400;">(29)</span>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; color:#94a3b8; font-size:0.72em; font-family:monospace; margin-top:8px;">
+          <span>1</span><span>100</span>
+        </div>
+      </div>
+      <figcaption>Guessing 71 cuts the line into two very uneven pieces. Most of the time (70%) you land in the big chunk on the left and have barely narrowed anything down.</figcaption>
+    </figure>
+
+    <p>
+      So how much does this guess actually buy us? Let's weight each outcome by how likely it is, and compute the expected number of numbers we still have to search through afterwards:
+    </p>
+
+    <div class="math-block">
+      $$
+      \begin{aligned}
+        \mathbb{E}[\text{numbers left}]
+        &= \underbrace{\tfrac{1}{100}\cdot 0}_{x\,=\,71}
+         + \underbrace{\tfrac{70}{100}\cdot 70}_{x\,<\,71}
+         + \underbrace{\tfrac{29}{100}\cdot 29}_{x\,>\,71} \\[8pt]
+        &= 0 + \tfrac{4900}{100} + \tfrac{841}{100} \\[6pt]
+        &= 57.41
+      \end{aligned}
+      $$
+    </div>
+
+    <p>
+      After one guess, we expect to have <strong>57.41</strong> numbers still left to check. We started with 100 and, on average, more than half are still on the table. For a single question, that is a poor return.
+    </p>
+
+    <p>
+      From this, we understand that what we want is a strategy that minimises the expected number left. And the equation we just wrote becomes handy. Instead of locking in 71, let's keep the guess as a variable $x$ and solve for the best one:
+    </p>
+
+    <div class="derivation-block">
+      <p><strong>Step 1.</strong> Write the expected number left, weighting each outcome by its probability:</p>
+      $$E(x) = \frac{1}{100}(0) + \frac{x-1}{100}(x-1) + \frac{100-x}{100}(100-x)$$
+
+      <p><strong>Step 2.</strong> The first term is zero, and each remaining product is a square over 100:</p>
+      $$E(x) = \frac{(x-1)^2}{100} + \frac{(100-x)^2}{100}$$
+
+      <p><strong>Step 3.</strong> Put them over the common denominator:</p>
+      $$E(x) = \frac{(x-1)^2 + (100-x)^2}{100}$$
+    </div>
+
+    <p>
+      Now let's solve. This is a parabola in $x$, so its minimum is wherever the derivative is zero:
+    </p>
+
+    <div class="derivation-block">
+      <p><strong>Step 1.</strong> Differentiate each square with the chain rule, $\;\frac{d}{dx}(100-x)^2 = -2(100-x)$:</p>
+      $$E'(x) = \frac{2(x-1) - 2(100-x)}{100}$$
+
+      <p><strong>Step 2.</strong> Set it to zero and multiply both sides by 100:</p>
+      $$2(x-1) - 2(100-x) = 0$$
+
+      <p><strong>Step 3.</strong> Divide by 2:</p>
+      $$(x-1) - (100-x) = 0$$
+
+      <p><strong>Step 4.</strong> Drop the parentheses, watching the signs:</p>
+      $$x - 1 - 100 + x = 0$$
+
+      <p><strong>Step 5.</strong> Collect terms:</p>
+      $$2x - 101 = 0$$
+
+      <p><strong>Step 6.</strong> Solve for $x$:</p>
+      $$x = \frac{101}{2} = 50.5$$
+    </div>
+
+    <p>
+      Since the number is a whole number, that means guessing <strong>50 or 51</strong>: the middle. Plugging it back in, the expected number left drops to
+    </p>
+
+    <div class="math-block">
+      $$E(50) = \frac{49^2 + 50^2}{100} = 49.01$$
+    </div>
+
+    <p>
+      Compare that to the 57.41 we got from guessing 71. The middle is the most informative guess we can make, because it splits the remaining numbers as evenly as possible: whatever answer comes back, we throw away half the space.
+    </p>
+
+    <p>
+      After that first guess, we are left with about 50 numbers and the exact same problem, just smaller. So we do the same thing again: ask the middle, halve it again. And again.
+    </p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 3: COUNTING THE QUESTIONS (BITS, log2)        -->
+  <!-- ====================================================== -->
+  <section id="counting-questions">
+    <h2>So what is the fewest questions we need?</h2>
+
+    <p>
+      Look at what one guess in this game really is. You are never told the number. You are told one thing, higher or lower, and that is the most basic signal there is: a single yes or no. So every guess is a yes-or-no question. And we already know which one is best: the guess that splits what is left straight down the middle, because its answer is a coin flip that rules out half the remaining numbers no matter which way it falls.
+    </p>
+
+    <p>
+      The whole game is a chain of these yes-or-no splits, each one halving the numbers still in play. So the fewest questions we need is simply how many times we can halve 100 before a single number is left. And "how many times can I halve a quantity" is the exact definition of the base-2 logarithm:
+    </p>
+
+    <div class="math-block">
+      $$\log_2(100) \approx 6.64$$
+    </div>
+
+    <p>
+      So the answer is 6.64. But 6.64 what? 6.64 perfect, cut-it-in-half questions. And that should nag at you, because you cannot ask 0.64 of a question. A question is either asked or it is not, so the count has to be a whole number. In practice you round up and ask 7, which is always <strong>enough</strong> to corner the number. Yet the 6.64 is clearly telling us something real. It is not an arbitrary fraction either: six questions can only tell apart $2^6 = 64$ possibilities, which is not enough for 100, while seven can tell apart $2^7 = 128$, which is more than enough. The honest cost lives somewhere between 6 and 7.
+    </p>
+
+    <p>
+      So what does a fractional number of questions even look like? It is easiest to see on a smaller game, one we can draw in full. Below is the exact same halving strategy laid out as a tree. Each split sends the lower half left and the higher half right; follow any number down from the top and you read off the questions it costs. Slide the size of the game and watch the bottom edge.
+    </p>
+
+    <!-- ============================================================ -->
+    <!--  INTERACTIVE: halving as a binary tree, small N              -->
+    <!-- ============================================================ -->
+    <figure style="margin:2.5em 0; user-select:none;">
+      <div style="background:#f8f9fa; border-radius:14px; padding:22px 22px 18px; border:1px solid #e2e8f0;">
+        <div style="display:flex; gap:14px; align-items:center; justify-content:center; margin-bottom:8px; flex-wrap:wrap;">
+          <span style="color:#475569; font-size:0.92em;">The game runs from <strong style="color:#1e293b;">1</strong> to <strong id="bt-n" style="color:#1e293b;">10</strong></span>
+          <input id="bt-slider" type="range" min="2" max="16" value="10" style="width:240px; accent-color:#e74c3c; cursor:pointer;">
+        </div>
+        <div id="bt-stats" style="text-align:center; color:#64748b; font-size:0.85em; margin-bottom:14px; min-height:2.8em; line-height:1.5;"></div>
+        <div id="bt-svg" style="overflow-x:auto;"></div>
+      </div>
+      <figcaption>The halving game, small enough to see whole. Each split sends the lower half left (a <strong>0</strong>) and the higher half right (a <strong>1</strong>), so every number ends up with a 0/1 codeword whose length is how many questions it took. At a power of 2 the bottom is one clean row and log&#8322;N is a whole number; everywhere else it goes ragged, a few numbers needing one extra question. That raggedness is what a fractional log&#8322; means.</figcaption>
+    </figure>
+
+    <script>
+    (function(){
+      var slider=document.getElementById('bt-slider');
+      var nEl=document.getElementById('bt-n');
+      var statsEl=document.getElementById('bt-stats');
+      var svgEl=document.getElementById('bt-svg');
+
+      function colorFor(t){
+        var a=[37,99,235], b=[16,185,129];
+        function ch(i){ return Math.round(a[i]+(b[i]-a[i])*t); }
+        return 'rgb('+ch(0)+','+ch(1)+','+ch(2)+')';
+      }
+      function build(N){
+        var cells=[];
+        (function rec(lo,hi,depth,bits){
+          cells.push({lo:lo,hi:hi,depth:depth,bits:bits,leaf:(lo===hi)});
+          if(lo===hi) return;
+          var m=Math.floor((lo+hi)/2);
+          rec(lo,m,depth+1,bits+'0');
+          rec(m+1,hi,depth+1,bits+'1');
+        })(1,N,0,'');
+        return cells;
+      }
+      function render(){
+        var N=+slider.value;
+        nEl.textContent=N;
+        var cells=build(N);
+        var D=0; cells.forEach(function(c){ if(c.leaf && c.depth>D) D=c.depth; });
+        var ML=92, MR=12, MT=6, rowH=60, Wsvg=1000;
+        var plotW=Wsvg-ML-MR, rows=D+1, Hsvg=MT+rows*rowH+6;
+        var svg='<svg viewBox="0 0 '+Wsvg+' '+Hsvg+'" style="width:100%; height:auto; min-width:520px; font-family:Inter,sans-serif;">';
+        for(var d=0; d<=D; d++){
+          var ry=MT+d*rowH;
+          var lab = d===0 ? 'start' : (d + (d===1?' question':' questions'));
+          svg+='<text x="'+(ML-10)+'" y="'+(ry+rowH/2+4)+'" text-anchor="end" font-size="11" fill="#94a3b8">'+lab+'</text>';
+        }
+        cells.forEach(function(c){
+          var x0=ML+(c.lo-1)/N*plotW, x1=ML+c.hi/N*plotW, w=x1-x0;
+          var y=MT+c.depth*rowH;
+          var h=c.leaf ? (D-c.depth+1)*rowH : rowH;
+          var fill=colorFor(((c.lo+c.hi)/2-0.5)/N);
+          svg+='<rect x="'+(x0+1.5)+'" y="'+(y+1.5)+'" width="'+(w-3)+'" height="'+(h-3)+'" rx="5" fill="'+fill+'"/>';
+          var cx=x0+w/2;
+          var main=c.leaf ? (''+c.lo) : (c.lo+'-'+c.hi);
+          var fs = w<24?9 : (w<40?11:13);
+          svg+='<text x="'+cx+'" y="'+(y+(c.leaf?rowH/2-2:rowH/2+4))+'" text-anchor="middle" font-size="'+fs+'" font-weight="600" fill="#fff">'+main+'</text>';
+          if(c.leaf && c.bits){
+            svg+='<text x="'+cx+'" y="'+(y+rowH/2+13)+'" text-anchor="middle" font-size="9.5" fill="#fff" opacity="0.82" font-family="monospace">'+c.bits+'</text>';
+          }
+          if(c.depth===1 && w>70){
+            svg+='<text x="'+cx+'" y="'+(y+13)+'" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff" opacity="0.85">'+(c.bits==='0'?'no → 0':'yes → 1')+'</text>';
+          }
+        });
+        svg+='</svg>';
+        svgEl.innerHTML=svg;
+
+        var leaves=cells.filter(function(c){return c.leaf;});
+        var byD={}; leaves.forEach(function(c){ byD[c.depth]=(byD[c.depth]||0)+1; });
+        var depths=Object.keys(byD).map(Number).sort(function(a,b){return a-b;});
+        var avg=leaves.reduce(function(s,c){return s+c.depth;},0)/N;
+        var log2=Math.log(N)/Math.log(2);
+        var msg;
+        if(depths.length===1){
+          msg='<strong style="color:#16a34a;">'+N+' is a power of 2.</strong> Every number costs exactly '+depths[0]+' questions, so log₂'+N+' = '+log2.toFixed(2)+' is a whole number and nothing is wasted.';
+        } else {
+          var shD=depths[0], dpD=depths[1];
+          var dpC=byD[dpD], shC=byD[shD];
+          var freq=dpC/N*100, gap=avg-log2;
+          msg='<div><strong>'+dpC+'</strong> of '+N+' numbers need '+dpD+' questions, so the extra one fires <strong>'+freq.toFixed(0)+'%</strong> of the time; the other <strong>'+shC+'</strong> stop at '+shD+'.</div>'
+             +'<div style="margin-top:5px;">average = <strong>'+avg.toFixed(2)+'</strong> &nbsp;&middot;&nbsp; log₂'+N+' = '+log2.toFixed(2)+' (the floor) &nbsp;&middot;&nbsp; waste = average &minus; log₂ = <strong>'+gap.toFixed(2)+'</strong></div>';
+        }
+        statsEl.innerHTML=msg;
+      }
+      slider.addEventListener('input',render);
+      render();
+    })();
+    </script>
+
+    <p>
+      Two things to notice. Land on a power of 2, like 8 or 16, and the tree is a perfect block: every number sits on the same bottom row, and log&#8322;N is exactly a whole number. Step off it, and the bottom goes ragged. Some numbers get pinned down a row early, the rest need one more question, and the average always settles above log&#8322;N. For 100 the very same raggedness happens between rows 6 and 7, which is the 6.64 we could not round away.
+    </p>
+
+    <p>
+      The tree puts a number on something else, too: how often you actually pay for that extra question. For 100, the deep row holds 72 of the numbers and the shallow row holds 28, so 72% of the time you end up asking the 7th question, and 28% of the time you are done at 6. Weigh those and the true average is $0.72 \times 7 + 0.28 \times 6 = 6.72$ questions.
+    </p>
+
+    <p>
+      That 0.72 is worth a second look, because it is not the 0.64 from $\log_2 100 = 6.64$. The 0.64 is the ideal, what one number in a hundred would cost if questions could come in fractions. The 0.72 is what you actually pay, nudged higher because the deepest numbers always come in pairs: every split sends two of them down, so the deep row holds an even count that slightly overshoots the ideal. The difference, $6.72 - 6.64 = 0.08$ of a question per game, is the waste: the toll for asking in whole questions, and it vanishes exactly when N is a power of 2.
+    </p>
+
+    <p>
+      This is the gap Claude Shannon closed in 1948. The thing that genuinely equals 6.64 is not a number of questions, it is an amount of <em>information</em>, and information has no reason to come in whole questions. Shannon gave it a unit: the <em>bit</em>. One bit is the information carried by a single perfect yes-or-no answer, the answer to a 50/50 question, and each 0 or 1 in the codewords above is exactly one bit. Measured that way, learning which of 100 <strong>equally likely</strong> numbers I picked is worth $\log_2(100) \approx 6.64$ bits. You round the questions up to 7, but the information was 6.64 bits all along.
+    </p>
+
+    <p>
+      We worked all of that out on paper. Now let's watch it hold up. We will pit the optimal halving strategy against a lazy baseline that splits the remaining range at a random point, run thousands of games of each, and watch the averages settle: halving just above the floor, around the 6.72 we predicted, the random baseline far above it.
+    </p>
+
+    <!-- ============================================================ -->
+    <!--  INTERACTIVE: Monte Carlo, halving vs random split           -->
+    <!-- ============================================================ -->
+    <figure style="margin:2.5em 0; user-select:none;">
+      <div style="background:#f8f9fa; border-radius:14px; padding:24px 22px 20px; border:1px solid #e2e8f0;">
+
+        <div style="display:flex; gap:14px; align-items:center; justify-content:center; margin-bottom:20px; flex-wrap:wrap;">
+          <button id="mc-run" onclick="mcRun()"
+            style="padding:10px 24px; border:none; border-radius:10px; background:#e74c3c; color:#fff; font-family:inherit; font-size:0.95em; font-weight:600; cursor:pointer;">Run simulation</button>
+          <div style="color:#94a3b8; font-size:0.85em;">Games played: <span id="mc-games" style="font-family:monospace; color:#1e293b; font-weight:700;">0</span></div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr; gap:14px; margin-bottom:22px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;">
+              <span style="font-size:0.82em; font-weight:600; color:#2563eb;">Halving (optimal)</span>
+              <span style="font-size:0.78em; color:#94a3b8; font-family:monospace;">this game: <span id="mc-h-q">0</span> q &nbsp;&middot;&nbsp; avg <span id="mc-h-avg">&ndash;</span></span>
+            </div>
+            <div style="position:relative; height:18px; background:#f1f5f9; border-radius:5px; overflow:hidden;">
+              <div id="mc-h-band" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:#3b82f6; border-radius:5px; transition:left 0.08s linear, width 0.08s linear;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;">
+              <span style="font-size:0.82em; font-weight:600; color:#d97706;">Random split (baseline)</span>
+              <span style="font-size:0.78em; color:#94a3b8; font-family:monospace;">this game: <span id="mc-r-q">0</span> q &nbsp;&middot;&nbsp; avg <span id="mc-r-avg">&ndash;</span></span>
+            </div>
+            <div style="position:relative; height:18px; background:#f1f5f9; border-radius:5px; overflow:hidden;">
+              <div id="mc-r-band" style="position:absolute; top:0; bottom:0; left:0; width:100%; background:#f59e0b; border-radius:5px; transition:left 0.08s linear, width 0.08s linear;"></div>
+            </div>
+          </div>
+        </div>
+
+        <canvas id="mc-canvas" width="900" height="320" style="width:100%; max-width:900px; display:block; margin:0 auto; border-radius:8px;"></canvas>
+
+      </div>
+      <figcaption>Each strategy plays thousands of games. The bars show one game in progress narrowing toward the answer; the plot tracks the running average number of questions. Halving hugs the log&#8322;100 floor from above, while random splitting wastes its questions on lopsided cuts.</figcaption>
+    </figure>
+
+    <script>
+    (function(){
+      var LOG2_100 = Math.log(100)/Math.log(2);   // 6.6439
+      var MAXG = 2500, PERFRAME = 12;
+      var cvs = document.getElementById('mc-canvas'), ctx = cvs.getContext('2d');
+      var W = cvs.width, H = cvs.height;
+
+      var gamesEl = document.getElementById('mc-games');
+      var hAvgEl = document.getElementById('mc-h-avg'), rAvgEl = document.getElementById('mc-r-avg');
+      var hQEl = document.getElementById('mc-h-q'), rQEl = document.getElementById('mc-r-q');
+      var hBand = document.getElementById('mc-h-band'), rBand = document.getElementById('mc-r-band');
+      var runBtn = document.getElementById('mc-run');
+
+      var sumH, sumR, n, samples, running;
+      var demoH, demoR;
+
+      function newDemo(){
+        return { lo:1, hi:100, secret: Math.floor(Math.random()*100)+1, q:0, hold:0 };
+      }
+      function stepDemo(d, isRandom){
+        if(d.hold > 0){ d.hold--; if(d.hold === 0){ var nd=newDemo(); d.lo=nd.lo; d.hi=nd.hi; d.secret=nd.secret; d.q=0; } return; }
+        if(d.lo >= d.hi){ d.hold = 14; return; }
+        var m = isRandom ? d.lo + Math.floor(Math.random()*(d.hi-d.lo)) : Math.floor((d.lo+d.hi)/2);
+        d.q++;
+        if(d.secret > m) d.lo = m+1; else d.hi = m;
+      }
+      function renderBand(band, qEl, d){
+        band.style.left = ((d.lo-1)/100*100) + '%';
+        band.style.width = ((d.hi-d.lo+1)/100*100) + '%';
+        qEl.textContent = d.q;
+      }
+      function play(isRandom){
+        var lo=1, hi=100, q=0, secret=Math.floor(Math.random()*100)+1;
+        while(lo < hi){
+          var m = isRandom ? lo + Math.floor(Math.random()*(hi-lo)) : Math.floor((lo+hi)/2);
+          q++;
+          if(secret > m) lo = m+1; else hi = m;
+        }
+        return q;
+      }
+
+      function drawPlot(){
+        ctx.clearRect(0,0,W,H);
+        ctx.fillStyle='#f8f9fa'; ctx.fillRect(0,0,W,H);
+        var pad={l:54, r:134, t:18, b:42};
+        var pw=W-pad.l-pad.r, ph=H-pad.t-pad.b;
+        var yMin=6, yMax=10, X_MIN=2;
+        function X(g){ var t=Math.log(g/X_MIN)/Math.log(MAXG/X_MIN); if(t<0)t=0; if(t>1)t=1; return pad.l + t*pw; }
+        function Y(v){ if(v>yMax)v=yMax; if(v<yMin)v=yMin; return pad.t + ph*(1-(v-yMin)/(yMax-yMin)); }
+
+        ctx.font='12px Inter,sans-serif';
+        // horizontal gridlines
+        for(var v=yMin; v<=yMax; v+=1){
+          var y=Y(v);
+          ctx.strokeStyle='#e9ecef'; ctx.lineWidth=1;
+          ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+pw,y); ctx.stroke();
+          ctx.fillStyle='#94a3b8'; ctx.textAlign='right'; ctx.fillText(v, pad.l-8, y+4);
+        }
+        // vertical gridlines on the log axis
+        var xticks=[10,100,1000];
+        ctx.textAlign='center';
+        for(var k=0;k<xticks.length;k++){
+          var gx=X(xticks[k]);
+          ctx.strokeStyle='#eef1f4'; ctx.lineWidth=1;
+          ctx.beginPath(); ctx.moveTo(gx,pad.t); ctx.lineTo(gx,pad.t+ph); ctx.stroke();
+          ctx.fillStyle='#94a3b8'; ctx.fillText(xticks[k], gx, pad.t+ph+16);
+        }
+        ctx.fillStyle='#64748b'; ctx.textAlign='center';
+        ctx.fillText('games played (log scale)', pad.l+pw/2, H-6);
+        ctx.save(); ctx.translate(15, pad.t+ph/2); ctx.rotate(-Math.PI/2);
+        ctx.fillText('avg. questions', 0, 0); ctx.restore();
+
+        var yr=Y(LOG2_100);
+        ctx.strokeStyle='#94a3b8'; ctx.setLineDash([5,4]); ctx.lineWidth=1.5;
+        ctx.beginPath(); ctx.moveTo(pad.l,yr); ctx.lineTo(pad.l+pw,yr); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle='#64748b'; ctx.textAlign='left'; ctx.font='bold 12px Inter,sans-serif';
+        ctx.fillText('log₂100 ≈ 6.64', pad.l+pw+8, yr+4);
+
+        function curve(key,color){
+          if(samples.length < 2) return;
+          ctx.strokeStyle=color; ctx.lineWidth=2.5; ctx.lineJoin='round';
+          ctx.beginPath();
+          for(var i=0;i<samples.length;i++){
+            var s=samples[i], x=X(s.g), y=Y(s[key]);
+            if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+          }
+          ctx.stroke();
+        }
+        curve('r','#f59e0b');
+        curve('h','#3b82f6');
+
+        var lx=pad.l+pw+8, ly=pad.t+6;
+        ctx.font='12px Inter,sans-serif'; ctx.textAlign='left';
+        ctx.fillStyle='#3b82f6'; ctx.fillRect(lx,ly,12,12);
+        ctx.fillStyle='#475569'; ctx.fillText('Halving', lx+18, ly+11);
+        ctx.fillStyle='#f59e0b'; ctx.fillRect(lx,ly+22,12,12);
+        ctx.fillStyle='#475569'; ctx.fillText('Random', lx+18, ly+33);
+      }
+
+      function frame(){
+        if(!running) return;
+        var batch = Math.min(Math.max(2, Math.floor(n*0.03)), MAXG-n);
+        for(var i=0;i<batch;i++){ sumH += play(false); sumR += play(true); n++; }
+        samples.push({g:n, h:sumH/n, r:sumR/n});
+        gamesEl.textContent = n;
+        hAvgEl.textContent = (sumH/n).toFixed(2);
+        rAvgEl.textContent = (sumR/n).toFixed(2);
+        stepDemo(demoH, false); renderBand(hBand, hQEl, demoH);
+        stepDemo(demoR, true);  renderBand(rBand, rQEl, demoR);
+        drawPlot();
+        if(n >= MAXG){
+          running=false;
+          runBtn.textContent='Run again';
+          runBtn.disabled=false; runBtn.style.opacity='1'; runBtn.style.cursor='pointer';
+          return;
+        }
+        requestAnimationFrame(frame);
+      }
+
+      window.mcRun=function(){
+        if(running) return;
+        sumH=0; sumR=0; n=0; samples=[];
+        demoH=newDemo(); demoR=newDemo();
+        running=true;
+        runBtn.textContent='Running…';
+        runBtn.disabled=true; runBtn.style.opacity='0.6'; runBtn.style.cursor='default';
+        drawPlot();
+        requestAnimationFrame(frame);
+      };
+
+      drawPlot();
+    })();
+    </script>
+
+    <p>
+      Two things happen. The random baseline drifts up to around 8.4 questions per game, about a quarter more than it needs, because it keeps making lopsided cuts that barely shrink the space. Halving settles right around 6.7, and it never dips below the $\log_2(100)$ line.
+    </p>
+
+    <div style="background:#f1f5f9; border-left:4px solid #64748b; border-radius:6px; padding:1em 1.4em; margin:1.8em 0; font-size:0.98em;">
+      <strong style="color:#475569;">Exercise.</strong> That 8.4 is not a quirk of the simulation. Show that for $n$ equally likely numbers, the random-split strategy needs on average $2(\mathcal{H}_n - 1)$ questions, where $\mathcal{H}_n = 1 + \tfrac{1}{2} + \tfrac{1}{3} + \cdots + \tfrac{1}{n}$ is the $n$-th harmonic number. (Hint: condition on where the first random split lands and set up a recurrence.) For $n = 100$ this works out to about 8.37. The full derivation is in the <a href="#appendix">appendix</a>.
+    </div>
+
+    <p>
+      That line is the real lesson. $\log_2(100)$ is not just what the best strategy happens to score, it is a floor that no strategy can beat. The best one presses right up against it from above, landing on the 6.72 we predicted, while the random baseline never comes close. The 0.08 between 6.72 and the floor is the same waste we already named: the toll for whole questions.
+    </p>
+
+    <p>
+      So we have our answer, and we have a unit for it. The cost of finding one outcome among 100 equally likely ones is about 6.64 bits. But we have been calling halving "optimal" on something close to faith. Before we ask what happens when the game is not fair, we should make sure we have really found the best possible strategy, and understand why nothing can beat it.
+    </p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 4: FROM QUESTIONS TO CODES                    -->
+  <!-- ====================================================== -->
+  <section id="from-questions-to-codes">
+    <h2>From questions to codes</h2>
+
+    <p>
+      So far, we have come to halving as our best strategy, with empirical direction motivating it. But are there any better strategies?
+    </p>
+
+    <p>
+      Every time you play, the answers you collect are a string of yes-or-nos, which we have been writing as 0s and 1s. Trace any number down the tree and you get its string: in the game from 1 to 16, the number 11 comes out as <code>1010</code>, the number 3 as <code>0010</code>, and every number has its own. The string is enough to rebuild the number, too. Hand someone the bits <code>1010</code> and, walking the same tree, they land on 11 with nothing else to go on.
+    </p>
+
+    <p style="font-size:0.95em; color:#64748b;">
+      (A note for anyone who counts from zero: because our numbers start at 1, the codeword for the $k$-th number is the binary of $k-1$. So <code>0000</code> is the number 1, not 0, and the last bit flips the usual odd/even rule. Nudge your index by one and it all lines up; nothing in the argument depends on where we start counting.)
+    </p>
+
+    <p>
+      So the game was never really about questions. It was about <em>encoding</em>. The tree assigns every number a codeword, and reading off the codeword is the same as naming the number. A friend who knows the tree can take your bits and recover exactly what you meant.
+    </p>
+
+    <figure style="margin:2.2em 0; user-select:none;">
+      <div style="background:#f8f9fa; border-radius:14px; padding:22px 18px; border:1px solid #e2e8f0; display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;">
+        <div style="background:#eff6ff; border:2px solid #3b82f6; border-radius:10px; padding:10px 16px; text-align:center; color:#1e40af;"><div style="font-size:0.7em; color:#60a5fa;">number</div><strong style="font-size:1.2em;">11</strong></div>
+        <span style="color:#94a3b8; font-size:0.8em;">encode &rarr;</span>
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:10px 16px; font-family:monospace; font-weight:700; color:#475569;">1010</div>
+        <span style="color:#94a3b8; font-size:0.8em;">transmit &rarr;</span>
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:10px 16px; font-family:monospace; font-weight:700; color:#475569;">1010</div>
+        <span style="color:#94a3b8; font-size:0.8em;">decode &rarr;</span>
+        <div style="background:#f0fdf4; border:2px solid #16a34a; border-radius:10px; padding:10px 16px; text-align:center; color:#15803d;"><div style="font-size:0.7em; color:#4ade80;">number</div><strong style="font-size:1.2em;">11</strong></div>
+      </div>
+      <figcaption>The questions were a communication channel all along. The codeword is the message; sending it sends the number.</figcaption>
+    </figure>
+
+    <p>
+      Once you see it as a code, "best" finally has a precise meaning. The best strategy is the one that, on average, sends the shortest messages. So: is halving really the shortest code, or could something cleverer do better?
+    </p>
+
+    <h3>The code you would have written anyway</h3>
+
+    <p>
+      Suppose I asked you to encode the numbers 1 to 16 in bits. You would not draw a tree. You would just count in binary: <code>0000</code>, <code>0001</code>, <code>0010</code>, all the way to <code>1111</code>. Sixteen numbers, four bits each, done.
+    </p>
+
+    <p>
+      Here is the surprise: that is <em>exactly</em> the halving code. Slide the tree above to 16 and look. Every codeword is four bits, and they are the binary numerals in order. When the count is a power of 2, the obvious fixed-width encoding and the clever halving strategy are the same thing. You had already invented it.
+    </p>
+
+    <p>
+      The two only part ways when the count is not a power of 2. Slide the tree to 15. Fixed-width can do nothing clever: 15 still needs 4 bits, because 3 bits can only address 8 things, so every number costs 4. But halving hands a 3-bit codeword to one of the numbers and 4 bits to the rest, averaging 3.93. It compresses, by refusing to spend a bit it does not need.
+    </p>
+
+    <p>
+      How far can that go? The two codes agree on every number but the last, so the whole saving is hiding in what happens to 15:
+    </p>
+
+    <figure style="margin:2.2em 0; user-select:none;">
+      <div style="background:#f8f9fa; border-radius:14px; padding:22px 24px 18px; border:1px solid #e2e8f0; max-width:480px; margin:0 auto;">
+        <div style="display:grid; grid-template-columns:auto 1fr 1fr; gap:0.5em 1.6em; align-items:center;">
+          <span></span>
+          <span style="text-align:center; font-size:0.7em; text-transform:uppercase; letter-spacing:0.5px; color:#94a3b8;">fixed-width</span>
+          <span style="text-align:center; font-size:0.7em; text-transform:uppercase; letter-spacing:0.5px; color:#94a3b8;">halving (ours)</span>
+
+          <span style="color:#64748b; font-size:0.92em;">1</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">0000</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">0000</span>
+
+          <span style="color:#64748b; font-size:0.92em;">2</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">0001</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">0001</span>
+
+          <span style="text-align:center; color:#cbd5e1;">&#8942;</span>
+          <span style="text-align:center; color:#cbd5e1; font-size:0.8em; font-style:italic;">identical</span>
+          <span style="text-align:center; color:#cbd5e1;">&#8942;</span>
+
+          <span style="color:#64748b; font-size:0.92em;">14</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">1101</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">1101</span>
+
+          <span style="color:#1e293b; font-weight:700; font-size:0.92em;">15</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">111<span style="color:#e74c3c; text-decoration:line-through;">0</span></span>
+          <span style="text-align:center; font-family:monospace; color:#16a34a; font-weight:700; background:#f0fdf4; border-radius:4px;">111</span>
+
+          <span style="color:#cbd5e1; font-size:0.82em;">(16th)</span>
+          <span style="text-align:center; font-family:monospace; color:#cbd5e1;">1111</span>
+          <span style="text-align:center; color:#cbd5e1; font-size:0.82em; font-style:italic;">never made</span>
+        </div>
+      </div>
+      <figcaption>Identical for 1 through 14. They split only on 15: fixed-width writes <code>1110</code>, holding it apart from a sixteenth number (<code>1111</code>) that never arrives, while halving sees that slot is empty and drops the final bit, leaving <code>111</code>. That one struck bit is the entire difference between the codes.</figcaption>
+    </figure>
+
+    <p>
+      Averaged over all fifteen numbers, that single saved bit is the whole story, and it lands just shy of the information floor:
+    </p>
+
+    <div style="background:#f9f9f9; border-left:4px solid #e74c3c; border-radius:6px; padding:1.2em 1.5em; margin:1.6em auto; max-width:460px;">
+      <div style="display:grid; grid-template-columns:1fr auto; gap:0.5em 1.5em; font-size:0.98em;">
+        <span>fixed-width code</span>            <span style="font-family:monospace; color:#475569;">4.00 bits</span>
+        <span>halving code</span>               <span style="font-family:monospace; color:#1e293b; font-weight:700;">3.93 bits</span>
+        <span>the floor, log&#8322;15</span>     <span style="font-family:monospace; color:#16a34a;">3.91 bits</span>
+      </div>
+    </div>
+
+    <p>
+      Halving claws back almost all of the slack that fixed-width wastes, and stops right before the floor, that last 0.02 being the same integer-codeword tax we have already met. (You can chip at it by bundling several numbers into one codeword, but that is a story for another day.)
+    </p>
+
+    <p>
+      But 15 was the 'worst' case in its range: only one number sat shallow enough to save a bit. Swing to the other extreme, to just <em>above</em> a power of 2, and observe. Here is 1 to 9:
+    </p>
+
+    <figure style="margin:2.2em 0; user-select:none;">
+      <div style="background:#f8f9fa; border-radius:14px; padding:22px 24px 18px; border:1px solid #e2e8f0; max-width:480px; margin:0 auto;">
+        <div style="display:grid; grid-template-columns:auto 1fr 1fr; gap:0.42em 1.6em; align-items:center;">
+          <span></span>
+          <span style="text-align:center; font-size:0.7em; text-transform:uppercase; letter-spacing:0.5px; color:#94a3b8;">fixed-width</span>
+          <span style="text-align:center; font-size:0.7em; text-transform:uppercase; letter-spacing:0.5px; color:#94a3b8;">halving (ours)</span>
+
+          <span style="color:#64748b; font-size:0.92em;">1</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">0000</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">0000</span>
+
+          <span style="color:#64748b; font-size:0.92em;">2</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">0001</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">0001</span>
+
+          <span style="color:#64748b; font-size:0.92em;">3</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">0010</span>
+          <span style="text-align:center; font-family:monospace; color:#15803d; font-weight:700; background:#f0fdf4; border-radius:4px;">001</span>
+
+          <span style="color:#64748b; font-size:0.92em;">4</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">0011</span>
+          <span style="text-align:center; font-family:monospace; color:#15803d; font-weight:700; background:#f0fdf4; border-radius:4px;">010</span>
+
+          <span style="color:#64748b; font-size:0.92em;">5</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">0100</span>
+          <span style="text-align:center; font-family:monospace; color:#15803d; font-weight:700; background:#f0fdf4; border-radius:4px;">011</span>
+
+          <span style="color:#64748b; font-size:0.92em;">6</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">0101</span>
+          <span style="text-align:center; font-family:monospace; color:#15803d; font-weight:700; background:#f0fdf4; border-radius:4px;">100</span>
+
+          <span style="color:#64748b; font-size:0.92em;">7</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">0110</span>
+          <span style="text-align:center; font-family:monospace; color:#15803d; font-weight:700; background:#f0fdf4; border-radius:4px;">101</span>
+
+          <span style="color:#64748b; font-size:0.92em;">8</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">0111</span>
+          <span style="text-align:center; font-family:monospace; color:#15803d; font-weight:700; background:#f0fdf4; border-radius:4px;">110</span>
+
+          <span style="color:#64748b; font-size:0.92em;">9</span>
+          <span style="text-align:center; font-family:monospace; color:#475569;">1000</span>
+          <span style="text-align:center; font-family:monospace; color:#15803d; font-weight:700; background:#f0fdf4; border-radius:4px;">111</span>
+        </div>
+      </div>
+      <figcaption>Just above a power of 2, the saving flips. Seven of the nine numbers now get a 3-bit codeword (green); only 1 and 2 still need the fourth bit. Fixed-width spends 4 bits on all nine.</figcaption>
+    </figure>
+
+    <p>
+      That is nearly the whole bit saved on nearly every number. Fixed-width still costs a flat 4.00 bits; halving averages 3.22, against a floor of $\log_2 9 \approx 3.17$.
+    </p>
+
+    <p>
+      Either way, halving beats the naive encoding. But beating the naive code is a low bar. Could some genuinely clever code beat <em>halving</em>?
+    </p>
+
+    <h3>Why nothing can beat it</h3>
+
+    <p>
+      Think about what a code's output stream looks like. If there is any <em>pattern</em> in it, any way to guess the next bit better than a coin flip, then that pattern is redundancy: you could write a shorter code that spends nothing on the part you could already predict. A stream you can compress is a stream from a code that was not yet optimal.
+    </p>
+
+    <p>
+      Turn that around. The optimal code is the one whose output you <em>cannot</em> compress, because there is no pattern left to exploit. Its bits look like fair coin flips: each one equally likely 0 or 1, independent of the last, every block as common as every other. The endpoint of squeezing all the redundancy out of a message is something indistinguishable from noise.
+    </p>
+
+    <!-- ============================================================ -->
+    <!--  INTERACTIVE: bits as a noise image                          -->
+    <!-- ============================================================ -->
+    <figure style="margin:2.5em 0; user-select:none;">
+      <div style="background:#f8f9fa; border-radius:14px; padding:22px 22px 16px; border:1px solid #e2e8f0;">
+        <div style="display:flex; gap:22px; justify-content:center; align-items:flex-start; flex-wrap:wrap;">
+          <div style="text-align:center;">
+            <div style="font-size:0.78em; color:#475569; font-weight:600; margin-bottom:8px;">pure coin flips</div>
+            <canvas id="nz-coin" width="96" height="96" style="width:150px; height:150px; image-rendering:pixelated; image-rendering:crisp-edges; border-radius:6px; border:1px solid #e2e8f0;"></canvas>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:0.78em; color:#2563eb; font-weight:600; margin-bottom:8px;">halving (our code)</div>
+            <canvas id="nz-halve" width="96" height="96" style="width:150px; height:150px; image-rendering:pixelated; image-rendering:crisp-edges; border-radius:6px; border:1px solid #e2e8f0;"></canvas>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:0.78em; color:#d97706; font-weight:600; margin-bottom:8px;">guess low (wasteful)</div>
+            <canvas id="nz-low" width="96" height="96" style="width:150px; height:150px; image-rendering:pixelated; image-rendering:crisp-edges; border-radius:6px; border:1px solid #e2e8f0;"></canvas>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:16px;">
+          <button id="nz-btn" onclick="nzShuffle()" style="padding:8px 20px; border:none; border-radius:8px; background:#e74c3c; color:#fff; font-family:inherit; font-size:0.85em; font-weight:600; cursor:pointer;">Shuffle</button>
+        </div>
+      </div>
+      <figcaption>Each square is several thousand yes-or-no answers, drawn as black-and-white pixels. Coin flips and the halving code are statistically identical: genuine static, with nothing left to compress. The wasteful "guess low" strategy gives itself away, so many of its answers are foregone conclusions that the square fades pale. An optimal code's output is, quite literally, indistinguishable from randomness.</figcaption>
+    </figure>
+
+    <script>
+    (function(){
+      function gameBits(strategy){
+        var lo=1, hi=16, s=Math.floor(Math.random()*16)+1, b='';
+        while(lo<hi){
+          var m = strategy==='halving' ? Math.floor((lo+hi)/2)
+                : strategy==='quarter' ? lo+Math.floor((hi-lo)/4)
+                : lo;
+          if(m<lo)m=lo; if(m>hi-1)m=hi-1;
+          if(s>m){ b+='1'; lo=m+1; } else { b+='0'; hi=m; }
+        }
+        return b;
+      }
+      function streamBits(strategy,n){ var b=''; while(b.length<n) b+=gameBits(strategy); return b; }
+      function coinBits(n){ var b=''; for(var i=0;i<n;i++) b+=(Math.random()<0.5?'1':'0'); return b; }
+      function paint(id,bits){
+        var cv=document.getElementById(id); if(!cv) return;
+        var ctx=cv.getContext('2d'), w=cv.width, h=cv.height, img=ctx.createImageData(w,h), d=img.data;
+        for(var i=0;i<w*h;i++){
+          var on = bits.charAt(i)==='1', idx=i*4;
+          d[idx]=on?248:15; d[idx+1]=on?250:23; d[idx+2]=on?252:42; d[idx+3]=255;
+        }
+        ctx.putImageData(img,0,0);
+      }
+      window.nzShuffle=function(){
+        var n=96*96;
+        paint('nz-coin', coinBits(n));
+        paint('nz-halve', streamBits('halving',n));
+        paint('nz-low', streamBits('linear',n));
+      };
+      nzShuffle();
+    })();
+    </script>
+
+    <h4>Only noise is incompressible</h4>
+    <p>Structure is exactly what compression feeds on. A message you can shorten still has predictability left in it. When nothing can shorten it any further, what remains looks completely random, which is why a perfectly encoded message and pure noise are impossible to tell apart.</p>
+
+    <p>
+      And halving is precisely the strategy that produces this. Every question splits the live numbers in half, so every answer is a genuine 50/50, a fair coin, carrying a full bit and revealing nothing you could have guessed in advance. A lazy question (is it in the bottom quarter?) has a lopsided answer you can half-predict, and a predictable answer is a half-wasted one. That is the whole reason halving wins: it is the only strategy that never spends a fraction of a question on an answer you already saw coming.
+    </p>
+
+    <p>
+      There is a hard floor underneath the intuition, too. A single yes-or-no answer can carry at most one bit. Identifying one number out of $N$ equally likely ones takes $\log_2 N$ bits. So no strategy, however clever, can use fewer than $\log_2 N$ questions on average. Halving extracts a full bit from every even split, so it presses right up against that floor, and nothing can do better.
+    </p>
+
+    <p>
+      The picture catches the gross cases, but the eye is a blunt instrument. A mildly off-center strategy wastes only a little, and its square would still look like static. To catch waste too small to see, we stop looking and start counting.
+    </p>
+
+    <h3>The fingerprint of a perfect code</h3>
+
+    <p>
+      Let's test it. Take a strategy, play it thousands of times on the game from 1 to 16, and string all the yes-or-no answers into one long ribbon of bits. Then count: how often is each bit 0 versus 1? How often does each pair (<code>00</code>, <code>01</code>, <code>10</code>, <code>11</code>) appear? Each triple? If the code is optimal, every pattern should show up equally often, because the stream is meant to look like fair coins. If the strategy wastes questions, the counts will lean.
+    </p>
+
+    <!-- ============================================================ -->
+    <!--  INTERACTIVE: equidistribution / n-gram histogram            -->
+    <!-- ============================================================ -->
+    <figure style="margin:2.5em 0; user-select:none;">
+      <div style="background:#f8f9fa; border-radius:14px; padding:22px 22px 18px; border:1px solid #e2e8f0;">
+
+        <div style="display:flex; gap:18px; align-items:flex-start; justify-content:center; margin-bottom:14px; flex-wrap:wrap;">
+          <div style="text-align:center;">
+            <div style="font-size:0.72em; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">strategy</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+              <button id="eq-s-halving" onclick="eqStrat('halving')" style="padding:8px 14px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#64748b; font-family:inherit; font-size:0.82em; font-weight:600; cursor:pointer;">Halving (optimal)</button>
+              <button id="eq-s-quarter" onclick="eqStrat('quarter')" style="padding:8px 14px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#64748b; font-family:inherit; font-size:0.82em; font-weight:600; cursor:pointer;">Off-center</button>
+              <button id="eq-s-linear" onclick="eqStrat('linear')" style="padding:8px 14px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#64748b; font-family:inherit; font-size:0.82em; font-weight:600; cursor:pointer;">Guess low (worst)</button>
+            </div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:0.72em; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">pattern length</div>
+            <div style="display:flex; gap:6px; justify-content:center;">
+              <button id="eq-k-1" onclick="eqK(1)" style="padding:8px 14px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#64748b; font-family:inherit; font-size:0.82em; font-weight:600; cursor:pointer;">singles</button>
+              <button id="eq-k-2" onclick="eqK(2)" style="padding:8px 14px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#64748b; font-family:inherit; font-size:0.82em; font-weight:600; cursor:pointer;">pairs</button>
+              <button id="eq-k-3" onclick="eqK(3)" style="padding:8px 14px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#64748b; font-family:inherit; font-size:0.82em; font-weight:600; cursor:pointer;">triples</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="eq-head" style="text-align:center; color:#475569; font-size:0.88em; margin-bottom:14px; min-height:1.4em;"></div>
+        <div id="eq-hist"></div>
+
+      </div>
+      <figcaption>Every yes-or-no answer from thousands of games of 1-to-16, counted as patterns. Bars on the dashed line mean every pattern is equally likely: the mark of a code with nothing left to compress. Bars that lean are wasted predictability.</figcaption>
+    </figure>
+
+    <script>
+    (function(){
+      var N=16, SAMPLES=6000;
+      var strat='halving', k=1, streams={};
+      var headEl=document.getElementById('eq-head');
+      var histEl=document.getElementById('eq-hist');
+      var sBtns={}, kBtns={};
+
+      function gameBits(strategy){
+        var lo=1, hi=N, s=Math.floor(Math.random()*N)+1, b='';
+        while(lo<hi){
+          var m = strategy==='halving' ? Math.floor((lo+hi)/2)
+                : strategy==='quarter' ? lo+Math.floor((hi-lo)/4)
+                : lo;
+          if(m<lo)m=lo; if(m>hi-1)m=hi-1;
+          if(s>m){ b+='1'; lo=m+1; } else { b+='0'; hi=m; }
+        }
+        return b;
+      }
+      function streamFor(strategy){
+        if(streams[strategy]) return streams[strategy];
+        var parts=[];
+        for(var i=0;i<SAMPLES;i++) parts.push(gameBits(strategy));
+        var joined=parts.join('');
+        streams[strategy]={bits:joined, avg:joined.length/SAMPLES};
+        return streams[strategy];
+      }
+      function ent(p){ return (p>0 && p<1) ? -p*Math.log(p)/Math.log(2) : 0; }
+      function pad(s,n){ while(s.length<n) s='0'+s; return s; }
+
+      function render(){
+        var st=streamFor(strat), stream=st.bits;
+        var counts={}, total=stream.length-k+1;
+        for(var j=0;j<total;j++){ var g=stream.substring(j,j+k); counts[g]=(counts[g]||0)+1; }
+        var grams=[]; for(var v=0; v<(1<<k); v++) grams.push(pad(v.toString(2),k));
+        var freqs=grams.map(function(g){ return (counts[g]||0)/total; });
+        var c0=0; for(var t=0;t<stream.length;t++){ if(stream.charAt(t)==='0') c0++; }
+        var p0=c0/stream.length, Hbit=ent(p0)+ent(1-p0);
+
+        var W=1000, H=210, ML=44, MR=14, MT=16, MB=30;
+        var pw=W-ML-MR, ph=H-MT-MB, barN=grams.length, uni=1/barN;
+        var yMax=Math.max.apply(null, freqs.concat([uni]))*1.28;
+        function Y(f){ return MT+ph*(1-f/yMax); }
+        var gap=barN>4?6:14, bw=(pw-gap*(barN-1))/barN;
+        var svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;font-family:Inter,sans-serif;">';
+        var yu=Y(uni);
+        svg+='<line x1="'+ML+'" y1="'+yu.toFixed(1)+'" x2="'+(ML+pw)+'" y2="'+yu.toFixed(1)+'" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="6 4"/>';
+        svg+='<text x="'+(ML+pw)+'" y="'+(yu-6).toFixed(1)+'" text-anchor="end" font-size="11" fill="#e74c3c">even = 1/'+barN+'</text>';
+        grams.forEach(function(g,i){
+          var x=ML+i*(bw+gap), y=Y(freqs[i]), h=Math.max(0, MT+ph-y);
+          var dev=Math.abs(freqs[i]-uni)/uni;
+          var col=dev<0.06?'#16a34a':(dev<0.25?'#3b82f6':'#f59e0b');
+          svg+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="3" fill="'+col+'"/>';
+          svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(MT+ph+15)+'" text-anchor="middle" font-size="'+(barN>4?9:12)+'" font-family="monospace" fill="#64748b">'+g+'</text>';
+          if(barN<=8){ svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(y-4).toFixed(1)+'" text-anchor="middle" font-size="9.5" fill="#94a3b8">'+(freqs[i]*100).toFixed(1)+'%</text>'; }
+        });
+        svg+='</svg>';
+        histEl.innerHTML=svg;
+
+        var label = Hbit>0.98 ? 'flat as fair coins, nothing left to compress'
+                  : 'lopsided, about '+Math.round((1-Hbit)*100)+'% of every answer is wasted';
+        headEl.innerHTML='information per answer: <strong>'+Hbit.toFixed(2)+'</strong> bits &nbsp;&middot;&nbsp; average <strong>'+st.avg.toFixed(2)+'</strong> questions &nbsp;&middot;&nbsp; '+label;
+      }
+
+      function styleBtn(b,on){ if(!b)return; b.style.background=on?'#e74c3c':'#fff'; b.style.color=on?'#fff':'#64748b'; b.style.borderColor=on?'#e74c3c':'#cbd5e1'; }
+      window.eqStrat=function(s){ strat=s; for(var key in sBtns) styleBtn(sBtns[key], key===s); render(); };
+      window.eqK=function(v){ k=v; for(var key in kBtns) styleBtn(kBtns[key], (+key)===v); render(); };
+
+      ['halving','quarter','linear'].forEach(function(s){ sBtns[s]=document.getElementById('eq-s-'+s); });
+      [1,2,3].forEach(function(v){ kBtns[v]=document.getElementById('eq-k-'+v); });
+      eqStrat('halving'); eqK(1);
+    })();
+    </script>
+
+    <p>
+      The optimal code's bars sit flat on the line: every pattern equally likely, no structure, nothing to compress. Push to <em>off-center</em> and the bars start to lean. Push to <em>guess low</em> and they collapse into a heap of 1s, an answer so predictable it is barely worth asking. That lean is the redundancy, and the readout above turns it into a number: a full bit per answer when the code is perfect, less and less as the waste grows.
+    </p>
+
+    <p>
+      Mathematicians have a name for the flat case. A sequence in which every block of length $k$ appears with frequency $1/2^k$ is called <em>normal</em> (the idea is Borel's, 1909), and the output of a perfect code is normal in exactly this sense. One honest wrinkle ties it back to where we began: run optimal halving on 100 rather than a clean power of 2, and the bars come out <em>almost</em> flat, with a faint lean that will not go away. That faint lean is the 0.08 of a wasted bit, the very same residue, now wearing the disguise of a pattern you could still compress. A non-round number of bits and a not-quite-normal output are one fact seen from two sides.
+    </p>
+
+    <h3>The price of a single outcome</h3>
+
+    <p>
+      We have one more thing to harvest, and it is the key to everything that follows. All along, the length of a codeword has been shadowing a probability. A codeword that is $n$ bits long singles out one message among $2^n$ equally likely ones, so the chance of any particular $n$-bit message is
+    </p>
+
+    <div class="math-block">
+      $$p = \frac{1}{2^n} = 2^{-n}$$
+    </div>
+
+    <p>
+      Read it backwards to get the length from the probability:
+    </p>
+
+    <div class="derivation-block">
+      <p><strong>Step 1.</strong> Take the base-2 log of both sides:</p>
+      $$\log_2 p = \log_2 2^{-n} = -n$$
+      <p><strong>Step 2.</strong> Flip the sign:</p>
+      $$n = -\log_2 p$$
+    </div>
+
+    <p>
+      So an outcome that happens with probability $p$ costs $-\log_2 p$ bits to name. That single formula is the whole game. Check it against everything we have done: one number out of 100 equally likely ones has $p = 1/100$, so it costs
+    </p>
+
+    <div class="math-block">
+      $$-\log_2\!\left(\tfrac{1}{100}\right) = \log_2 100 \approx 6.64 \text{ bits},$$
+    </div>
+
+    <p>
+      which is exactly the number we started with. Our entire story so far has been the special case where every outcome shares the same probability $1/N$, handing every outcome the same price $\log_2 N$.
+    </p>
+
+    <p>
+      Step back and look at what we have built, because it is the whole foundation. A <strong>bit</strong> is the answer to one <em>maximally informative</em> question, and a question is most informative exactly when you are most <em>uncertain</em> of its answer: when it is framed so that yes and no are equally likely, each with probability one-half. That coin-flip question is worth a full bit. Tilt the odds and the answer turns partly predictable, so it pays out less. The bits it takes to pin something down are just the count of those balanced questions, and an outcome of probability $p$ takes exactly $-\log_2 p$ of them.
+    </p>
+
+    <p>
+      And that last formula asks only about a single outcome's own probability; it never counts how many outcomes there are, and never insists they be equally likely. We have only ever used it on fair games, where every outcome shares the same $p = 1/N$.
+    </p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 5: FROM A BIT TO ENTROPY                      -->
+  <!-- ====================================================== -->
+  <section id="entropy">
+    <h2>From a bit to entropy</h2>
+
+    <p>
+      The buildup to what a bit is, and why it is the same thing as information, may have felt long. That was deliberate. The goal so far was to make the idea intuitive and to turn it over in the hand, to see it from the game, from the code, from the noise. From here we can move fast. Everything that follows falls straight out of that one idea, and if each step lands as the obvious next thing, the slow start did its job.
+    </p>
+
+    <p>
+      By now one claim should sit comfortably: a bit is a unit of information, and information is a measure of compression. But every example so far has been a fair, uniform draw, every outcome equally likely. Two questions are left hanging:
+    </p>
+
+    <ol>
+      <li>How do we picture a non-uniform distribution in the language of compression?</li>
+      <li>When we send a codeword, or a whole stream of them, how much should we expect to pay?</li>
+    </ol>
+
+    <h3>Picturing a non-uniform distribution</h3>
+
+    <p>
+      We already hold the answer; we just have to read it off. An outcome of probability $p$ costs $-\log_2 p$ bits to name, and that one rule is the entire bridge from probability to compression: a common outcome (large $p$) is cheap, a rare one (small $p$) is expensive. Lay the probabilities out as areas and you can see it at a glance. The wide blocks, the things that happen often, get the short codes.
+    </p>
+
+    <figure style="margin:2.2em 0; user-select:none;">
+      <div style="background:#f8f9fa; border-radius:14px; padding:22px 22px 14px; border:1px solid #e2e8f0;">
+        <div id="en-fig"></div>
+      </div>
+      <figcaption>The binary tree of every address. Each object's codeword carves out a region of it: <code>0</code> (object A) claims the whole left half, <code>10</code> (B) a quarter, <code>110</code> and <code>111</code> (C, D) an eighth each. The braces read off the width of each region, which is its probability; the depth, the number of bits, is its cost. A length-$L$ codeword owns $1/2^L$ of the tree, so the more likely the object, the wider its block and the shorter its code.</figcaption>
+    </figure>
+
+    <script>
+    (function(){
+      var W=800, rh=58, top=10;
+      var gridY={1:top+2*rh, 2:top+rh, 3:top};
+      var HL={ A:{d:1,i:0,c:'#2563eb',code:'0'}, B:{d:2,i:2,c:'#0891b2',code:'10'}, C:{d:3,i:6,c:'#0d9488',code:'110'}, D:{d:3,i:7,c:'#15803d',code:'111'} };
+      function hlAt(d,i){ for(var k in HL){ if(HL[k].d===d && HL[k].i===i) return {obj:k, h:HL[k]}; } return null; }
+      var s='<svg viewBox="0 0 800 226" style="width:100%; max-width:760px; height:auto; display:block; margin:0 auto; font-family:Inter,sans-serif;">';
+      for(var d=1; d<=3; d++){
+        var n=Math.pow(2,d), w=W/n, y=gridY[d];
+        for(var i=0;i<n;i++){
+          var x=i*w, addr=i.toString(2); while(addr.length<d) addr='0'+addr;
+          var hit=hlAt(d,i);
+          if(hit){
+            s+='<rect x="'+(x+1.5)+'" y="'+(y+1.5)+'" width="'+(w-3)+'" height="'+(rh-3)+'" rx="6" fill="'+hit.h.c+'"/>';
+            s+='<text x="'+(x+w/2)+'" y="'+(y+rh/2-3)+'" text-anchor="middle" font-size="'+(w<120?14:17)+'" font-weight="700" fill="#fff">'+hit.obj+'</text>';
+            s+='<text x="'+(x+w/2)+'" y="'+(y+rh/2+14)+'" text-anchor="middle" font-size="'+(w<120?10:12)+'" font-family="monospace" fill="#fff" opacity="0.9">'+hit.h.code+'</text>';
+          } else {
+            s+='<rect x="'+(x+1.5)+'" y="'+(y+1.5)+'" width="'+(w-3)+'" height="'+(rh-3)+'" rx="4" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>';
+            s+='<text x="'+(x+w/2)+'" y="'+(y+rh/2+4)+'" text-anchor="middle" font-size="'+(d>2?9:12)+'" font-family="monospace" fill="#cbd5e1">'+addr+'</text>';
+          }
+        }
+      }
+      var by=top+3*rh+8;
+      function brace(x0,x1,label){
+        var xa=x0+6, xb=x1-6, cx=(x0+x1)/2;
+        s+='<path d="M'+xa+' '+(by-7)+' L'+xa+' '+by+' L'+xb+' '+by+' L'+xb+' '+(by-7)+'" fill="none" stroke="#94a3b8" stroke-width="1.5"/>';
+        s+='<text x="'+cx+'" y="'+(by+20)+'" text-anchor="middle" font-size="13" font-family="monospace" font-weight="700" fill="#475569">'+label+'</text>';
+      }
+      brace(0,400,'1/2'); brace(400,600,'1/4'); brace(600,700,'1/8'); brace(700,800,'1/8');
+      s+='</svg>';
+      document.getElementById('en-fig').innerHTML=s;
+    })();
+    </script>
+
+    <p>
+      Nothing here was special about a guessing game. Strip away the story and what is left is a <em>source</em>: it emits objects $x$ from some set, each with its own probability $p(x)$, and a message is just a sequence of them, $x_1, x_2, x_3, \ldots$. Pixels in an image, letters in a sentence, states of the weather. Anything that carries a probability is information, and anything that is information can be compressed and sent. The cost of one object is its surprise, $-\log_2 p(x)$, whatever the object is and however many others there are.
+    </p>
+
+    <h3>What is the cost of a sequence?</h3>
+
+    <p>
+      Notice the word we keep leaning on: <em>expect</em>. We are not asking what one particular object costs, we are asking what it costs on average, per object, across a sequence. That is an expectation.
+    </p>
+
+    <p>
+      If you have met the entropy formula before and found it opaque, this is the form that makes it click:
+    </p>
+
+    <div class="math-block">
+      $$H(X) = \mathbb{E}\!\left[-\log_2 p(X)\right]$$
+    </div>
+
+    <p>
+      Read it as plain words. The inside, $-\log_2 p(X)$, is the bit cost of whatever object we happen to draw. The $\mathbb{E}[\cdot]$ averages that cost over the source. To take the average, weight each object's cost by how often it turns up, and sum over every object:
+    </p>
+
+    <div class="math-block">
+      $$H(X) = \mathbb{E}\!\left[-\log_2 p(X)\right] = \sum_x p(x)\,\big(\!-\log_2 p(x)\big) = -\sum_x p(x)\log_2 p(x)$$
+    </div>
+
+    <p>
+      That is entropy: a weighted average of the bit cost of each outcome, weighted by how often you actually see it. The common outcomes are cheap to name and dominate the sum because they happen so much; the rare ones are costly but seldom. The number that comes out is the average bits per object, and, exactly as before, it is a floor: the fewest bits, on average, that any code can spend to send one draw from this source.
+    </p>
+
+    <p>
+      And it contains everything we did. A fair game over $N$ outcomes has $p(x) = 1/N$ for every $x$, so every cost is the same, $-\log_2(1/N) = \log_2 N$, and the average of a constant is just that constant: $H = \log_2 N$. The uniform case was never a different rule. It was only the special case where every term in the sum agrees.
+    </p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 6: WHEN THE PAST PREDICTS THE FUTURE          -->
+  <!-- ====================================================== -->
+  <section id="conditional-entropy">
+    <h2>When the past predicts the future</h2>
+
+    <p>
+      We talk about bits, information, and entropy, but once again a major assumption has been hiding underneath: each event is independent. Now, I work on AI for a living, and if that is your world too, your mind is probably already jumping to LLMs. An LLM works autoregressively, and it is not only LLMs: in most settings where you want compression, there is dependence. A letter conditions the probability of the next one, and so does a word, a sentence, a pixel, a token.
+    </p>
+
+    <p>
+      So we no longer formalize only as $p(x)$, but as $p(x \mid \text{context})$, the conditional probability of $x$ given an existing context: a single letter, a word, a prompt. The surprise of the symbol that actually arrives is what it always was, its negative log probability, only now conditioned on the past:
+    </p>
+
+    <div class="math-block">
+      $$-\log_2 p\!\left(x_t \mid x_1, \ldots, x_{t-1}\right)$$
+    </div>
+
+    <p>
+      When the context makes the symbol obvious, that surprise collapses. The <code>u</code> after a <code>q</code> has $p \approx 1$, so $-\log_2 p \approx 0$: it costs almost nothing to send, because you already knew it was coming. A whole sequence factorizes into these one-step predictions, each conditioned on its past, which is just the chain rule of probability:
+    </p>
+
+    <div class="math-block">
+      $$p(x_1, \ldots, x_n) = \prod_{t=1}^{n} p\!\left(x_t \mid x_{&lt;t}\right)$$
+      <p style="margin-top:1em; margin-bottom:0; font-size:0.95em; color:#555;">where $x_{&lt;t}$ is shorthand for everything before position $t$.</p>
+    </div>
+
+    <p>
+      Average that one-step cost and you get the <em>conditional entropy</em>, the entropy of the next symbol given its history:
+    </p>
+
+    <div class="math-block">
+      $$H\!\left(X_t \mid X_{&lt;t}\right) = \mathbb{E}\!\left[-\log_2 p\!\left(X_t \mid X_{&lt;t}\right)\right]$$
+    </div>
+
+    <p>
+      And here is the fact that makes memory worth having: conditioning never hurts. On average, knowing the past can only lower your uncertainty about what comes next, so $H(X_t \mid X_{&lt;t}) \le H(X_t)$. English taken letter by letter, as if each were independent, costs around four bits each; let the context speak and Shannon estimated the true figure at closer to one bit per letter. Something like three quarters of written English is, in this exact sense, redundant: already implied by what came before.
+    </p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 7: CROSS-ENTROPY                              -->
+  <!-- ====================================================== -->
+  <section id="cross-entropy">
+    <h2>When you only have an approximation</h2>
+
+    <p>
+      You might have noticed we keep talking about a probability distribution $p$, but we also keep mentioning LLMs, and an LLM is only an approximator of the true language distribution. It never has $p$. This is why we introduce $q$, the learnt distribution, which tries to approximate $p$. And entropy, we saw, is built on $-\log_2 p$. So how do we calculate the entropy through our approximation $q$?
+    </p>
+
+    <p>
+      The real question is what it costs to compress with the wrong distribution: a code built for $q$ when the data actually comes from $p$. The answer is the natural one. You give each symbol the length your model thinks it deserves, $-\log_2 q(x)$ bits, but the symbols arrive with their true frequencies $p(x)$. So you average the $q$-cost over the real distribution $p$:
+    </p>
+
+    <div class="math-block">
+      $$H(p, q) = \mathbb{E}_{x \sim p}\!\left[-\log_2 q(x)\right] = -\sum_x p(x) \log_2 q(x)$$
+    </div>
+
+    <p>
+      This is the <em>cross-entropy</em>: the average bits you spend encoding a source $p$ with a code meant for $q$. It is entropy with one factor swapped. The weight $p(x)$ is reality, how often a symbol really shows up; the cost $-\log_2 q(x)$ is the model's belief about it. When the model is right, $q = p$, and it collapses back into plain entropy. When it is wrong, the swap makes you pay.
+    </p>
+
+    <p>
+      For a language model this is the pretraining loss, nothing more. The model reads the context, predicts a distribution $q(x_t \mid x_{&lt;t})$ over the next token, and pays $-\log_2 q$ on whatever token actually comes next; averaged over the data, that is the cross-entropy the optimizer drives down. (In practice the loss is reported in nats, using the natural log in place of $\log_2$; that only rescales everything by a constant factor of $1/\ln 2$, so every bit of intuition here carries over untouched.) Exponentiate it and you get <em>perplexity</em>, $2^{H(p,q)}$, the effective number of equally likely tokens the model is torn between at each step. A perplexity of 8 is as unsure as a fair eight-sided die.
+    </p>
+
+    <div style="background:#eff6ff; border:1px solid #bfdbfe; border-left:5px solid #3b82f6; border-radius:8px; padding:1.2em 1.5em; margin:1.9em 0; font-size:0.98em;">
+      <p style="margin:0 0 0.7em 0;"><strong style="color:#1e40af;">A note on perplexity.</strong> Run the same computation the other way and it hands you an intuitive read on the <em>difficulty</em> of the task itself.</p>
+      <p style="margin:0 0 0.7em 0;">Say I am compressing one token sampled from a 100,000-word vocabulary. If the model estimates that token at 3 bits, then $2^3 = 8$ says that, as far as the model is concerned, the 100,000 options have shrunk to a choice among 8.</p>
+      <p style="margin:0 0 0.7em 0;">Now average it over the model's answers. Say the cross-entropy is 4.3 bits per token. Then $2^{4.3} \approx 19.69$: for each autoregressive step, the model is effectively branching among about 20 possible next tokens.</p>
+      <p style="margin:0;">That is perplexity, $2^{H}$. You may wonder why we bother, since the bits already carry the same insight. The log scale is the better place to compute, surprises add instead of multiplying, but a linear count, "about 20 choices", is far easier for a human to feel than "4.3 bits".</p>
+    </div>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 8: KL DIVERGENCE                              -->
+  <!-- ====================================================== -->
+  <section id="kl-divergence">
+    <h2>How many extra bits?</h2>
+
+    <p>
+      A question follows naturally: how many extra bits am I paying, on average, for using $q$ instead of the true $p$? That is exactly what the <em>KL divergence</em>, $D_{\mathrm{KL}}(p \,\|\, q)$, answers.
+    </p>
+
+    <p>
+      If you have run into it before, you have probably seen it raw:
+    </p>
+
+    <div class="math-block">
+      $$D_{\mathrm{KL}}(p \,\|\, q) = \sum_x p(x) \log_2 \frac{p(x)}{q(x)}$$
+    </div>
+
+    <p>
+      which can look opaque. Why a ratio of probabilities? Why an expectation of a log ratio? Build it back up with three questions.
+    </p>
+
+    <p>
+      <strong>First:</strong> if nature draws from $p$ and you know $p$, how many bits do you spend on average?
+    </p>
+
+    <div class="math-block">
+      $$H(p) = \mathbb{E}_p\!\left[-\log_2 p(x)\right]$$
+    </div>
+
+    <p>
+      <strong>Second:</strong> what if you only have your model $q$?
+    </p>
+
+    <div class="math-block">
+      $$H(p, q) = \mathbb{E}_p\!\left[-\log_2 q(x)\right]$$
+    </div>
+
+    <p>
+      <strong>Third:</strong> how much extra are you paying for using $q$ instead of $p$? Just subtract:
+    </p>
+
+    <div class="derivation-block">
+      $$H(p, q) - H(p) = \mathbb{E}_p\!\left[-\log_2 q(x)\right] - \mathbb{E}_p\!\left[-\log_2 p(x)\right] = \mathbb{E}_p\!\left[\log_2 \frac{p(x)}{q(x)}\right] = D_{\mathrm{KL}}(p \,\|\, q)$$
+    </div>
+
+    <p>
+      And suddenly KL is not some mysterious distance-like quantity. It is, literally, the <strong>expected wasted bits from holding the wrong model of reality</strong>. And since the true code is the cheapest one there is, the wrong code can only ever cost you more, never less: those wasted bits are always at least zero, $D_{\mathrm{KL}}(p \,\|\, q) \ge 0$, with equality exactly when $q = p$. (That is Gibbs' inequality, and it is the reason cross-entropy can never dip below entropy.)
+    </p>
+
+    <p>
+      It also shows cleanly why KL is a <em>divergence</em> and not a distance: it is asymmetric, $D_{\mathrm{KL}}(p \,\|\, q) \ne D_{\mathrm{KL}}(q \,\|\, p)$. In the compression reading, that asymmetry is the natural thing, not a defect. $D_{\mathrm{KL}}(p \,\|\, q)$ asks: reality is $p$, I built my code from $q$, how many extra bits do I waste? Whereas $D_{\mathrm{KL}}(q \,\|\, p)$ asks: if the samples were actually drawn from $q$, how many extra bits would a code built for $p$ cost?
+    </p>
+
+    <p>
+      The deeper reason they differ is that the measure you average against changes. Compare:
+    </p>
+
+    <div class="math-block">
+      $$D_{\mathrm{KL}}(p \,\|\, q) = \sum_x p(x) \log_2 \frac{p(x)}{q(x)} \qquad\qquad D_{\mathrm{KL}}(q \,\|\, p) = \sum_x q(x) \log_2 \frac{q(x)}{p(x)}$$
+    </div>
+
+    <p>
+      The first asks: where does <em>reality</em> spend its probability mass, and how wrong is my model there? The second asks: where does <em>my model</em> spend its mass, and how wrong am I there?
+    </p>
+
+    <p>
+      And this hands you a surprisingly deep reading of machine learning itself. Maximum likelihood training is the same thing as minimizing cross-entropy, which (because $H(p)$ is fixed) is the same thing as minimizing KL:
+    </p>
+
+    <div class="math-block">
+      $$\max_\theta \ \mathbb{E}_p\!\left[\log_2 q_\theta(x)\right] \;\Longleftrightarrow\; \min_\theta \ H(p, q_\theta) \;\Longleftrightarrow\; \min_\theta \ D_{\mathrm{KL}}(p \,\|\, q_\theta)$$
+    </div>
+
+    <p>
+      So when we train a language model with the cross-entropy loss, we are doing exactly one thing: finding the model that wastes the fewest extra bits when compressing reality.
+    </p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 9: FORWARD KL AND REVERSE KL                  -->
+  <!-- ====================================================== -->
+  <section id="forward-reverse-kl">
+    <h2>Forward KL and reverse KL</h2>
+
+    <p>
+      The divergence we just built, $D_{\mathrm{KL}}(p \,\|\, q)$, has a name: <em>forward</em> KL. Flip the arguments and you get its mirror, $D_{\mathrm{KL}}(q \,\|\, p)$, the <em>reverse</em> KL. We already saw they ask different questions, one weighted by reality $p$, the other by the model $q$. In machine learning that gap runs deep, and it shows up under two names: <strong>mean-seeking</strong> and <strong>mode-seeking</strong>.
+    </p>
+
+    <p>
+      Picture a target $p$ with two separated modes, and a model $q$ that can only be a single bump, one Gaussian. It cannot be in two places at once, so it has to choose, and the two divergences make it choose differently.
+    </p>
+
+    <p>
+      <strong>Forward KL is mean-seeking, or mass-covering.</strong> It averages over $p$, so it weighs every place $p$ puts mass. Wherever $p$ is large and $q$ is near zero, the ratio $p/q$ explodes and the penalty is huge: forward KL will not tolerate leaving any of $p$ uncovered. A single Gaussian facing two modes is therefore forced to stretch across both and drop its mean in the middle, covering them even at the cost of piling probability into the empty valley between. This is exactly maximum likelihood, the cross-entropy we have been minimizing all along, which is why a model trained this way never assigns near-zero probability to something the data actually does.
+    </p>
+
+    <p>
+      <strong>Reverse KL is mode-seeking, or zero-forcing.</strong> It averages over $q$, so it only feels where the model itself puts mass. Wherever $q$ is large and $p$ is near zero it pays a lot, so $q$ refuses to sit where $p$ is empty, the valley included. But it is never punished for ignoring a mode: where $q \approx 0$, the term $q \log(q/p)$ vanishes whatever $p$ does there. So the cheap move is to abandon the harder mode, collapse onto one, and sit there sharply, and given the choice it climbs the taller mode, where $p$ is highest.
+    </p>
+
+    <!-- ============================================================ -->
+    <!--  INTERACTIVE: forward vs reverse KL, bimodal p, gaussian q    -->
+    <!-- ============================================================ -->
+    <figure style="margin:2.5em 0; user-select:none;">
+      <div style="background:#f8f9fa; border-radius:14px; padding:22px 22px 18px; border:1px solid #e2e8f0;">
+
+        <div style="display:flex; gap:8px; justify-content:center; margin-bottom:14px; flex-wrap:wrap;">
+          <button id="kl-fwd" onclick="klDir('fwd')" style="padding:8px 16px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#64748b; font-family:inherit; font-size:0.82em; font-weight:600; cursor:pointer;">Forward KL&nbsp;&nbsp;D(p&#8741;q)</button>
+          <button id="kl-rev" onclick="klDir('rev')" style="padding:8px 16px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#64748b; font-family:inherit; font-size:0.82em; font-weight:600; cursor:pointer;">Reverse KL&nbsp;&nbsp;D(q&#8741;p)</button>
+        </div>
+
+        <canvas id="kl-canvas" width="600" height="300" style="width:100%; max-width:600px; display:block; margin:0 auto; border-radius:8px;"></canvas>
+
+        <div id="kl-readout" style="text-align:center; font-size:0.92em; color:#475569; margin:12px 0 16px;"></div>
+
+        <div style="max-width:460px; margin:0 auto; display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="font-size:0.82em; color:#64748b; width:120px;">q mean &mu; = <span id="kl-mu" style="font-family:monospace; color:#1e293b;">2.0</span></span>
+            <input id="kl-mus" type="range" min="-5" max="5" step="0.05" value="2" style="flex:1; accent-color:#2563eb; cursor:pointer;">
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="font-size:0.82em; color:#64748b; width:120px;">q width &sigma; = <span id="kl-sig" style="font-family:monospace; color:#1e293b;">0.70</span></span>
+            <input id="kl-sigs" type="range" min="0.4" max="3" step="0.05" value="0.7" style="flex:1; accent-color:#2563eb; cursor:pointer;">
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:16px;">
+          <button onclick="klPreset(0.6,2.0)" style="padding:8px 16px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#64748b; font-family:inherit; font-size:0.82em; font-weight:600; cursor:pointer;">Cover both</button>
+          <button onclick="klPreset(2,0.7)" style="padding:8px 16px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#64748b; font-family:inherit; font-size:0.82em; font-weight:600; cursor:pointer;">Pick the tall mode</button>
+        </div>
+
+      </div>
+      <figcaption>The target $p$ (grey) is bimodal, with the right mode the heavier one; the model $q$ (blue) is a single Gaussian you move with $\mu$ and $\sigma$. The lower strip is the pointwise contribution to the chosen KL, the orange spikes are where it is paying. <strong>Cover both</strong> minimizes forward KL (mean-seeking, mass in the valley); <strong>Pick the tall mode</strong> minimizes reverse KL (mode-seeking, sharp on the heavier mode). Toggle the direction and watch where the cost moves.</figcaption>
+    </figure>
+
+    <script>
+    (function(){
+      var mu=2, sigma=0.7, dir='fwd';
+      var COMP=[{w:0.35,m:-2,s:0.7},{w:0.65,m:2,s:0.7}];
+      var cv=document.getElementById('kl-canvas'), ctx=cv.getContext('2d');
+      var W=cv.width, H=cv.height, padL=16, padR=16;
+      var X0=-6.5, X1=6.5, NN=520, dx=(X1-X0)/NN, plotW=W-padL-padR, step=plotW/NN;
+      var yTopA=16, yBotA=172, yTopB=202, yBotB=290, y0B=(yTopB+yBotB)/2;
+      function gauss(x,m,s){ return Math.exp(-((x-m)*(x-m))/(2*s*s))/(s*Math.sqrt(2*Math.PI)); }
+      function Pf(x){ var v=0; for(var i=0;i<COMP.length;i++) v+=COMP[i].w*gauss(x,COMP[i].m,COMP[i].s); return v; }
+      function Qf(x){ return gauss(x,mu,sigma); }
+      function px(i){ return padL+i*step; }
+
+      function render(){
+        var FL=1e-12, ps=[], qs=[], ig=[], fwd=0, rev=0, dMax=0, mxI=1e-9, mnI=-1e-9;
+        for(var i=0;i<=NN;i++){
+          var x=X0+i*dx, p=Math.max(Pf(x),FL), q=Math.max(Qf(x),FL);
+          ps.push(p); qs.push(q);
+          var fi=p*Math.log2(p/q), ri=q*Math.log2(q/p);
+          fwd+=fi*dx; rev+=ri*dx;
+          var v=(dir==='fwd')?fi:ri; ig.push(v);
+          if(p>dMax)dMax=p; if(q>dMax)dMax=q; if(v>mxI)mxI=v; if(v<mnI)mnI=v;
+        }
+        dMax*=1.12;
+        ctx.clearRect(0,0,W,H);
+        ctx.fillStyle='#f8f9fa'; ctx.fillRect(0,0,W,H);
+        function yA(d){ return yBotA-(d/dMax)*(yBotA-yTopA); }
+        // x axis ticks
+        ctx.strokeStyle='#e2e8f0'; ctx.fillStyle='#94a3b8'; ctx.font='11px Inter,sans-serif'; ctx.textAlign='center';
+        [-2,0,2].forEach(function(tx){ var X=padL+((tx-X0)/(X1-X0))*plotW; ctx.beginPath(); ctx.moveTo(X,yBotA); ctx.lineTo(X,yBotA+4); ctx.stroke(); ctx.fillText(tx, X, yBotA+16); });
+        // p fill
+        ctx.beginPath(); ctx.moveTo(px(0),yA(0));
+        for(var i=0;i<=NN;i++) ctx.lineTo(px(i),yA(ps[i]));
+        ctx.lineTo(px(NN),yA(0)); ctx.closePath();
+        ctx.fillStyle='rgba(100,116,139,0.22)'; ctx.fill();
+        ctx.strokeStyle='#64748b'; ctx.lineWidth=1.5; ctx.beginPath();
+        for(var i=0;i<=NN;i++){ var X=px(i),Y=yA(ps[i]); if(i===0)ctx.moveTo(X,Y); else ctx.lineTo(X,Y); } ctx.stroke();
+        // q fill
+        ctx.beginPath(); ctx.moveTo(px(0),yA(0));
+        for(var i=0;i<=NN;i++) ctx.lineTo(px(i),yA(qs[i]));
+        ctx.lineTo(px(NN),yA(0)); ctx.closePath();
+        ctx.fillStyle='rgba(37,99,235,0.16)'; ctx.fill();
+        ctx.strokeStyle='#2563eb'; ctx.lineWidth=2; ctx.beginPath();
+        for(var i=0;i<=NN;i++){ var X=px(i),Y=yA(qs[i]); if(i===0)ctx.moveTo(X,Y); else ctx.lineTo(X,Y); } ctx.stroke();
+        // legend
+        ctx.textAlign='left'; ctx.font='12px Inter,sans-serif';
+        ctx.fillStyle='#64748b'; ctx.fillRect(W-150,18,12,12); ctx.fillStyle='#475569'; ctx.fillText('p (target)', W-132,28);
+        ctx.fillStyle='#2563eb'; ctx.fillRect(W-150,36,12,12); ctx.fillStyle='#475569'; ctx.fillText('q (model)', W-132,46);
+        // integrand panel
+        var maxAbs=Math.max(mxI,-mnI,1e-6), scaleB=43/maxAbs;
+        ctx.strokeStyle='#cbd5e1'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(padL,y0B); ctx.lineTo(W-padR,y0B); ctx.stroke();
+        for(var i=0;i<=NN;i++){
+          var v=ig[i], h=v*scaleB, X=px(i);
+          if(v>0){ ctx.fillStyle='rgba(234,88,12,0.55)'; ctx.fillRect(X, y0B-h, step+0.7, h); }
+          else if(v<0){ ctx.fillStyle='rgba(22,163,74,0.40)'; ctx.fillRect(X, y0B, step+0.7, -h); }
+        }
+        ctx.fillStyle='#94a3b8'; ctx.font='11px Inter,sans-serif'; ctx.textAlign='left';
+        ctx.fillText('pointwise cost of '+(dir==='fwd'?'forward':'reverse')+' KL  (orange = paying here)', padL, yTopB-4);
+
+        document.getElementById('kl-mu').textContent=mu.toFixed(2);
+        document.getElementById('kl-sig').textContent=sigma.toFixed(2);
+        function tag(label,val,on){ return '<span style="'+(on?'font-weight:700;color:#1e293b;':'color:#94a3b8;')+'">'+label+' = '+val.toFixed(2)+' bits</span>'; }
+        document.getElementById('kl-readout').innerHTML = tag('forward KL', fwd, dir==='fwd')+' &nbsp;&middot;&nbsp; '+tag('reverse KL', rev, dir==='rev');
+      }
+      function styleBtns(){
+        var f=document.getElementById('kl-fwd'), r=document.getElementById('kl-rev');
+        f.style.background=dir==='fwd'?'#e74c3c':'#fff'; f.style.color=dir==='fwd'?'#fff':'#64748b'; f.style.borderColor=dir==='fwd'?'#e74c3c':'#cbd5e1';
+        r.style.background=dir==='rev'?'#e74c3c':'#fff'; r.style.color=dir==='rev'?'#fff':'#64748b'; r.style.borderColor=dir==='rev'?'#e74c3c':'#cbd5e1';
+      }
+      window.klDir=function(d){ dir=d; styleBtns(); render(); };
+      window.klPreset=function(m,s){ mu=m; sigma=s; document.getElementById('kl-mus').value=m; document.getElementById('kl-sigs').value=s; render(); };
+      document.getElementById('kl-mus').addEventListener('input',function(e){ mu=+e.target.value; render(); });
+      document.getElementById('kl-sigs').addEventListener('input',function(e){ sigma=+e.target.value; render(); });
+      styleBtns(); render();
+    })();
+    </script>
+
+    <p>
+      It helps to hear what each one is shouting.
+    </p>
+
+    <div style="margin:1.4em 0; display:flex; flex-direction:column; gap:10px;">
+      <div style="border-left:4px solid #2563eb; background:#eff6ff; padding:0.6em 1em; border-radius:0 6px 6px 0; font-style:italic; color:#1e293b;">Forward KL: "reality often goes here, why did you assign almost zero probability there?!"</div>
+      <div style="border-left:4px solid #d97706; background:#fffbeb; padding:0.6em 1em; border-radius:0 6px 6px 0; font-style:italic; color:#1e293b;">Reverse KL: "why are you assigning probability to places reality almost never visits?"</div>
+    </div>
+
+    <p>
+      Underneath, the two punish opposite mistakes. $D_{\mathrm{KL}}(p \,\|\, q)$ asks "how surprised is my model when reality happens?", so it hates <em>false negatives</em>: missing a true mode is catastrophic, which is the slogan <strong>do not miss anything important</strong>. $D_{\mathrm{KL}}(q \,\|\, p)$ asks "how often does my model predict things reality does not support?", so it hates <em>false positives</em>: putting mass on implausible regions is catastrophic, the slogan <strong>do not make claims you cannot justify</strong>.
+    </p>
+
+    <p>
+      This is exactly why maximum likelihood minimizes $D_{\mathrm{KL}}(p \,\|\, q)$ (up to a constant), while variational inference often minimizes $D_{\mathrm{KL}}(q \,\|\, p)$. And it explains behaviors you have probably seen:
+    </p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:1.6em auto; max-width:560px;">
+      <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:1em 1.2em;">
+        <div style="font-weight:700; color:#1e40af; margin-bottom:6px;">Forward KL / MLE</div>
+        <div style="font-size:0.92em; color:#475569; line-height:1.75;">covers everything<br>sometimes blurry<br>averages the modes</div>
+      </div>
+      <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:1em 1.2em;">
+        <div style="font-weight:700; color:#b45309; margin-bottom:6px;">Reverse KL</div>
+        <div style="font-size:0.92em; color:#475569; line-height:1.75;">sharp and confident<br>commits to one mode<br>often misses modes</div>
+      </div>
+    </div>
+
+    <p>
+      The famous <em>mode collapse</em> is essentially reverse-KL-like behavior: the model would rather commit to one plausible explanation than spread probability through unlikely regions.
+    </p>
+
+    <p>
+      Tie it back to compression and the asymmetry stops being mysterious. Forward KL is
+    </p>
+
+    <div class="math-block">
+      $$D_{\mathrm{KL}}(p \,\|\, q) = H(p, q) - H(p),$$
+    </div>
+
+    <p>
+      literally the extra bits you waste encoding <em>reality</em> with the model's code: reality is what gets sampled. Reverse KL is
+    </p>
+
+    <div class="math-block">
+      $$D_{\mathrm{KL}}(q \,\|\, p) = H(q, p) - H(q),$$
+    </div>
+
+    <p>
+      the extra bits you would waste if the model's own predictions <em>were</em> the data, encoded with reality's code. A stranger question to ask out loud, but it pins down the whole thing: the averaging now happens where $q$ lives, not where $p$ lives. The left-hand argument chooses where you look, and once you see that, mass-covering versus mode-seeking is almost inevitable.
+    </p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  CONCLUSION                                             -->
+  <!-- ====================================================== -->
+  <section id="conclusion">
+    <h2>Looking back</h2>
+
+    <div style="display:flex; flex-wrap:wrap; gap:7px; align-items:center; justify-content:center; margin:2em 0 2.4em;">
+      <span style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:4px 10px; font-size:0.85em; color:#475569; white-space:nowrap;">a guessing game</span>
+      <span style="color:#cbd5e1;">&rarr;</span>
+      <span style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:4px 10px; font-size:0.85em; color:#475569; white-space:nowrap;">halving</span>
+      <span style="color:#cbd5e1;">&rarr;</span>
+      <span style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:4px 10px; font-size:0.85em; color:#475569; white-space:nowrap;">log&#8322;N</span>
+      <span style="color:#cbd5e1;">&rarr;</span>
+      <span style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:4px 10px; font-size:0.85em; color:#475569; white-space:nowrap;">the bit</span>
+      <span style="color:#cbd5e1;">&rarr;</span>
+      <span style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:4px 10px; font-size:0.85em; color:#475569; white-space:nowrap;">a code</span>
+      <span style="color:#cbd5e1;">&rarr;</span>
+      <span style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:4px 10px; font-size:0.85em; color:#475569; white-space:nowrap;">&minus;log&#8322;p</span>
+      <span style="color:#cbd5e1;">&rarr;</span>
+      <span style="background:#fff5f5; border:1px solid #f5b7b1; border-radius:6px; padding:4px 10px; font-size:0.85em; color:#c0392b; font-weight:700; white-space:nowrap;">entropy</span>
+      <span style="color:#cbd5e1;">&rarr;</span>
+      <span style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:4px 10px; font-size:0.85em; color:#475569; white-space:nowrap;">conditional entropy</span>
+      <span style="color:#cbd5e1;">&rarr;</span>
+      <span style="background:#fff5f5; border:1px solid #f5b7b1; border-radius:6px; padding:4px 10px; font-size:0.85em; color:#c0392b; font-weight:700; white-space:nowrap;">cross-entropy</span>
+      <span style="color:#cbd5e1;">&rarr;</span>
+      <span style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:4px 10px; font-size:0.85em; color:#475569; white-space:nowrap;">KL divergence</span>
+      <span style="color:#cbd5e1;">&rarr;</span>
+      <span style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:4px 10px; font-size:0.85em; color:#475569; white-space:nowrap;">forward &amp; reverse KL</span>
+    </div>
+
+    <p>
+      We started with a number between 1 and 100, and we have ended at the loss function of a language model. Look back at the path, and notice that nothing in it was a leap. The game taught us to halve the search space, and "how many times can I halve" is exactly $\log_2 N$. The yes-or-no question worth a full bit is the unit of that count, and a bit, it turned out, is information. Those questions were secretly a code, and a code charges $-\log_2 p$ bits for an outcome of probability $p$. Average that price over a source and you have entropy. Let the next symbol lean on the ones before it and you have conditional entropy. Measure it through an imperfect model $q$ and you have cross-entropy, the training loss itself, with perplexity as its human-readable face. The bits you waste because $q$ is not $p$ are the KL divergence, and which way you point that divergence is the whole difference between covering every mode and committing to one.
+    </p>
+
+    <p>
+      None of it was handed down. Entropy was never a formula to memorize; it was the answer to a single question, how few questions do I need, and every concept after it was the answer to the next obvious one. The whole tower, information, entropy, cross-entropy, perplexity, KL, the objective every language model is trained to minimize, is built from a guessing game and a willingness to keep asking "and then what?". You could have invented all of it yourself. Now you have.
+    </p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  BONUS: COMPRESSION / DECOMPRESSION                     -->
+  <!-- ====================================================== -->
+  <section id="bonus">
+    <h2>Bonus: is a language model just a compressor?</h2>
+
+    <p>
+      This last part is a bonus, more speculation than result, and it is the question that pulled me into writing all of this in the first place. So read it as thinking out loud.
+    </p>
+
+    <p>
+      You have seen the take a hundred times: an LLM is just a fancy next-token predictor. True, and we just spent a whole post showing that next-token prediction <em>is</em> cross-entropy <em>is</em> compression. What I almost never see said is the consequence. An LLM is a compression <em>and decompression</em> machine, and the autoregressive loop is the decompression: it unrolls the compressed knowledge one token at a time. And the compression is genuinely staggering, something close to the written knowledge of humanity folded into a few terabytes of weights for the largest models.
+    </p>
+
+    <p>
+      Which leaves a question I keep turning over. If a model is, at heart, a compressor of its training data, how could it ever solve a problem that was never in the data, say an open Erd&#337;s conjecture, from nothing but the statement?
+    </p>
+
+    <h3>The best compression is understanding</h3>
+
+    <p>
+      Here is what people underrate about compression. A dumb compressor, <code>gzip</code> and friends, hunts for surface redundancy: the word <code>prime</code> repeated, a phrase that recurs, and it stores the repeat once. A model minimizing cross-entropy is doing something else entirely. To predict the next token of a number-theory paper as cheaply as possible, the most efficient move is to discover the rules that generate the mathematics. The slogan I have come to believe is that <strong>the best compression is understanding</strong>.
+    </p>
+
+    <p>
+      If you truly understand Newtonian mechanics, you can compress a mountain of orbital observations into a few equations plus initial conditions. If you understand group theory, thousands of theorems collapse into a handful of principles. Try to compress every chess game ever played: you can memorize them, or you can discover material, position, tactical motifs, and endgames, and the second compresses far better. When the data is generated by some latent structure, finding that structure <em>is</em> the optimal compression. This is the old idea sitting under Solomonoff induction, Minimum Description Length, and Kolmogorov complexity: the shortest description of the data is usually the one that predicts it best.
+    </p>
+
+    <h3>Could it prove an Erd&#337;s conjecture?</h3>
+
+    <p>
+      So back to the hard question. The model is asked for a proof whose solution is nowhere in its training set. Two things can be true.
+    </p>
+
+    <p>
+      Either the proof is already <em>latent</em> in the compressed representation. The model has folded combinatorics, graph theory, additive number theory, and a kit of proof techniques into internal abstractions, and the proof exists as a recombination of pieces it already holds. Then producing it is just decompression: you hand it the statement and it unfolds the latent structure into a candidate proof.
+    </p>
+
+    <p>
+      Or the proof needs genuinely new information that the training data never constrained. Then no amount of decompression helps. You cannot decompress what was never compressed in. A zip file will not give you a Shakespeare play it never stored.
+    </p>
+
+    <p>
+      The catch, and the reason this is not a clean dichotomy, is that an LLM is not a zip file. It does not store bytes, it stores regularities, abstractions, algorithms, relationships. So its decompression can produce combinations that were never explicitly in the data, the same way understanding group theory lets you state a theorem nobody ever showed you. Where exactly the line falls between "recombination of the latent" and "genuinely absent" is, as far as I can tell, something nobody knows how to draw yet.
+    </p>
+
+    <p>
+      And this is where reasoning sneaks in. Cross-entropy minimization rewards <em>any</em> internal computation that improves prediction. If discovering an invariant helps predict the next line of a proof, gradient descent is pushed to learn that invariant. If a little search helps, it is pushed toward search; if a theorem-proving heuristic helps, the same. Reasoning is not bolted on afterwards, it emerges because reasoning is itself a compression mechanism. A proof that replaces a thousand special cases with one general principle is, literally, a shorter description. Science is doing MDL, and so, in its own way, is the model.
+    </p>
+
+    <figure style="margin:2.6em 0;">
+      <img src="../img/entropy/LLM-under-entropy-lens.png" alt="The knowledge-reasoning space: a compressed world model as a black core, with truths reachable by cheap inference (blue), by harder reasoning, search, or tools (red), latent but needing intractable computation (purple), or unconnected (orange)." style="width:100%; height:auto; display:block; border-radius:10px; border:1px solid #e2e8f0;">
+      <figcaption style="font-size:0.86em; color:#7f8c8d; text-align:center; margin-top:0.9em; line-height:1.55;">
+        The knowledge-reasoning space. The model stores a compressed world model (the black core). From it, some truths are reachable by cheap inference (blue), more by harder reasoning, search, or tools (red), some are latent but need intractable computation (purple), and many stay unconnected (orange). The regions nest, blue inside red inside purple, and even a truth in red can be out of practical reach when the path to it costs more compute than you have.
+      </figcaption>
+    </figure>
+
+    <h3>Knowledge is not the only budget</h3>
+
+    <p>
+      There is a second constraint hiding here, and it is the part I find most interesting. A statement can be reachable <em>in principle</em> from what the model knows and still be out of reach <em>in practice</em>, because the path to it is too long. Knowledge and search are different axes. That is the difference between information complexity and computational complexity: asking whether a given chess position is a forced win needs one bit of answer, yes or no, but a staggering amount of computation to produce that bit.
+    </p>
+
+    <p>
+      And here autoregression bites hard. The weights are fixed at inference, and the model gets exactly one forward pass per token. There is no way to run ten decompression cycles inside a single token. The only scratchpad it has is the text it has already written, so the true compute budget is not one forward pass, it is the number of generated tokens times the work per pass. This is why chain-of-thought works at all. Letting the model write five hundred tokens of reasoning instead of twenty buys it roughly twenty-five times the computation, and it spends that compute feeding its own partial results back into itself. Chain-of-thought is iterative decompression: unfold a little, read what you wrote, unfold further.
+    </p>
+
+    <p>
+      This is the blue region in the figure, sitting inside the red: what is reachable <em>within the compute you can actually spend</em>. The model may know enough to derive a result and still not have the inference budget to walk the path to it, and the figure keeps a separate purple region for the extreme of this, things latent in the weights but needing computation so large they are effectively out of reach. The practical frontier is often not the boundary between the trained and the reachable, but the one between reachable-in-principle and reachable-in-budget. That, I think, is why test-time scaling keeps paying off without touching the weights: chain-of-thought, tree search, self-consistency, tools, none of them add knowledge, they enlarge the blue region inside the red. Pretraining decides what is compressible into the model; inference decides how much of it you can unfold before the budget runs out. Two separate bottlenecks.
+    </p>
+
+    <h3>Canonical questions, not canonical answers</h3>
+
+    <p>
+      There is one more idea I cannot let go of. To compress humanity's knowledge well, a model cannot store answers. There are too many of them and they are too redundant. It has to find a small set of latent variables, principles, generators, from which the answers can be rebuilt. I have started thinking of these less as canonical <em>answers</em> and more as canonical <em>questions</em>.
+    </p>
+
+    <p>
+      Put some rough numbers on it, because the gap is the whole argument. The largest models are a trillion-ish parameters, a few terabytes of weights once you store them. That already dwarfs things we think of as enormous: all of English Wikipedia is only tens of gigabytes of text. But it is tiny against the full record. Every book humanity has ever written is on the order of a hundred terabytes of raw text, and the web crawls these models train on run into the petabytes. The weights sit one to three orders of magnitude below the material they have to account for. And even if you squeezed all those books down to Shannon's one bit per character, the floor we met earlier, they would still come to ten or twenty terabytes, larger than the model itself. There is no room to keep the answers. The numbers only close if the model throws away the specifics and holds onto the structure that can regenerate them.
+    </p>
+
+    <p>
+      A physicist compressing planetary positions does not store the positions, they store Newton's laws and the initial conditions and reconstructs the rest. The real find was the question, "what law generates these observations?", not the table of numbers. Shown $2, 4, 6, 8, 10$, the compressive move is not the list but the hypothesis $x \mapsto 2x$, which stands in for infinitely many lists. A good world model, I suspect, stores far less "the capital of France is Paris" than it stores reusable axes of explanation, cause and effect, optimization, equilibrium, conservation, symmetry, search, recursion, and reconstructs the specific answer on demand.
+    </p>
+
+    <p>
+      This loops straight back to where we have been. Entropy, $H(X) = \mathbb{E}[-\log_2 p(X)]$, is uncertainty, and the most powerful way to cut uncertainty across a whole domain is not to memorize its facts but to find the few variables that explain all of them at once. A scientific law is an enormous entropy reducer. It even predicts something we actually observe: models look smartest exactly where the surface data is huge but the generating principles are small and clean, mathematics, physics, code, logic, and shakiest where the knowledge is a pile of arbitrary facts with no compressing structure underneath.
+    </p>
+
+    <h3>So, more than a next-token predictor</h3>
+
+    <p>
+      I will take the cliche and bend it. "An LLM is just a next-token predictor" is true in the same way that "a mathematician is just a neuron-firing predictor" is true. It names the mechanism and hides everything interesting. The next-token objective is the mechanism. The compression of the world's regularities is where the capability comes from. And the part still genuinely open, the part I would love an answer to, is how far that compression, unrolled with enough inference-time computation, can reach toward knowledge that nobody has written down yet.
+    </p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  APPENDIX                                               -->
+  <!-- ====================================================== -->
+  <section id="appendix">
+    <h2>Appendix: why random splitting costs $2(\mathcal{H}_n - 1)$</h2>
+
+    <p>
+      In the main text we watched the random-split baseline settle at about 8.4 questions per game, while the optimal halving strategy hugged the $\log_2(100) \approx 6.64$ floor. Here is where that 8.4 comes from.
+    </p>
+
+    <p>
+      Let $E(N)$ be the average number of yes-or-no questions the random-split strategy needs to pin down a number drawn uniformly from $N$ equally likely candidates. An interval of size one is already solved, so $E(1) = 0$.
+    </p>
+
+    <p>
+      Each question picks a split point at random, cutting the $N$ candidates into a left part of size $k$ and a right part of size $N-k$. Because the split point is uniform, $k$ is equally likely to be any of $1, 2, \ldots, N-1$. The secret is uniform over the $N$ candidates, so it falls in the left part with probability $k/N$ and the right part with probability $(N-k)/N$, and it stays uniform inside whichever part it lands in. That gives a recurrence:
+    </p>
+
+    <div class="derivation-block">
+      <p><strong>Step 1.</strong> One question, then recurse into the side holding the secret, averaged over the uniform split point $k$:</p>
+      $$E(N) = 1 + \frac{1}{N-1}\sum_{k=1}^{N-1}\left[\frac{k}{N}\,E(k) + \frac{N-k}{N}\,E(N-k)\right]$$
+
+      <p><strong>Step 2.</strong> As $k$ runs over $1, \ldots, N-1$, so does $N-k$, so the two sums are identical and collapse into one:</p>
+      $$E(N) = 1 + \frac{2}{N(N-1)}\sum_{k=1}^{N-1} k\,E(k)$$
+    </div>
+
+    <p>
+      The sum is annoying, but it disappears with a standard trick: write the identity for $N$ and for $N-1$, then subtract.
+    </p>
+
+    <div class="derivation-block">
+      <p><strong>Step 1.</strong> Clear the denominator in the relation above:</p>
+      $$N(N-1)\,E(N) = N(N-1) + 2\sum_{k=1}^{N-1} k\,E(k)$$
+
+      <p><strong>Step 2.</strong> The same identity, one size down:</p>
+      $$(N-1)(N-2)\,E(N-1) = (N-1)(N-2) + 2\sum_{k=1}^{N-2} k\,E(k)$$
+
+      <p><strong>Step 3.</strong> Subtract. The two sums differ by their single top term $(N-1)E(N-1)$, so everything telescopes:</p>
+      $$N(N-1)E(N) - (N-1)(N-2)E(N-1) = 2(N-1) + 2(N-1)E(N-1)$$
+
+      <p><strong>Step 4.</strong> Divide by $(N-1)$ and collect the $E(N-1)$ terms:</p>
+      $$N\,E(N) = N\,E(N-1) + 2 \quad\Longrightarrow\quad E(N) = E(N-1) + \frac{2}{N}$$
+    </div>
+
+    <p>
+      So adding one more candidate raises the cost by exactly $2/N$. Starting from $E(1) = 0$ and summing these increments up to $N$:
+    </p>
+
+    <div class="math-block">
+      $$E(N) = \sum_{k=2}^{N}\frac{2}{k} = 2\left(\mathcal{H}_N - 1\right), \qquad \mathcal{H}_N = \sum_{k=1}^{N}\frac{1}{k}$$
+    </div>
+
+    <p>
+      Plugging in $N = 100$, with $\mathcal{H}_{100} \approx 5.187$:
+    </p>
+
+    <div class="math-block">
+      $$E(100) = 2\,(\mathcal{H}_{100} - 1) \approx 2 \times 4.187 \approx 8.37$$
+    </div>
+
+    <p>
+      That is the orange line in the simulation. Compare it to what an optimal player spends, about 6.7 questions, which can never beat the $\log_2(100) \approx 6.64$ floor: random splitting costs roughly a quarter more for the very same answers. It is not catastrophic, just persistently wasteful, because a random cut is rarely the 50/50 cut that would buy a full bit. As a sanity check, the formula gives $E(2) = 2(\mathcal{H}_2 - 1) = 1$ and $E(3) = 2(\mathcal{H}_3 - 1) = \tfrac{5}{3}$, both of which you can confirm by hand.
+    </p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  REFERENCES                                            -->
+  <!-- ====================================================== -->
+  <section id="references">
+    <h2>References</h2>
+    <ol class="references">
+      <li>Shannon, C. E. (1948). <a href="https://doi.org/10.1002/j.1538-7305.1948.tb01338.x">A Mathematical Theory of Communication</a>. <em>Bell System Technical Journal</em>, 27(3), 379&ndash;423. (<a href="https://ia803209.us.archive.org/27/items/bstj27-3-379/bstj27-3-379_text.pdf">free PDF</a>)</li>
+      <li>Borel, &Eacute;. (1909). <a href="https://link.springer.com/article/10.1007/BF03019651">Les probabilit&eacute;s d&eacute;nombrables et leurs applications arithm&eacute;tiques</a>. <em>Rendiconti del Circolo Matematico di Palermo</em>, 27, 247&ndash;271.</li>
+    </ol>
+  </section>
+
+  <a href="../blog.html" class="back-link" style="margin-top: 50px;">&larr; Back to Projects &amp; Writing Hub</a>
+
+</body>
+</html>
