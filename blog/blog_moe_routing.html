@@ -518,7 +518,7 @@
 
     <figure>
       <img src="../img/moe_routing/figures/Gravity%20Preview/01_jsd_per_layer.png" alt="JSD per layer, peak at layer 15">
-      <figcaption>Per-layer routing JSD between teacher and student (base model). Small everywhere, peaking at Layer 15. After 2000 steps of SDFT the curve barely moves and Layer 15 is still the peak: fine-tuning does not restructure the routing topology.</figcaption>
+      <figcaption>Per-layer routing JSD between teacher and student (base model). Small everywhere, peaking at Layer 15. After 2000 steps of SDFT the curve barely moves and Layer 15 is still the peak: fine-tuning does not restructure the routing topology. (The curve is JSD on the softmax-gate distribution; on the renormalized-sigmoid gates the router applies, the global mean is about 0.045, with the same shape and the same Layer-15 peak.)</figcaption>
     </figure>
 
     <p>
@@ -560,7 +560,7 @@
     <h2>Where the divergence actually lives</h2>
 
     <p>
-      Break $\mathrm{TV}$ out by token position and the flat 0.06 turns out to hide a sharp transient. The first generated token, the <code>&lt;think&gt;</code> token that opens the reasoning, diverges about <strong>five times</strong> the body, then decays to the plateau within a handful of tokens. There is a smaller bump at the very end.
+      Break $\mathrm{TV}$ out by token position and the flat 0.045 turns out to hide a sharp transient. The first generated token, the <code>&lt;think&gt;</code> token that opens the reasoning, diverges about <strong>six times</strong> the body, then decays to the plateau within a handful of tokens. There is a smaller bump at the very end.
     </p>
 
     <figure>
@@ -623,7 +623,7 @@
         <text x="475" y="220" text-anchor="middle" font-size="12" fill="#2c3e50" font-weight="600">N: null</text>
         <text x="475" y="234" text-anchor="middle" font-size="10" fill="#94a3b8">two bare students</text>
       </svg>
-      <figcaption>Signal is 2.2 times the cross-question floor (effect size about 7.9 sigma, p about 0, stable across smoothing). The spike is real. But F is about equal to S: the demo-teacher is just as far from a <em>random other</em> student as from its own.</figcaption>
+      <figcaption>Signal is 2.2 times the null N (effect size about 7.9 sigma, p about 0, stable across smoothing). The spike is real. But F is about equal to S: the demo-teacher is just as far from a <em>random other</em> student as from its own.</figcaption>
     </figure>
 
     <p>
@@ -851,7 +851,7 @@
     </p>
 
     <div class="analysis-block">
-      <p>The screen holds one protocol across all six models. Term (A) is formed on each model's <em>true realized</em> gates through the general $\ell_1$ bound, because three of these architectures do not put their gates on the probability simplex (OLMoE and DeepSeek-V2-Lite sum to about 0.4, L1 to 2.45), so the TV form does not even apply. The metric is taken over the reasoning <em>body</em>, with the opening-token transient excluded, so verbose and terse models compare on equal footing, and every model clears a reconstruction gate ($A+B$ equals the routed difference, to under 1%) before its term (A) enters the table. $\mathrm{TV}$ is reported on renormalized gates ($\Sigma g = 1$) so it is comparable across architectures, while term (A) itself uses the raw realized gates; on L1 the renormalized $\mathrm{TV}$ is 0.072, the same realized-gate disagreement the deep dive read as 0.171 on the raw ($\Sigma g = 2.446$) gates.</p>
+      <p>The screen holds one protocol across all six models. Term (A) is formed on each model's <em>true realized</em> gates through the general $\ell_1$ bound, because three of these architectures do not put their gates on the probability simplex (OLMoE and DeepSeek-V2-Lite sum to about 0.4, L1 to 2.45), so the TV form does not even apply. The metric is taken over the reasoning <em>body</em>, with the opening-token transient excluded, so verbose and terse models compare on equal footing, and every model clears a reconstruction gate ($A+B$ equals the routed difference, to under 1%) before its term (A) enters the table. $\mathrm{TV}$ is reported on renormalized gates ($\Sigma g = 1$) so it is comparable across architectures, while term (A) itself uses the raw realized gates; on L1 the renormalized $\mathrm{TV}$ is 0.072, the same realized-gate disagreement the deep dive read as 0.171 on the raw ($\Sigma g = 2.446$) gates. L1's row here comes from this same unified protocol, so it sits a hair off the bespoke deep-dive figures: relA/res 0.045 and relA/block 0.099 here, 0.044 and 0.097 there.</p>
     </div>
 
     <p>
@@ -873,7 +873,7 @@
     </p>
 
     <p>
-      The two shared-free corners are worth a sentence each, because they sit on the bound's two factors. <strong>Mixtral (8/2) is the $F_{\max}$ corner</strong>: flipping one of two selected experts moves half the routed compute, so $F_{\max}$ is large. It came out the <em>safest</em> of the set (relA/res 0.023), because coarse routing barely moves ($\lVert\Delta g\rVert_1$ small) and the product is what matters. <strong>Qwen3 and OLMoE are the routing-distance corner</strong>: fine-grained, shared-free, two top-8-of-128-or-64 draws that overlap less and respond more to content. They are the weakest of the set, and they still survive. Neither corner breaks.
+      The two shared-free corners are worth a sentence each, because they sit on the bound's two factors. <strong>Mixtral (8/2) is the $F_{\max}$ corner</strong>: flipping one of two selected experts moves half the routed compute, so $F_{\max}$ is large. It came out <em>among the safest</em> of the set (relA/res 0.023, just behind Qwen3's 0.020), because coarse routing barely moves ($\lVert\Delta g\rVert_1$ small) and the product is what matters. <strong>Qwen3 and OLMoE are the routing-distance corner</strong>: fine-grained, shared-free, two top-8-of-128-or-64 draws that overlap less and respond more to content. They show the largest routing distance in the set, and they still survive. Neither corner breaks.
     </p>
   </section>
 
@@ -886,7 +886,7 @@
     <h2>Why the margin holds: the backbone, not the router</h2>
 
     <p>
-      The screen says SDFT survives. The stronger result is the <em>reason</em>, and it is sitting in the gap between the two metrics. <strong>relA/block, the cross-model mechanism number, holds a tight 1.5&times; band</strong> (0.095 to 0.150). <strong>relA/res, the safety number, spans 3.5&times;</strong> (0.020 to 0.074). Since relA/res $=$ relA/block $\times$ (block/residual), and relA/block is nearly constant across the set, the entire 3.5&times; spread in safety is set by <strong>block/residual</strong>: how much of the residual stream the MoE block owns, versus the always-on paths. The routing-mismatch <em>magnitude</em> is similar everywhere; what differs is how much it is <em>diluted</em> on the way to the logits.
+      The screen says SDFT survives. The stronger result is the <em>reason</em>, and it is sitting in the gap between the two metrics. <strong>relA/block, the cross-model mechanism number, holds a tight 1.5&times; band</strong> (0.095 to 0.142 on PubMedQA). <strong>relA/res, the safety number, spans 3.5&times;</strong> (0.020 to 0.070). Since relA/res $=$ relA/block $\times$ (block/residual), and relA/block is nearly constant across the set, the entire 3.5&times; spread in safety is set by <strong>block/residual</strong>: how much of the residual stream the MoE block owns, versus the always-on paths. The routing-mismatch <em>magnitude</em> is similar everywhere; what differs is how much it is <em>diluted</em> on the way to the logits.
     </p>
 
     <p>
@@ -899,7 +899,7 @@
       <tr><td>Mixtral-8x7B</td><td class="num">0.103</td><td class="num">0.023</td><td class="num">0.22</td></tr>
       <tr><td>DeepSeek-V2-Lite</td><td class="num">0.095</td><td class="num">0.037</td><td class="num">0.39</td></tr>
       <tr><td>L1-16B-A3B</td><td class="num">0.099</td><td class="num">0.045</td><td class="num">0.45</td></tr>
-      <tr><td>OLMoE-1B-7B</td><td class="num">0.142</td><td class="num">0.070</td><td class="num">0.50</td></tr>
+      <tr><td>OLMoE-1B-7B</td><td class="num">0.142</td><td class="num">0.070</td><td class="num">0.49</td></tr>
     </table>
     <p style="font-size:0.9em;color:#7f8c8d;text-align:center;margin-top:-0.6em;">
       PubMedQA; block/residual $=$ relA/res $\div$ relA/block. The relA/res ranking is the block/residual ranking. relA/block does not order the column.
@@ -968,7 +968,7 @@
     </p>
 
     <p>
-      <strong>Cross-domain.</strong> Math runs a little hotter than medicine, uniformly. From PubMedQA to GSM8K the relA/block band shifts up by about $+0.01$ at both ends (floor 0.095 $\to$ 0.104, ceiling 0.142 $\to$ 0.150) with its width preserved (0.047 $\to$ 0.046). That is a uniform upward shift, the spread intact, not a convergence: every architecture perturbs slightly more on harder reasoning, and the ranking survives the move. The honest report is a range, math $\gtrsim$ medical, not a single number.
+      <strong>Cross-domain.</strong> Math runs a little hotter than medicine. From PubMedQA to GSM8K the relA/block band shifts up by about $+0.01$ at both ends (floor 0.095 $\to$ 0.104, ceiling 0.142 $\to$ 0.150) with its width preserved (0.047 $\to$ 0.046). The band moves up as a whole, spread intact, not a convergence: most architectures perturb slightly more on harder reasoning, with OLMoE the lone exception (it edges down, 0.142 $\to$ 0.136), and the ranking survives the move. The honest report is a range, math $\gtrsim$ medical, not a single number.
     </p>
   </section>
 
@@ -981,7 +981,7 @@
     </p>
 
     <p>
-      The gap is exactly the one the derivation flagged: SDFT optimizes the <em>detached-trajectory surrogate</em>, which drops the state-shift terms, and the open question is whether the small per-step routing mismatch <em>compounds</em> over a full run, or whether load balance drifts as the router is trained. The base-versus-checkpoint-2000 comparison on L1 (routing topology stable, peak layer unchanged after 2000 steps) is one reassuring point on that trajectory, not the trajectory itself. The multi-step study, two architectures chosen to bracket the shared-expert axis, tracking routing drift and load-balance collapse across checkpoints, is in progress. Until it lands, the scope is precise: the <em>per-step</em> trust region survives the jump to Mixture-of-Experts, across the design space, and the structural reason is the always-on backbone. Whether the <em>trajectory</em> does is the next question.
+      The gap is exactly the one the derivation flagged: SDFT optimizes the <em>detached-trajectory surrogate</em>, which drops the state-shift terms, and the open question is whether the small per-step routing mismatch <em>compounds</em> over a full run, or whether load balance drifts as the router is trained. The base-versus-checkpoint-2000 comparison on L1 (routing topology stable, peak layer unchanged after 2000 steps) is one reassuring point on that trajectory, not the trajectory itself. The multi-step study, which brackets the shared-expert axis with L1 (shared) at one end and the shared-free OLMoE at the other, tracking routing drift and load-balance collapse across checkpoints, is in progress. Until it lands, the scope is precise: the <em>per-step</em> trust region survives the jump to Mixture-of-Experts, across the design space, and the structural reason is the always-on backbone. Whether the <em>trajectory</em> does is the next question.
     </p>
   </section>
 
@@ -1013,7 +1013,7 @@
       <tr><td>Sample</td><td>n = 200 PubMedQA (100 A / 100 B), greedy</td><td>both passes route over identical tokens</td></tr>
       <tr><td>Global routing JSD</td><td>0.0447 (Jaccard 0.87, eff-N shift about 0)</td><td>routing barely moves; SDFT leaves the gap about unchanged</td></tr>
       <tr><td>Accuracy</td><td>student 85 to 93.5%; routing flat across outcomes</td><td>+8.5pp from SDFT; routing does not decide accuracy</td></tr>
-      <tr><td>Opening spike</td><td>S = 0.290 vs floor N = 0.131</td><td>2.2 times floor, about 7.9 sigma, real but question-agnostic (F = 0.292)</td></tr>
+      <tr><td>Opening spike</td><td>S = 0.290 vs null N = 0.131</td><td>2.2 times the null, about 7.9 sigma, real but question-agnostic (floor F = 0.292)</td></tr>
       <tr><td>Irrelevant-demo control</td><td>0.283 vs real 0.290, so 97.4% reproduced</td><td>the spike is about 97% presence, 2.6% content</td></tr>
       <tr><td>Localization (Control 3)</td><td>$h_{\text{routed}}/\sigma \approx h_{\text{shared}}/\sigma \approx 2.0$</td><td>routed = (A)+(B), shared = (B): consistent with (A) small, effect in (B)</td></tr>
       <tr><td>Content increment (body)</td><td>3.7% convergence, $p = 2.7\times10^{-16}$</td><td>a relevant demo makes the teacher route <em>more</em> like the student</td></tr>
@@ -1035,14 +1035,14 @@
       <tr><td>relA/res, 5 models &times; 2 domains</td><td>0.020 to 0.074</td><td>safety verdict: term (A) as a share of the propagating residual, single-digit percent everywhere</td></tr>
       <tr><td>relA/block, 5 models &times; 2 domains</td><td>0.095 to 0.150</td><td>$\Sigma g$-invariant mechanism number: a tight 1.5&times; band</td></tr>
       <tr><td>Jaccard, screen</td><td>0.82 to 0.91</td><td>82 to 91% of selected experts shared between passes</td></tr>
-      <tr><td>block / residual</td><td>0.14 (Qwen3) to 0.50 (OLMoE)</td><td>sets the 3.5&times; relA/res spread; relA/res ranking $=$ block/residual ranking</td></tr>
+      <tr><td>block / residual</td><td>0.14 (Qwen3) to 0.49 (OLMoE)</td><td>sets the 3.5&times; relA/res spread; relA/res ranking $=$ block/residual ranking</td></tr>
       <tr><td>Qwen3 vs OLMoE</td><td>relA/block 0.139 vs 0.142; relA/res 0.020 vs 0.070</td><td>same band, opposite safety, because block/residual is 0.14 vs 0.50</td></tr>
       <tr><td>Granularity (GSM8K, no-shared softmax)</td><td>relA/block 0.121 &rarr; 0.136 &rarr; 0.150 (8/2, 64/8, 128/8)</td><td>monotone: finer routing moves more per token</td></tr>
       <tr><td>Cross-domain shift</td><td>relA/block band $+0.01$ PubMedQA $\to$ GSM8K, width preserved</td><td>uniform upward shift, not convergence</td></tr>
     </table>
 
     <p class="references" style="margin-top:2em;">
-      Routing extraction, metrics, the gate analysis (the three controls), and the direct term-(A) and term-(B) decomposition at the block output, plus the per-test reports, live in the project repository. All term-(A)/term-(B) figures are measured with the model's true renormalized routing weights over n = 200 (about 116k body tokens); the reconstruction $A+B=\Delta_{\text{routed}}$ is an algebraic identity used only as an implementation check, and the tail regressions control the $+0.78$ collinearity between $\lVert A\rVert$ and $\lVert B\rVert$. Figures: per-layer JSD and accuracy-split from the base-model run; positional divergence from both checkpoints. Downstream evaluations come from the full post-training pipeline, a separate set of runs from the controlled PubMedQA routing probe. The cross-model screen runs the same decomposition through a per-architecture <code>RouterSpec</code> (gate convention and shared-expert handling verified empirically from a forward pass, not read off configs), forms term (A) on each model's true realized gates via the $\ell_1$ bound, and requires the per-model reconstruction $A+B=\Delta_{\text{routed}}$ to close to under 1% before a model's term (A) enters the tables; gpt-oss is held routing-only because its mxfp4 experts fail that gate. The multi-step study referenced in the closing section is in progress and not reported here.
+      Routing extraction, metrics, the gate analysis (the three controls), and the direct term-(A) and term-(B) decomposition at the block output, plus the per-test reports, live in the project repository. All term-(A)/term-(B) figures are measured with the model's true realized routing weights over n = 200 (about 116k body tokens); the reconstruction $A+B=\Delta_{\text{routed}}$ is an algebraic identity used only as an implementation check, and the tail regressions control the $+0.78$ collinearity between $\lVert A\rVert$ and $\lVert B\rVert$. Figures: per-layer JSD and accuracy-split from the base-model run; positional divergence from both checkpoints. Downstream evaluations come from the full post-training pipeline, a separate set of runs from the controlled PubMedQA routing probe. The cross-model screen runs the same decomposition through a per-architecture <code>RouterSpec</code> (gate convention and shared-expert handling verified empirically from a forward pass, not read off configs), forms term (A) on each model's true realized gates via the $\ell_1$ bound, and requires the per-model reconstruction $A+B=\Delta_{\text{routed}}$ to close to under 1% before a model's term (A) enters the tables; gpt-oss is held routing-only because its mxfp4 experts fail that gate. The multi-step study referenced in the closing section is in progress and not reported here.
     </p>
   </section>
 
