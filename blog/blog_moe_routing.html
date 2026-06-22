@@ -60,7 +60,7 @@
 
   <header class="main-header">
     <h1>Does SDFT Survive the Jump to Mixture-of-Experts?</h1>
-    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">A trust-region guarantee, the assumption hiding underneath it, and a bound you can measure</p>
+    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">A trust-region guarantee, the term Mixture-of-Experts adds to it, and a bound measured across six architectures and two domains</p>
     <p style="font-size: 0.9em; color: #aaa; text-align: center; margin: 0;">June 2026 &nbsp;·&nbsp; Cédric Caruzzo</p>
   </header>
 
@@ -69,15 +69,15 @@
   <!-- ============================== INTRO ============================== -->
   <section id="intro">
     <div style="background:#fffbeb; border:1px solid #f59e0b; border-left:5px solid #f59e0b; border-radius:6px; padding:1.2em 1.4em; margin:0 0 2.4em 0; font-size:0.97em;">
-      <p style="margin:0 0 0.9em;"><strong style="color:#92400e;">TL;DR.</strong> SDFT is appealing because its trust-region guarantee comes from the policy alone: the same weights run twice, once with a demonstration in context and once without, no reward model and no labels. That guarantee lives in <em>output space</em>, and it only transfers if a smooth local gradient step can <em>realize</em> the output move. In a dense network it always can: the computational graph is fixed and every token flows through every weight. In a Mixture-of-Experts it might not, because a router selects which experts process each token, so matching the teacher could in principle demand a discrete change in that selection rather than a smooth nudge. Whether it does is a reachability question, and it is measurable.</p>
+      <p style="margin:0 0 0.9em;"><strong style="color:#92400e;">TL;DR.</strong> SDFT is on-policy self-distillation: the same weights run twice, once with an expert demonstration in context and once without, no reward model and no labels. Its appeal is a trust-region guarantee, and that guarantee was derived on dense models, where it always transfers because the computational graph is fixed and every token flows through every weight, so a smooth local step can always <em>realize</em> the output move. A Mixture-of-Experts adds a term the dense analysis has no slot for: a router selects which experts process each token, so the demonstration can <em>re-route</em>, and matching the teacher could in principle demand a discrete change in that selection rather than a smooth nudge. Whether the guarantee survives the jump is a reachability question, and it is measurable.</p>
 
-      <p style="margin:0 0 0.9em;">We turn the worry into a bound. The deviation from the clean dense picture is <strong>linear in the routing divergence</strong>, the total-variation distance $\mathrm{TV}(g^T, g^S)$ between the teacher's and the student's router gate distributions, with two endpoints: the dense case ($\mathrm{TV}=0$, the guarantee holds exactly) and independent routing per pass ($\mathrm{TV}$ maximal, the teacher's output formed entirely through experts the student is not tuning). And rather than read the size of that deviation off the bound, we measure it directly.</p>
+      <p style="margin:0 0 0.9em;">We turn the worry into a bound. The deviation from the clean dense picture is term (A), the routing-mismatch term, and it is <strong>linear in the routing divergence</strong>: $\lVert A\rVert \le F_{\max}\lVert g^T - g^S\rVert_1$, the gate disagreement between the teacher and student passes, with two endpoints, the dense case (gates agree, the guarantee holds exactly) and independent routing per pass (the teacher's output formed entirely through experts the student is not tuning). And rather than read the size of that deviation off the bound, we measure term (A) directly.</p>
 
-      <p style="margin:0;">Measured on <a href="https://huggingface.co/learning-unit/L1-16B-A3B">L1-16B-A3B</a>, a 16B A3B medical MoE: routing barely moves (true-weight $\mathrm{TV}\approx0.17$), and what movement exists is mostly <em>context presence</em> rather than demonstration <em>content</em> (a length-matched irrelevant demo reproduces 97% of it). Measuring the routing-mismatch term directly, it is a 4.4% perturbation of the residual stream per layer and the <em>minority</em> routed term; the teacher-student difference is carried by the dense-like context-shift, about $2.2\times$ larger, and the output divergence is a heavy-tailed handful of tokens. The Mixture-of-Experts adds no obstacle the dense guarantee does not already absorb. SDFT survives the jump.</p>
+      <p style="margin:0;">We measure it first up close on one production medical MoE, <a href="https://huggingface.co/learning-unit/L1-16B-A3B">L1-16B-A3B</a>, where the full apparatus of controls fits, and then across the design space: six architectures (8 to 128 experts, shared and shared-free, sigmoid and softmax, gates that sum to anywhere from 0.4 to 2.45) and two domains (PubMedQA and GSM8K). The verdict is the same everywhere. Routing barely moves (Jaccard 0.82 to 0.91), term (A) is a 2 to 7.4% perturbation of the residual stream that propagates, and the teacher-student gap is carried by the dense-like context-shift, not by routing. And the reason the margin holds is <em>structural</em>, not a matter of routing happening to be stable: the routing mismatch is small in the routed block to begin with, and then the always-on backbone (attention plus the shared expert) dilutes it into the residual. Where a model's backbone owns more of the residual, its safety margin is larger, and that, not routing stability, sets the spread. SDFT survives the jump to Mixture-of-Experts, across the design space, for a legible reason. The one caveat is temporal: this is the per-step picture, a snapshot of the trust region, and whether the small per-step mismatch compounds over a full training run is the multi-step question, still open.</p>
     </div>
 
     <p>
-      This post is built with the mathematics as the red thread, and the experiments exist to pin down a quantity the theory has already identified as the thing that matters. We start from why SDFT has a guarantee at all, find an assumption that guarantee leans on, watch that assumption become non-trivial the moment we move to a Mixture-of-Experts, derive a bound that says exactly what would have to be true for the guarantee to fail, and only then go measure whether it is.
+      This post is built with the mathematics as the red thread, and the experiments exist to pin down a quantity the theory has already identified as the thing that matters. We start from why SDFT has a guarantee at all, find an assumption that guarantee leans on, watch that assumption become non-trivial the moment we move to a Mixture-of-Experts, derive a bound that says exactly what would have to be true for the guarantee to fail, and only then go measure whether it is, first up close on one production model where the full apparatus of controls fits, then across six architectures and two domains to learn whether the answer is a property of that model or of the design space.
     </p>
   </section>
 
@@ -409,12 +409,13 @@
       $$\lVert A\rVert \;=\; \Big\lVert \sum_j \big(g^T_j - g^S_j\big) f_j(h^S)\Big\rVert \;\le\; \sum_j \big|g^T_j - g^S_j\big|\,\lVert f_j(h^S)\rVert.$$
       <p><strong>Step 2 (Hölder).</strong> Bound every expert output by the largest, $F_{\max} = \max_j \lVert f_j(h^S)\rVert$, and factor it out:</p>
       $$\le\; F_{\max}\sum_j \big|g^T_j - g^S_j\big| \;=\; F_{\max}\,\big\lVert g^T - g^S\big\rVert_1.$$
-      <p><strong>Step 3 (TV identity).</strong> For two distributions that each sum to one, the $\ell_1$ distance is twice the total variation, $\lVert g^T - g^S\rVert_1 = 2\,\mathrm{TV}(g^T,g^S)$. (Normalized top-$k$ sigmoid gating renormalizes the selected gates to sum to one, so this applies here.) Hence:</p>
-      $$\boxed{\;\lVert A\rVert \;\le\; 2\,F_{\max}\,\mathrm{TV}\!\big(g^T, g^S\big).\;}$$
+      <p><strong>Step 3 (stop here, in full generality).</strong> Nothing so far asked the gates to be a probability vector; the triangle and Hölder steps hold for any non-negative weights. So the bound is already complete, for every gating convention:</p>
+      $$\boxed{\;\lVert A\rVert \;\le\; F_{\max}\,\big\lVert g^T - g^S\big\rVert_1.\;}$$
+      <p style="margin-bottom:0;">When the selected gates form a probability vector that sums to one, the $\ell_1$ distance is exactly twice the total variation, $\lVert g^T - g^S\rVert_1 = 2\,\mathrm{TV}(g^T,g^S)$, and the bound sharpens to the familiar $\lVert A\rVert \le 2F_{\max}\,\mathrm{TV}(g^T,g^S)$. That covers softmax top-$k$ renormalized gating, and L1's scaled sigmoid once its constant is divided out. But not every architecture normalizes its gates that way, so the $\ell_1$ form is the one that travels, and we will need exactly that generality once the screen reaches gates whose weights sum to 0.4 rather than 1.</p>
     </div>
 
     <p>
-      That is the result the whole post turns on. The MoE-specific distortion is bounded <strong>linearly by the routing divergence</strong> $\mathrm{TV}(g^T,g^S)$, the teacher-versus-student gate disagreement from failure mode (b). The two endpoints fall right out:
+      That is the result the whole post turns on. The MoE-specific distortion is bounded <strong>linearly by the routing divergence</strong>, the teacher-versus-student gate disagreement $\lVert g^T-g^S\rVert_1$ (equivalently $2\,\mathrm{TV}$ when the gates form a distribution, the form we use on this model) from failure mode (b). The two endpoints fall right out:
     </p>
 
     <ul>
@@ -476,7 +477,11 @@
 
   <!-- ============================== SECTION 6: THE INSTRUMENT ============================== -->
   <section id="instrument">
-    <h2>Measuring TV on a real model</h2>
+    <h2>The validation run: L1-16B-A3B up close</h2>
+
+    <p>
+      Everything from here to the downstream check is one model, in depth. L1-16B-A3B is the validation run: a production MoE on which we can afford the full apparatus of controls, place the operating point on the bound by direct measurement, and rule out the readings that would have broken it. It earns the cross-model screen that follows, where the same decomposition runs on five more architectures with the controls traded for breadth. Read this part as the case that proves the method, not as the whole answer.
+    </p>
 
     <p>
       The test model is <strong><a href="https://huggingface.co/learning-unit/L1-16B-A3B">L1-16B-A3B</a></strong>, a medical MoE built on the Gravity-16B-A3B base architecture: a DeepSeek-V3-style design with 16.2B total parameters, about 2.85B active per token, and 27 MoE layers (out of 28 transformer blocks), each carrying <strong>64 routed experts plus one always-on shared expert</strong> and a router that keeps the <strong>top 8</strong> per token (normalized sigmoid scoring, <code>noaux_tc</code>; attention is the compressed-KV MLA variant). With only about 3B parameters active, "which experts fire and what they compute" is most of the forward pass, so the router is the right place to read $\mathrm{TV}$.
@@ -508,7 +513,7 @@
     <h2>The global divergence, and what the bound says about it</h2>
 
     <p>
-      Averaged over all 27 layers and all generated tokens, routing barely moves: <strong>JSD about 0.06 bits</strong> (the maximum is 1.0), <strong>Jaccard about 0.87</strong> (roughly 7.5 of 8 experts shared), <strong>eff-N shift about 0</strong>. Through the bound, a routing divergence this small caps the worst case for term (A): the mismatch can contribute only a little to the output gap, and the trust-region picture looks intact at the gate level. Whether term (A) is actually that small, rather than merely bounded by it, is what the direct measurement settles later. The structure is also stable across depth: divergence peaks at <strong>Layer 15</strong>, with a characteristic rise, dip, rise shape.
+      Averaged over all 27 layers and all generated tokens, routing barely moves: <strong>JSD about 0.045 bits</strong> (the maximum is 1.0), <strong>Jaccard about 0.87</strong> (roughly 7.5 of 8 experts shared), <strong>eff-N shift about 0</strong>. Through the bound, a routing divergence this small caps the worst case for term (A): the mismatch can contribute only a little to the output gap, and the trust-region picture looks intact at the gate level. Whether term (A) is actually that small, rather than merely bounded by it, is what the direct measurement settles later. The structure is also stable across depth: divergence peaks at <strong>Layer 15</strong>, with a characteristic rise, dip, rise shape.
     </p>
 
     <figure>
@@ -524,19 +529,18 @@
       <tr><th>Metric</th><th class="num">Base L1</th><th class="num">SDFT ckpt-2000</th><th class="num">&Delta;</th></tr>
       <tr><td>Student accuracy</td><td class="num">85.0%</td><td class="num">93.5%</td><td class="num">+8.5pp</td></tr>
       <tr><td>Teacher accuracy</td><td class="num">97.5%</td><td class="num">100.0%</td><td class="num">+2.5pp</td></tr>
-      <tr><td>Global JSD</td><td class="num">0.0606</td><td class="num">0.0592</td><td class="num">&minus;0.0014</td></tr>
       <tr><td>Global Jaccard</td><td class="num">0.874</td><td class="num">0.877</td><td class="num">+0.003</td></tr>
       <tr><td>Peak JSD layer</td><td class="num">15</td><td class="num">15</td><td class="num">n/c</td></tr>
       <tr><td>Median gen length</td><td class="num">526 tok</td><td class="num">236 tok</td><td class="num">&minus;55%</td></tr>
     </table>
 
     <p>
-      Accuracy moves by $+8.5$ points; the routing gap moves by $\mathrm{TV}$-equivalent $-0.0014$. Whatever SDFT improved, it did not improve it by reorganizing which experts fire. And the routing gap does not even track correctness: split the samples by accuracy outcome and the JSD is flat across all of them.
+      Accuracy moves by $+8.5$ points; the routing gap barely moves with it, the expert overlap (Jaccard) shifting by $+0.003$ and the peak layer not at all. Whatever SDFT improved, it did not improve it by reorganizing which experts fire. And the routing gap does not even track correctness: split the samples by accuracy outcome and the JSD is flat across all of them.
     </p>
 
     <figure>
       <img src="../img/moe_routing/figures/Gravity%20Preview/07_jsd_by_accuracy.png" alt="JSD flat across accuracy categories">
-      <figcaption>Routing JSD by outcome (both-correct, demo-helped, demo-hurt, both-wrong). Flat. Right or wrong, easy or hard, helped or hurt, the routing gap is the same 0.06. The expert-selection layer is not where the accuracy decision is made.</figcaption>
+      <figcaption>Routing JSD by outcome (both-correct, demo-helped, demo-hurt, both-wrong). Flat. Right or wrong, easy or hard, helped or hurt, the routing gap is the same low value. The expert-selection layer is not where the accuracy decision is made.</figcaption>
     </figure>
 
     <h4>A dissociation the bound predicts is benign</h4>
@@ -745,7 +749,7 @@
       <tr><td>$\lVert A\rVert / \lVert y_{\text{block}}\rVert$</td><td class="num">0.097</td><td>routing mismatch, against the MoE block output</td></tr>
       <tr><td>$\lVert A\rVert / \lVert \text{residual}\rVert$</td><td class="num">0.044</td><td>against the residual stream: the norm that propagates</td></tr>
       <tr><td>$\lVert B\rVert / \lVert \text{residual}\rVert$</td><td class="num">0.095</td><td>context-shift term, about $2.2\times$ term (A)</td></tr>
-      <tr><td>true-weight $\mathrm{TV}$</td><td class="num">0.171</td><td>measured directly, no proxy</td></tr>
+      <tr><td>true-weight $\mathrm{TV}$</td><td class="num">0.171</td><td>measured directly on the model's raw gates ($\Sigma g = 2.446$)</td></tr>
       <tr><td>output $\mathrm{KL}(\pi^T \,\|\, \pi^S)$</td><td class="num">median 0.003</td><td>nats; heavy-tailed, the mean 0.30 is tail-driven</td></tr>
     </table>
 
@@ -774,12 +778,12 @@
     </p>
 
     <p>
-      The routed-path decomposition is now <em>measured</em>, not inferred by elimination: (A) and (B) are both quantities on the table, and (A) is the smaller. The first boundary is that the majority of the tail output divergence stays unlocalized: the routed path explains under a quarter of it, so the remainder is attributed to attention, the shared expert, and the unembedding by elimination, not measured there. That inference is the harmless kind, because the load-bearing claim is the negative one, <em>not in routing</em>, and that is measured directly. The second boundary is scope: one MoE, one dataset, and $n=200$ for the routing probe, so the verdict is stated for this model, not for Mixture-of-Experts in general. The third is temporal: this is the <em>per-step</em> question, whether a single trust-region step is realized. The practically loaded question for MoE-SDFT is multi-step, whether the slightly mismatched detached-trajectory gradient drifts routing or load balance over thousands of steps. The base-versus-checkpoint-2000 comparison (routing topology stable, peak layer unchanged) is one reassuring point on that trajectory, not the trajectory itself, and the multi-step dynamics are out of scope here. The off-policy risk worth monitoring in training is likewise not routing but the start-zone <em>style</em>: the demo-anchored direct opening could push the fine-tuned model to state conclusions early even without a demonstration at inference, a generation-level effect that lives in term (B), not (A).
+      The routed-path decomposition is now <em>measured</em>, not inferred by elimination: (A) and (B) are both quantities on the table, and (A) is the smaller. The first boundary is that the majority of the tail output divergence stays unlocalized: the routed path explains under a quarter of it, so the remainder is attributed to attention, the shared expert, and the unembedding by elimination, not measured there. That inference is the harmless kind, because the load-bearing claim is the negative one, <em>not in routing</em>, and that is measured directly. The second boundary is scope: one MoE, one dataset, and $n=200$ for the routing probe, so the verdict here is stated for this model, not for Mixture-of-Experts in general, which is exactly the gap the cross-model screen closes below. The third is temporal: this is the <em>per-step</em> question, whether a single trust-region step is realized. The practically loaded question for MoE-SDFT is multi-step, whether the slightly mismatched detached-trajectory gradient drifts routing or load balance over thousands of steps. The base-versus-checkpoint-2000 comparison (routing topology stable, peak layer unchanged) is one reassuring point on that trajectory, not the trajectory itself, and the multi-step dynamics are the subject of the closing section. The off-policy risk worth monitoring in training is likewise not routing but the start-zone <em>style</em>: the demo-anchored direct opening could push the fine-tuned model to state conclusions early even without a demonstration at inference, a generation-level effect that lives in term (B), not (A).
     </p>
 
     <div class="solution-box">
       <h4>The verdict</h4>
-      <p>For L1-16B-A3B, the MoE-specific routing-mismatch term (A) is small in the residual norm that propagates (4.4% per layer) and the minority routed term; the teacher-student difference is carried by the dense-like context-shift (B), about $2.2\times$ larger, and the output divergence is a heavy-tailed handful of tokens, most of which is not in the routed path at all. The teacher-student gap is whatever it is; what the measurement shows is that its <em>composition</em> is dense-dominated, so the Mixture-of-Experts adds no obstacle the dense trust-region guarantee does not already absorb. The claim is not "(A) is negligible," which was never measured. It is "(A) is small and the minority term, (B) dominates, and the gap is dense-like," which is measured top to bottom. SDFT survives the jump.</p>
+      <p>For L1-16B-A3B, the MoE-specific routing-mismatch term (A) is small in the residual norm that propagates (4.4% per layer) and the minority routed term; the teacher-student difference is carried by the dense-like context-shift (B), about $2.2\times$ larger, and the output divergence is a heavy-tailed handful of tokens, most of which is not in the routed path at all. The teacher-student gap is whatever it is; what the measurement shows is that its <em>composition</em> is dense-dominated, so the Mixture-of-Experts adds no obstacle the dense trust-region guarantee does not already absorb. The claim is not "(A) is negligible," which was never measured. It is "(A) is small and the minority term, (B) dominates, and the gap is dense-like," which is measured top to bottom. On L1, SDFT survives the jump.</p>
     </div>
   </section>
 
@@ -821,32 +825,193 @@
     </p>
   </section>
 
+  <div class="progression">
+    <span class="dead">one model, every control passing</span> &nbsp;&rarr;&nbsp; <strong>THE SCREEN:</strong> &nbsp;does the verdict hold across the MoE design space?
+  </div>
+
+  <!-- ============================== SECTION: THE SCREEN ============================== -->
+  <section id="screen">
+    <h2>The screen: every architecture, both domains</h2>
+
+    <p>
+      L1 is one model, and one model cannot tell you whether the verdict is structural or a lucky property of <em>this</em> design: one shared expert, sigmoid gating, 64 experts with 8 selected. The bound is a product, $F_{\max}\lVert g^T-g^S\rVert_1$, and different architectures push on its two factors in opposite ways. So we run the same decomposition on five more architectures chosen to span the axes the bound says matter, and on a second domain, holding the machinery fixed and trading the L1 controls for breadth.
+    </p>
+
+    <table>
+      <tr><th>Model</th><th class="num">E / k</th><th>shared</th><th>gating</th><th class="num">&Sigma;g</th></tr>
+      <tr><td>L1-16B-A3B (Gravity)</td><td class="num">64 / 8</td><td>1</td><td>sigmoid, scaled renorm</td><td class="num">2.45</td></tr>
+      <tr><td>Qwen3-30B-A3B</td><td class="num">128 / 8</td><td>0</td><td>softmax-all</td><td class="num">1.00</td></tr>
+      <tr><td>Mixtral-8x7B</td><td class="num">8 / 2</td><td>0</td><td>softmax-all</td><td class="num">1.00</td></tr>
+      <tr><td>OLMoE-1B-7B</td><td class="num">64 / 8</td><td>0</td><td>softmax-all, no renorm</td><td class="num">0.42</td></tr>
+      <tr><td>DeepSeek-V2-Lite</td><td class="num">64 / 6</td><td>2</td><td>softmax, no renorm</td><td class="num">0.36</td></tr>
+      <tr><td>gpt-oss-20b</td><td class="num">32 / 4</td><td>0</td><td>softmax-over-selected</td><td class="num">1.00</td></tr>
+    </table>
+    <p style="font-size:0.9em;color:#7f8c8d;text-align:center;margin-top:-0.6em;">
+      Six MoEs spanning 8 to 128 experts, shared and shared-free, sigmoid and softmax, and gates that sum to anywhere from 0.36 to 2.45. gpt-oss is routing-only (its quantized experts fail the term-(A) reconstruction gate), so it contributes routing metrics but not a term-(A) point.
+    </p>
+
+    <div class="analysis-block">
+      <p>The screen holds one protocol across all six models. Term (A) is formed on each model's <em>true realized</em> gates through the general $\ell_1$ bound, because three of these architectures do not put their gates on the probability simplex (OLMoE and DeepSeek-V2-Lite sum to about 0.4, L1 to 2.45), so the TV form does not even apply. The metric is taken over the reasoning <em>body</em>, with the opening-token transient excluded, so verbose and terse models compare on equal footing, and every model clears a reconstruction gate ($A+B$ equals the routed difference, to under 1%) before its term (A) enters the table. $\mathrm{TV}$ is reported on renormalized gates ($\Sigma g = 1$) so it is comparable across architectures, while term (A) itself uses the raw realized gates; on L1 the renormalized $\mathrm{TV}$ is 0.072, the same realized-gate disagreement the deep dive read as 0.171 on the raw ($\Sigma g = 2.446$) gates.</p>
+    </div>
+
+    <p>
+      Two relative metrics carry the rest of the post, and keeping them apart is the whole game. <strong>relA/res</strong> $=\lVert A\rVert/\lVert\text{residual}\rVert$ is the <strong>safety verdict</strong>: term (A) as a fraction of the norm that actually propagates to the logits, the number that rates a model safe. But it is confounded across models by how heavily each architecture weights its routed path into the residual ($\Sigma g$ spans sixfold), so it is a per-model verdict, not a clean cross-model quantity. <strong>relA/block</strong> $=\lVert A\rVert/\lVert y_{\text{block}}\rVert$ divides that weighting out, numerator and denominator both scaling with the gates, so it is the $\Sigma g$-invariant number, comparable across architectures. We report both, and they say different things on purpose.
+    </p>
+
+    <table>
+      <tr><th>Model</th><th class="num">E / k</th><th class="num">relA/res<br>(PubMedQA &rarr; GSM8K)</th><th class="num">relA/block<br>(PubMedQA &rarr; GSM8K)</th><th class="num">Jaccard<br>(PubMedQA &rarr; GSM8K)</th></tr>
+      <tr><td>Qwen3-30B-A3B</td><td class="num">128 / 8</td><td class="num">0.020 &rarr; 0.022</td><td class="num">0.139 &rarr; 0.150</td><td class="num">0.881 &rarr; 0.867</td></tr>
+      <tr><td>Mixtral-8x7B</td><td class="num">8 / 2</td><td class="num">0.023 &rarr; 0.029</td><td class="num">0.103 &rarr; 0.121</td><td class="num">0.906 &rarr; 0.889</td></tr>
+      <tr><td>DeepSeek-V2-Lite</td><td class="num">64 / 6</td><td class="num">0.037 &rarr; 0.043</td><td class="num">0.095 &rarr; 0.104</td><td class="num">0.839 &rarr; 0.822</td></tr>
+      <tr><td>L1-16B-A3B</td><td class="num">64 / 8</td><td class="num">0.045 &rarr; 0.054</td><td class="num">0.099 &rarr; 0.110</td><td class="num">0.870 &rarr; 0.854</td></tr>
+      <tr><td>OLMoE-1B-7B</td><td class="num">64 / 8</td><td class="num">0.070 &rarr; 0.074</td><td class="num">0.142 &rarr; 0.136</td><td class="num">0.873 &rarr; 0.869</td></tr>
+      <tr><td>gpt-oss-20b</td><td class="num">32 / 4</td><td class="num">routing-only</td><td class="num">routing-only</td><td class="num">0.905 &rarr; 0.896</td></tr>
+    </table>
+
+    <p>
+      Read the bands, not the rows. Across all five architectures that yield a term (A), and both domains, <strong>relA/res lands between 2.0% and 7.4%</strong>, <strong>relA/block between 9.5% and 15.0%</strong>, and <strong>Jaccard between 0.82 and 0.91</strong>. Every architecture, every domain: the routing-mismatch term is a single-digit-percent perturbation of the propagating residual, and 82 to 91% of the selected experts are identical in the teacher and student passes. The mismatch is mostly a gate-reweighting of largely the same experts, not a wholesale swap. The L1 verdict was not a property of L1: SDFT survives across coarse and fine routing, shared and shared-free, sigmoid and softmax, and stochastic, sub-stochastic, and scaled gating alike.
+    </p>
+
+    <p>
+      The two shared-free corners are worth a sentence each, because they sit on the bound's two factors. <strong>Mixtral (8/2) is the $F_{\max}$ corner</strong>: flipping one of two selected experts moves half the routed compute, so $F_{\max}$ is large. It came out the <em>safest</em> of the set (relA/res 0.023), because coarse routing barely moves ($\lVert\Delta g\rVert_1$ small) and the product is what matters. <strong>Qwen3 and OLMoE are the routing-distance corner</strong>: fine-grained, shared-free, two top-8-of-128-or-64 draws that overlap less and respond more to content. They are the weakest of the set, and they still survive. Neither corner breaks.
+    </p>
+  </section>
+
+  <div class="progression">
+    it survives everywhere &nbsp;&rarr;&nbsp; <strong>WHY:</strong> &nbsp;what sets the 3.5&times; spread in the safety margin?
+  </div>
+
+  <!-- ============================== SECTION: WHY ============================== -->
+  <section id="why">
+    <h2>Why the margin holds: the backbone, not the router</h2>
+
+    <p>
+      The screen says SDFT survives. The stronger result is the <em>reason</em>, and it is sitting in the gap between the two metrics. <strong>relA/block, the cross-model mechanism number, holds a tight 1.5&times; band</strong> (0.095 to 0.150). <strong>relA/res, the safety number, spans 3.5&times;</strong> (0.020 to 0.074). Since relA/res $=$ relA/block $\times$ (block/residual), and relA/block is nearly constant across the set, the entire 3.5&times; spread in safety is set by <strong>block/residual</strong>: how much of the residual stream the MoE block owns, versus the always-on paths. The routing-mismatch <em>magnitude</em> is similar everywhere; what differs is how much it is <em>diluted</em> on the way to the logits.
+    </p>
+
+    <p>
+      And the ranking confirms it: the relA/res order is the block/residual order, identically, in both domains.
+    </p>
+
+    <table>
+      <tr><th>Model</th><th class="num">relA/block</th><th class="num">relA/res</th><th class="num">block / residual</th></tr>
+      <tr><td>Qwen3-30B-A3B</td><td class="num">0.139</td><td class="num">0.020</td><td class="num">0.14</td></tr>
+      <tr><td>Mixtral-8x7B</td><td class="num">0.103</td><td class="num">0.023</td><td class="num">0.22</td></tr>
+      <tr><td>DeepSeek-V2-Lite</td><td class="num">0.095</td><td class="num">0.037</td><td class="num">0.39</td></tr>
+      <tr><td>L1-16B-A3B</td><td class="num">0.099</td><td class="num">0.045</td><td class="num">0.45</td></tr>
+      <tr><td>OLMoE-1B-7B</td><td class="num">0.142</td><td class="num">0.070</td><td class="num">0.50</td></tr>
+    </table>
+    <p style="font-size:0.9em;color:#7f8c8d;text-align:center;margin-top:-0.6em;">
+      PubMedQA; block/residual $=$ relA/res $\div$ relA/block. The relA/res ranking is the block/residual ranking. relA/block does not order the column.
+    </p>
+
+    <p>
+      The cleanest read is <strong>Qwen3 versus OLMoE</strong>. Their relA/block is all but identical (0.139 vs 0.142): the routing mismatch is the same size in the routed computation. Their relA/res is opposite (0.020 vs 0.070), because the MoE block is about <strong>14% of Qwen3's residual and about 49% of OLMoE's</strong>. Same routing mismatch, a 3.5&times; difference in safety, set entirely by how much of the residual the always-on backbone owns.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 660 400" width="660" role="img" aria-label="relA/res versus block-over-residual across five MoEs">
+        <rect x="0" y="0" width="660" height="400" rx="12" fill="#f8f9fa" stroke="#e2e8f0"/>
+        <!-- wedge: the relA/block band [0.095, 0.142], two lines through the origin -->
+        <polygon points="80,330 600,57 600,147" fill="#ecfdf5"/>
+        <line x1="80" y1="330" x2="600" y2="57" stroke="#16a34a" stroke-width="1.3" stroke-dasharray="5,3"/>
+        <line x1="80" y1="330" x2="600" y2="147" stroke="#16a34a" stroke-width="1.3" stroke-dasharray="5,3"/>
+        <text x="470" y="92" font-size="11" fill="#15803d" font-weight="600" transform="rotate(-21 470 92)">relA/block band: 0.095 to 0.142</text>
+        <!-- axes -->
+        <line x1="80" y1="330" x2="628" y2="330" stroke="#94a3b8" stroke-width="1.5"/>
+        <line x1="80" y1="330" x2="80" y2="44" stroke="#94a3b8" stroke-width="1.5"/>
+        <!-- x ticks -->
+        <g font-size="10" fill="#94a3b8" text-anchor="middle">
+          <text x="80" y="348">0</text><text x="174" y="348">0.1</text><text x="269" y="348">0.2</text>
+          <text x="364" y="348">0.3</text><text x="458" y="348">0.4</text><text x="553" y="348">0.5</text>
+        </g>
+        <!-- y ticks -->
+        <g font-size="10" fill="#94a3b8" text-anchor="end">
+          <text x="73" y="334">0</text><text x="73" y="264">0.02</text><text x="73" y="194">0.04</text>
+          <text x="73" y="124">0.06</text><text x="73" y="54">0.08</text>
+        </g>
+        <!-- points -->
+        <circle cx="212" cy="260" r="6" fill="#2563eb" stroke="#fff" stroke-width="1.5"/>
+        <text x="205" y="252" font-size="11" fill="#1d4ed8" font-weight="600" text-anchor="end">Qwen3</text>
+        <text x="205" y="266" font-size="9" fill="#3b82f6" text-anchor="end">block = 14% of residual</text>
+        <circle cx="288" cy="250" r="6" fill="#475569" stroke="#fff" stroke-width="1.5"/>
+        <text x="298" y="246" font-size="11" fill="#334155" font-weight="600">Mixtral</text>
+        <circle cx="449" cy="201" r="6" fill="#475569" stroke="#fff" stroke-width="1.5"/>
+        <text x="442" y="196" font-size="11" fill="#334155" font-weight="600" text-anchor="end">DeepSeek-V2-Lite</text>
+        <circle cx="505" cy="173" r="6" fill="#475569" stroke="#fff" stroke-width="1.5"/>
+        <text x="515" y="169" font-size="11" fill="#334155" font-weight="600">L1</text>
+        <circle cx="553" cy="85" r="6" fill="#c0392b" stroke="#fff" stroke-width="1.5"/>
+        <text x="546" y="80" font-size="11" fill="#c0392b" font-weight="700" text-anchor="end">OLMoE</text>
+        <text x="546" y="94" font-size="9" fill="#e74c3c" text-anchor="end">block = 49% of residual</text>
+        <!-- axis titles -->
+        <text x="354" y="378" text-anchor="middle" font-size="12.5" fill="#2c3e50" font-weight="600">block / residual&#160;&#160;(how much of the residual the MoE block owns)</text>
+        <text x="26" y="190" text-anchor="middle" font-size="12.5" fill="#2c3e50" font-weight="600" transform="rotate(-90 26 190)">relA/res&#160;&#160;(safety margin)</text>
+      </svg>
+      <figcaption>The mechanism in one plot. All five architectures sit inside a narrow wedge: their routing mismatch relative to the routed block (relA/block) is a tight band, 0.095 to 0.142, so the slope from the origin barely changes. What sets each model's height, its safety margin relA/res, is its <em>horizontal</em> position, how much of the residual the MoE block owns. Qwen3 and OLMoE share the same band but sit at opposite ends of the safety axis purely because the MoE block is 14% of one residual and 49% of the other. The router is not what moves; the backbone is.</figcaption>
+    </figure>
+
+    <p>
+      This is the single-model finding made general. On L1 the visible backbone was the shared expert: term (B), the dense-like context-shift, ran about $2.2\times$ term (A), and the shared expert carried about half the residual. The screen shows the idea is larger than the shared expert. Even the shared-<em>free</em> models have an always-on backbone, attention, embeddings, and the LayerNorms, identical in both passes, and the same dilution holds. "Term (B) is the backbone" generalizes to "the always-on contribution is the backbone." The routing mismatch is small in the routed block, and then everything that runs for every token dilutes it into the residual. The dilution sets the margin.
+    </p>
+  </section>
+
+  <!-- ============================== SECTION: TEXTURE ============================== -->
+  <section id="texture">
+    <h2>Three textures the screen leaves behind</h2>
+
+    <p>
+      <strong>Granularity.</strong> Hold shared-status and gate convention fixed (the no-shared softmax models) and let only granularity move: relA/block rises cleanly with it, Mixtral 8/2 (0.121) $<$ OLMoE 64/8 (0.136) $<$ Qwen3 128/8 (0.150) on GSM8K, monotone. Finer routers respond more to content and move more per token, so the thin-margin corner of the design space is <em>fine-grained and shared-free</em>. It still survives; it is just where the backbone has the least to dilute with.
+    </p>
+
+    <p>
+      <strong>Dilution, not absorption.</strong> The shared expert dilutes the routing mismatch, it does not actively cancel it, and the distinction is one the data can defend. The numerator $\lVert A\rVert$ is the same whether we divide by the block output (relA/block) or by the routed output alone (relA/routed); the rise when the shared expert leaves the denominator (L1 0.099 $\to$ 0.130, DSv2 0.095 $\to$ 0.178) is <em>purely</em> the residual shrinking, the shared expert's share of the backbone (shared_frac 0.54 on L1, 0.71 on DSv2). That shows the shared expert is a large residual backbone, the term-(B) story, not that it reaches in and absorbs the mismatch, which would be a stronger causal claim a denominator decomposition cannot make. We claim the weaker, clean thing.
+    </p>
+
+    <p>
+      <strong>Cross-domain.</strong> Math runs a little hotter than medicine, uniformly. From PubMedQA to GSM8K the relA/block band shifts up by about $+0.01$ at both ends (floor 0.095 $\to$ 0.104, ceiling 0.142 $\to$ 0.150) with its width preserved (0.047 $\to$ 0.046). That is a uniform upward shift, the spread intact, not a convergence: every architecture perturbs slightly more on harder reasoning, and the ranking survives the move. The honest report is a range, math $\gtrsim$ medical, not a single number.
+    </p>
+  </section>
+
+  <!-- ============================== SECTION: LIMITATION ============================== -->
+  <section id="limitation">
+    <h2>What this does not show: the trajectory</h2>
+
+    <p>
+      One honest boundary contains everything above. Every number here, on L1 and across the screen, is <strong>per-step</strong>: a snapshot of the trust region at a frozen checkpoint, teacher and student passes compared on identical tokens at a single moment. It establishes that one trust-region step is realized, that the output move the demonstration opens is reachable without a routing change a small step cannot make. It does not establish what happens when you take thousands of steps.
+    </p>
+
+    <p>
+      The gap is exactly the one the derivation flagged: SDFT optimizes the <em>detached-trajectory surrogate</em>, which drops the state-shift terms, and the open question is whether the small per-step routing mismatch <em>compounds</em> over a full run, or whether load balance drifts as the router is trained. The base-versus-checkpoint-2000 comparison on L1 (routing topology stable, peak layer unchanged after 2000 steps) is one reassuring point on that trajectory, not the trajectory itself. The multi-step study, two architectures chosen to bracket the shared-expert axis, tracking routing drift and load-balance collapse across checkpoints, is in progress. Until it lands, the scope is precise: the <em>per-step</em> trust region survives the jump to Mixture-of-Experts, across the design space, and the structural reason is the always-on backbone. Whether the <em>trajectory</em> does is the next question.
+    </p>
+  </section>
+
   <!-- ============================== SECTION 13: CONCLUSION ============================== -->
   <section id="conclusion">
     <h2>The bound was the whole argument</h2>
 
     <p>
-      Look back at what carried the weight. The trust-region guarantee is output-space, and the only question was whether a smooth step can realize the output move, automatic in a dense graph and not in an MoE, where matching the teacher might demand a routing change a small step cannot make. Turning that reachability question into the decomposition $y^T - y^S = (\mathrm{A}) + (\mathrm{B})$ and the bound $\lVert A\rVert \le 2 F_{\max}\,\mathrm{TV}(g^T,g^S)$ collapsed it into one term we could measure, (A), with the dense case and maximal routing disagreement as its two endpoints. After that there was nothing left to argue in the abstract; the only thing to do was place the blue dot on the line, on both axes, by measurement.
+      Look back at what carried the weight. The trust-region guarantee is output-space, and the only question was whether a smooth step can realize the output move, automatic in a dense graph and not obviously so in an MoE, where matching the teacher might demand a routing change a small step cannot make. Turning that reachability question into the decomposition $y^T - y^S = (\mathrm{A}) + (\mathrm{B})$ and the bound $\lVert A\rVert \le F_{\max}\,\lVert g^T - g^S\rVert_1$ collapsed it into one measurable term, (A), with the dense case and maximal routing disagreement as its two endpoints. After that there was nothing left to argue in the abstract; the work was to measure where reality sits, first up close on one model, then across the design space.
     </p>
 
     <p>
-      The measurements placed it near the origin and held it there against every attempt to move it. Routing barely diverges (true-weight $\mathrm{TV}\approx0.17$, flat across accuracy); the divergence that does exist is context presence rather than content (an irrelevant demonstration reproduces 97% of it); the residual content effect has the safe sign (a relevant demonstration makes the teacher route <em>more</em> like the student); and term (A), measured directly at the output rather than read off the bound, is 4.4% of the residual per layer and the minority routed term. Three readings of the data would each have pushed the dot toward the dangerous end, and each was more interesting than the truth, and each failed a control. What survives is measured, not asserted: term (A) is small in the norm that propagates, the teacher-student gap is dominated by the same dense-like term (B) a dense model already carries, and SDFT's guarantee transfers.
+      The measurements put the operating point near the safe end and held it there, on every architecture and both domains. Routing barely moves (Jaccard 0.82 to 0.91), term (A) is a 2 to 7.4% perturbation of the residual that propagates, and the gap is carried by the dense-like term (B) a dense model already carries. And the screen handed back something a single model could not: the <em>reason</em>. The safety margin is not routing happening to be stable; it is the always-on backbone diluting a small routing mismatch, and the spread across architectures tracks how much of the residual that backbone owns. Where a model has more always-on path, attention plus a shared expert, term (A) is diluted more, and the margin is larger. On L1, the controls that would have broken the verdict all failed; across the screen, the verdict held everywhere and came with a mechanism.
     </p>
 
     <div class="insight-box">
       <h4>The takeaway</h4>
-      <p>Derive the bound, identify the controlling quantity, then measure where reality sits on it. The theory did not merely motivate the experiments; it told us in advance which single number to chase and which direction was safe, and it turned a vague unease about routing into a line with the answer somewhere on it. SDFT survives the jump to Mixture-of-Experts, and the reason is legible rather than lucky.</p>
+      <p>Derive the bound, identify the controlling term, measure where reality sits, then vary the architecture to learn whether the answer is structural. It was. SDFT survives the jump to Mixture-of-Experts across the design space, and the reason is legible rather than lucky: the routing mismatch is small to begin with, and the always-on backbone dilutes it. What remains is the trajectory, whether the per-step margin holds over a full training run, which is the multi-step study now underway.</p>
     </div>
   </section>
 
   <!-- ============================== APPENDIX ============================== -->
   <section id="appendix">
     <h2>Appendix</h2>
+    <p style="margin-bottom:0.4em;"><strong>Single-model deep dive (L1-16B-A3B, PubMedQA, n = 200).</strong></p>
     <table>
       <tr><th>Quantity</th><th>Value</th><th>Reading</th></tr>
       <tr><td>Model</td><td>L1-16B-A3B (base and SDFT ckpt-2000)</td><td>16.2B total / about 2.85B active; 64 experts, top-8 + 1 shared; 27 MoE layers (of 28 blocks); Gravity-16B-A3B base</td></tr>
       <tr><td>Sample</td><td>n = 200 PubMedQA (100 A / 100 B), greedy</td><td>both passes route over identical tokens</td></tr>
-      <tr><td>Global routing JSD</td><td>0.061 (Jaccard 0.87, eff-N shift about 0)</td><td>routing barely moves; SDFT $\Delta$JSD = $-0.0014$</td></tr>
+      <tr><td>Global routing JSD</td><td>0.0447 (Jaccard 0.87, eff-N shift about 0)</td><td>routing barely moves; SDFT leaves the gap about unchanged</td></tr>
       <tr><td>Accuracy</td><td>student 85 to 93.5%; routing flat across outcomes</td><td>+8.5pp from SDFT; routing does not decide accuracy</td></tr>
       <tr><td>Opening spike</td><td>S = 0.290 vs floor N = 0.131</td><td>2.2 times floor, about 7.9 sigma, real but question-agnostic (F = 0.292)</td></tr>
       <tr><td>Irrelevant-demo control</td><td>0.283 vs real 0.290, so 97.4% reproduced</td><td>the spike is about 97% presence, 2.6% content</td></tr>
@@ -855,7 +1020,7 @@
       <tr><td>"Content predicts helping"</td><td>helped-gap +0.00218 vs student-gap +0.00216 (1.01)</td><td>confound; within student-wrong $p = 0.68$, null</td></tr>
       <tr style="background:#f0f7ff;"><td><strong>Term (A) measured</strong> (body)</td><td>$\lVert A\rVert/\lVert y_{\text{block}}\rVert = 0.097$; $\lVert A\rVert/\lVert r\rVert = 0.044$</td><td>routing-mismatch term, small in the residual norm that propagates</td></tr>
       <tr style="background:#f0f7ff;"><td><strong>Term (B) measured</strong> (body)</td><td>$\lVert B\rVert/\lVert r\rVert = 0.095$; $A+B$ recon &lt; 1% median</td><td>context-shift, about $2.2\times$ term (A); identity cross-checked</td></tr>
-      <tr style="background:#f0f7ff;"><td>true-weight $\mathrm{TV}$ (body)</td><td>0.171</td><td>measured directly; well under any proxy bound</td></tr>
+      <tr style="background:#f0f7ff;"><td>true-weight $\mathrm{TV}$ (body)</td><td>0.171 raw gates ($\Sigma g$=2.446)</td><td>realized-gate disagreement; 0.072 renormalized ($\Sigma g$=1) for cross-model comparison</td></tr>
       <tr style="background:#f0f7ff;"><td>Output KL (teacher $\|$ student)</td><td>median 0.003 nats; mean 0.30</td><td>heavy-tailed; top 1% carry 25% of the mass</td></tr>
       <tr style="background:#f0f7ff;"><td>Opening $\texttt{&lt;think&gt;}$ token</td><td>$\lVert A\rVert/\lVert r\rVert = 0.25$; output KL 0.007</td><td>output-saturated (top-1 $&gt;0.999$, entropy $\approx 0$): pinned, not absorbed</td></tr>
       <tr style="background:#f0f7ff;"><td>Tail (top 1%, n = 1161) unique variance</td><td>$\Delta R^2(A\mid B,y) = 0.010$ vs $\Delta R^2(B\mid A,y) = 0.025$</td><td>(A) minor even on the tail ($f^2\approx0.012$); routed path explains 0.19 to 0.26 of tail KL</td></tr>
@@ -864,8 +1029,20 @@
       <tr><td>Downstream (clean SDFT effect)</td><td>SFT-all vs SFT-all+SDFT(3): in-domain about 82 to 87, held-out about 60 to 60</td><td>in-domain recovery, no generalization tax</td></tr>
     </table>
 
+    <p style="margin:1.8em 0 0.4em;"><strong>Cross-model screen (five term-(A) models, n = 200 per model per domain).</strong></p>
+    <table>
+      <tr><th>Quantity</th><th>Value</th><th>Reading</th></tr>
+      <tr><td>relA/res, 5 models &times; 2 domains</td><td>0.020 to 0.074</td><td>safety verdict: term (A) as a share of the propagating residual, single-digit percent everywhere</td></tr>
+      <tr><td>relA/block, 5 models &times; 2 domains</td><td>0.095 to 0.150</td><td>$\Sigma g$-invariant mechanism number: a tight 1.5&times; band</td></tr>
+      <tr><td>Jaccard, screen</td><td>0.82 to 0.91</td><td>82 to 91% of selected experts shared between passes</td></tr>
+      <tr><td>block / residual</td><td>0.14 (Qwen3) to 0.50 (OLMoE)</td><td>sets the 3.5&times; relA/res spread; relA/res ranking $=$ block/residual ranking</td></tr>
+      <tr><td>Qwen3 vs OLMoE</td><td>relA/block 0.139 vs 0.142; relA/res 0.020 vs 0.070</td><td>same band, opposite safety, because block/residual is 0.14 vs 0.50</td></tr>
+      <tr><td>Granularity (GSM8K, no-shared softmax)</td><td>relA/block 0.121 &rarr; 0.136 &rarr; 0.150 (8/2, 64/8, 128/8)</td><td>monotone: finer routing moves more per token</td></tr>
+      <tr><td>Cross-domain shift</td><td>relA/block band $+0.01$ PubMedQA $\to$ GSM8K, width preserved</td><td>uniform upward shift, not convergence</td></tr>
+    </table>
+
     <p class="references" style="margin-top:2em;">
-      Routing extraction, metrics, the gate analysis (the three controls), and the direct term-(A) and term-(B) decomposition at the block output, plus the per-test reports, live in the project repository. All term-(A)/term-(B) figures are measured with the model's true renormalized routing weights over n = 200 (about 116k body tokens); the reconstruction $A+B=\Delta_{\text{routed}}$ is an algebraic identity used only as an implementation check, and the tail regressions control the $+0.78$ collinearity between $\lVert A\rVert$ and $\lVert B\rVert$. Figures: per-layer JSD and accuracy-split from the base-model run; positional divergence from both checkpoints. Downstream evaluations come from the full post-training pipeline, a separate set of runs from the controlled PubMedQA routing probe.
+      Routing extraction, metrics, the gate analysis (the three controls), and the direct term-(A) and term-(B) decomposition at the block output, plus the per-test reports, live in the project repository. All term-(A)/term-(B) figures are measured with the model's true renormalized routing weights over n = 200 (about 116k body tokens); the reconstruction $A+B=\Delta_{\text{routed}}$ is an algebraic identity used only as an implementation check, and the tail regressions control the $+0.78$ collinearity between $\lVert A\rVert$ and $\lVert B\rVert$. Figures: per-layer JSD and accuracy-split from the base-model run; positional divergence from both checkpoints. Downstream evaluations come from the full post-training pipeline, a separate set of runs from the controlled PubMedQA routing probe. The cross-model screen runs the same decomposition through a per-architecture <code>RouterSpec</code> (gate convention and shared-expert handling verified empirically from a forward pass, not read off configs), forms term (A) on each model's true realized gates via the $\ell_1$ bound, and requires the per-model reconstruction $A+B=\Delta_{\text{routed}}$ to close to under 1% before a model's term (A) enters the tables; gpt-oss is held routing-only because its mxfp4 experts fail that gate. The multi-step study referenced in the closing section is in progress and not reported here.
     </p>
   </section>
 
@@ -873,16 +1050,24 @@
   <section id="references">
     <h2>References</h2>
     <ol class="references">
-      <li>Shenfeld, I., Damani, M., Hübotter, J., Agrawal, P. (2026). <em>Self-Distillation Enables Continual Learning.</em> arXiv:2601.19897 &middot; <strong>SDFT</strong></li>
-      <li>Kim, H., Papamakarios, G., Mnih, A. (2021). <em>The Lipschitz Constant of Self-Attention.</em> ICML 2021. arXiv:2006.04710 &middot; <strong>dot-product attention is not globally Lipschitz</strong></li>
-      <li>Shazeer, N. et al. (2017). <em>Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer.</em> ICLR 2017. arXiv:1701.06538 &middot; <strong>routing collapse, load balancing</strong></li>
-      <li>Dai, D. et al. (2024). <em>DeepSeekMoE: Towards Ultimate Expert Specialization in Mixture-of-Experts Language Models.</em> arXiv:2401.06066 &middot; <strong>shared-expert isolation</strong></li>
+      <li>Shenfeld, I., Damani, M., Hübotter, J., Agrawal, P. (2026). <em>Self-Distillation Enables Continual Learning.</em> arXiv:2601.19897</li>
+      <li>Kim, H., Papamakarios, G., Mnih, A. (2021). <em>The Lipschitz Constant of Self-Attention.</em> ICML 2021. arXiv:2006.04710</li>
+      <li>Shazeer, N. et al. (2017). <em>Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer.</em> ICLR 2017. arXiv:1701.06538</li>
+      <li>Dai, D. et al. (2024). <em>DeepSeekMoE: Towards Ultimate Expert Specialization in Mixture-of-Experts Language Models.</em> arXiv:2401.06066</li>
       <li>Nguyen, H., Doan, T. T., Pham, Q., Bui, N. D. Q., Ho, N., Rinaldo, A. (2025). <em>On DeepSeekMoE: Statistical Benefits of Shared Experts and Normalized Sigmoid Gating.</em> arXiv:2505.10860.</li>
-      <li>DeepSeek-AI (2024). <em>DeepSeek-V3 Technical Report.</em> arXiv:2412.19437 &middot; <strong>MLA, auxiliary-loss-free routing</strong></li>
+      <li>DeepSeek-AI (2024). <em>DeepSeek-V3 Technical Report.</em> arXiv:2412.19437</li>
+      <li>Tang, Y. &amp; Munos, R. (2025). <em>On a few pitfalls in KL divergence gradient estimation for RL.</em> arXiv:2506.09477</li>
+    </ol>
+
+    <p class="references" style="margin-top:1.2em;margin-bottom:0.4em;"><strong>Models screened.</strong></p>
+    <ol class="references" start="8">
+      <li>Jiang, A. Q. et al. (2024). <em>Mixtral of Experts.</em> arXiv:2401.04088</li>
+      <li>Muennighoff, N. et al. (2024). <em>OLMoE: Open Mixture-of-Experts Language Models.</em> arXiv:2409.02060</li>
+      <li>DeepSeek-AI (2024). <em>DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model.</em> arXiv:2405.04434</li>
+      <li>Yang, A. et al. (Qwen Team, 2025). <em>Qwen3 Technical Report.</em> arXiv:2505.09388</li>
+      <li>OpenAI (2025). <em>gpt-oss-120b &amp; gpt-oss-20b Model Card.</em> arXiv:2508.10925</li>
     </ol>
   </section>
-
-  <p style="text-align:center;color:#aaa;font-size:0.9em;margin-top:3em;">The bound said where to look, and the measurements said how far reality was from the dangerous end. That is the post.</p>
 
   <a href="../blog.html" class="back-link" style="margin-top: 50px;">&larr; Back to Projects &amp; Writing Hub</a>
 
