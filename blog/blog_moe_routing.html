@@ -73,7 +73,7 @@
 
       <p style="margin:0 0 0.9em;">We turn the worry into a bound. The deviation from the clean dense picture is term (A), the routing-mismatch term, and it is <strong>linear in the routing divergence</strong>: $\lVert A\rVert \le F_{\max}\lVert g^T - g^S\rVert_1$, the gate disagreement between the teacher and student passes, with two endpoints, the dense case (gates agree, the guarantee holds exactly) and independent routing per pass (the teacher's output formed entirely through experts the student is not tuning). And rather than read the size of that deviation off the bound, we measure term (A) directly.</p>
 
-      <p style="margin:0;">We measure it first up close on one production medical MoE, <a href="https://huggingface.co/learning-unit/L1-16B-A3B">L1-16B-A3B</a>, where the full apparatus of controls fits, and then across the design space: six architectures (8 to 128 experts, shared and shared-free, sigmoid and softmax, gates that sum to anywhere from 0.4 to 2.45) and two domains (PubMedQA and GSM8K). The verdict is the same everywhere. Routing barely moves (Jaccard 0.82 to 0.91), term (A) is a 2 to 7.4% perturbation of the residual stream that propagates, and the teacher-student gap is carried by the dense-like context-shift, not by routing. And the reason the margin holds is <em>structural</em>, not a matter of routing happening to be stable: the routing mismatch is small in the routed block to begin with, and then the always-on backbone (attention plus the shared expert) dilutes it into the residual. Where a model's backbone owns more of the residual, its safety margin is larger, and that, not routing stability, sets the spread. SDFT survives the jump to Mixture-of-Experts, across the design space, for a legible reason. The one caveat is temporal: this is the per-step picture, a snapshot of the trust region, and whether the small per-step mismatch compounds over a full training run is the multi-step question, still open.</p>
+      <p style="margin:0;">We measure it first up close on one production medical MoE, <a href="https://huggingface.co/learning-unit/L1-16B-A3B">L1-16B-A3B</a>, where the full apparatus of controls fits, and then across the design space: six architectures (8 to 128 experts, shared and shared-free, sigmoid and softmax, gates that sum to anywhere from 0.4 to 2.45) and two domains (PubMedQA and GSM8K). The verdict is the same everywhere. Routing barely moves (Jaccard 0.82 to 0.91), term (A) is a 2 to 6% perturbation of the residual stream that propagates, and the teacher-student gap is carried by the dense-like context-shift, not by routing. And the reason the margin holds is <em>structural</em>, not a matter of routing happening to be stable: the routing mismatch is small in the routed block to begin with, and then the always-on backbone (attention plus the shared expert) dilutes it into the residual. Where a model's backbone owns more of the residual, its safety margin is larger, and that, not routing stability, sets the spread. SDFT survives the jump to Mixture-of-Experts, across the design space, for a legible reason. The one caveat is temporal: this is the per-step picture, a snapshot of the trust region, and whether the small per-step mismatch compounds over a full training run is the multi-step question, still open.</p>
     </div>
 
     <p>
@@ -860,25 +860,25 @@
 
     <table>
       <tr><th>Model</th><th class="num">E / k</th><th class="num">relA/res<br>(PubMedQA &rarr; GSM8K)</th><th class="num">relA/block<br>(PubMedQA &rarr; GSM8K)</th><th class="num">Jaccard<br>(PubMedQA &rarr; GSM8K)</th></tr>
-      <tr><td>Qwen3-30B-A3B</td><td class="num">128 / 8</td><td class="num">0.020 &rarr; 0.022</td><td class="num">0.139 &rarr; 0.150</td><td class="num">0.881 &rarr; 0.867</td></tr>
-      <tr><td>Mixtral-8x7B</td><td class="num">8 / 2</td><td class="num">0.023 &rarr; 0.029</td><td class="num">0.103 &rarr; 0.121</td><td class="num">0.906 &rarr; 0.889</td></tr>
-      <tr><td>DeepSeek-V2-Lite</td><td class="num">64 / 6</td><td class="num">0.037 &rarr; 0.043</td><td class="num">0.095 &rarr; 0.104</td><td class="num">0.839 &rarr; 0.822</td></tr>
-      <tr><td>L1-16B-A3B</td><td class="num">64 / 8</td><td class="num">0.045 &rarr; 0.054</td><td class="num">0.099 &rarr; 0.110</td><td class="num">0.870 &rarr; 0.854</td></tr>
-      <tr><td>OLMoE-1B-7B</td><td class="num">64 / 8</td><td class="num">0.070 &rarr; 0.074</td><td class="num">0.142 &rarr; 0.136</td><td class="num">0.873 &rarr; 0.869</td></tr>
+      <tr><td>Qwen3-30B-A3B</td><td class="num">128 / 8</td><td class="num">0.019 &rarr; 0.021</td><td class="num">0.133 &rarr; 0.139</td><td class="num">0.881 &rarr; 0.867</td></tr>
+      <tr><td>Mixtral-8x7B</td><td class="num">8 / 2</td><td class="num">0.022 &rarr; 0.028</td><td class="num">0.094 &rarr; 0.110</td><td class="num">0.906 &rarr; 0.889</td></tr>
+      <tr><td>DeepSeek-V2-Lite</td><td class="num">64 / 6</td><td class="num">0.027 &rarr; 0.033</td><td class="num">0.090 &rarr; 0.102</td><td class="num">0.839 &rarr; 0.822</td></tr>
+      <tr><td>L1-16B-A3B</td><td class="num">64 / 8</td><td class="num">0.044 &rarr; 0.053</td><td class="num">0.098 &rarr; 0.108</td><td class="num">0.870 &rarr; 0.854</td></tr>
+      <tr><td>OLMoE-1B-7B</td><td class="num">64 / 8</td><td class="num">0.056 &rarr; 0.061</td><td class="num">0.124 &rarr; 0.122</td><td class="num">0.871 &rarr; 0.870</td></tr>
       <tr><td>gpt-oss-20b</td><td class="num">32 / 4</td><td class="num">routing-only</td><td class="num">routing-only</td><td class="num">0.905 &rarr; 0.896</td></tr>
     </table>
 
     <p>
-      Read the bands, not the rows. Across all five architectures that yield a term (A), and both domains, <strong>relA/res lands between 2.0% and 7.4%</strong>, <strong>relA/block between 9.5% and 15.0%</strong>, and <strong>Jaccard between 0.82 and 0.91</strong>. Every architecture, every domain: the routing-mismatch term is a single-digit-percent perturbation of the propagating residual, and 82 to 91% of the selected experts are identical in the teacher and student passes. The mismatch is mostly a gate-reweighting of largely the same experts, not a wholesale swap. The L1 verdict was not a property of L1: SDFT survives across coarse and fine routing, shared and shared-free, sigmoid and softmax, and stochastic, sub-stochastic, and scaled gating alike.
+      Read the bands, not the rows. Across all five architectures that yield a term (A), and both domains, <strong>relA/res lands between 1.9% and 6.1%</strong>, <strong>relA/block between 9.0% and 13.9%</strong>, and <strong>Jaccard between 0.82 and 0.91</strong>. Every architecture, every domain: the routing-mismatch term is a single-digit-percent perturbation of the propagating residual, and 82 to 91% of the selected experts are identical in the teacher and student passes. The mismatch is mostly a gate-reweighting of largely the same experts, not a wholesale swap. The L1 verdict was not a property of L1: SDFT survives across coarse and fine routing, shared and shared-free, sigmoid and softmax, and stochastic, sub-stochastic, and scaled gating alike.
     </p>
 
     <p>
-      The two shared-free corners are worth a sentence each, because they sit on the bound's two factors. <strong>Mixtral (8/2) is the $F_{\max}$ corner</strong>: flipping one of two selected experts moves half the routed compute, so $F_{\max}$ is large. It came out <em>among the safest</em> of the set (relA/res 0.023, just behind Qwen3's 0.020), because coarse routing barely moves ($\lVert\Delta g\rVert_1$ small) and the product is what matters. <strong>Qwen3 and OLMoE are the routing-distance corner</strong>: fine-grained, shared-free, two top-8-of-128-or-64 draws that overlap less and respond more to content. They show the largest routing distance in the set, and they still survive. Neither corner breaks.
+      The two shared-free corners are worth a sentence each, because they sit on the bound's two factors. <strong>Mixtral (8/2) is the $F_{\max}$ corner</strong>: flipping one of two selected experts moves half the routed compute, so $F_{\max}$ is large. It came out <em>among the safest</em> of the set (relA/res 0.022, just behind Qwen3's 0.019), because coarse routing barely moves ($\lVert\Delta g\rVert_1$ small) and the product is what matters. <strong>Qwen3 and OLMoE are the routing-distance corner</strong>: fine-grained, shared-free, two top-8-of-128-or-64 draws that overlap less and respond more to content. They show the largest routing distance in the set, and they still survive. Neither corner breaks.
     </p>
   </section>
 
   <div class="progression">
-    it survives everywhere &nbsp;&rarr;&nbsp; <strong>WHY:</strong> &nbsp;what sets the 3.5&times; spread in the safety margin?
+    it survives everywhere &nbsp;&rarr;&nbsp; <strong>WHY:</strong> &nbsp;what sets the $\sim$3&times; spread in the safety margin?
   </div>
 
   <!-- ============================== SECTION: WHY ============================== -->
@@ -886,7 +886,7 @@
     <h2>Why the margin holds: the backbone, not the router</h2>
 
     <p>
-      The screen says SDFT survives. The stronger result is the <em>reason</em>, and it is sitting in the gap between the two metrics. <strong>relA/block, the cross-model mechanism number, holds a tight 1.5&times; band</strong> (0.095 to 0.142 on PubMedQA). <strong>relA/res, the safety number, spans 3.5&times;</strong> (0.020 to 0.070). Since relA/res $=$ relA/block $\times$ (block/residual), and relA/block is nearly constant across the set, the entire 3.5&times; spread in safety is set by <strong>block/residual</strong>: how much of the residual stream the MoE block owns, versus the always-on paths. The routing-mismatch <em>magnitude</em> is similar everywhere; what differs is how much it is <em>diluted</em> on the way to the logits.
+      The screen says SDFT survives. The stronger result is the <em>reason</em>, and it is sitting in the gap between the two metrics. <strong>relA/block, the cross-model mechanism number, holds a tight 1.5&times; band</strong> (0.090 to 0.133 on PubMedQA). <strong>relA/res, the safety number, spans $\sim$3&times;</strong> (0.019 to 0.056). Since relA/res $=$ relA/block $\times$ (block/residual), and relA/block is nearly constant across the set, the entire $\sim$3&times; spread in safety is set by <strong>block/residual</strong>: how much of the residual stream the MoE block owns, versus the always-on paths. The routing-mismatch <em>magnitude</em> is similar everywhere; what differs is how much it is <em>diluted</em> on the way to the logits.
     </p>
 
     <p>
@@ -895,31 +895,31 @@
 
     <table>
       <tr><th>Model</th><th class="num">relA/block</th><th class="num">relA/res</th><th class="num">block / residual</th></tr>
-      <tr><td>Qwen3-30B-A3B</td><td class="num">0.139</td><td class="num">0.020</td><td class="num">0.14</td></tr>
-      <tr><td>Mixtral-8x7B</td><td class="num">0.103</td><td class="num">0.023</td><td class="num">0.22</td></tr>
-      <tr><td>DeepSeek-V2-Lite</td><td class="num">0.095</td><td class="num">0.037</td><td class="num">0.39</td></tr>
-      <tr><td>L1-16B-A3B</td><td class="num">0.099</td><td class="num">0.045</td><td class="num">0.45</td></tr>
-      <tr><td>OLMoE-1B-7B</td><td class="num">0.142</td><td class="num">0.070</td><td class="num">0.49</td></tr>
+      <tr><td>Qwen3-30B-A3B</td><td class="num">0.133</td><td class="num">0.019</td><td class="num">0.145</td></tr>
+      <tr><td>Mixtral-8x7B</td><td class="num">0.094</td><td class="num">0.022</td><td class="num">0.234</td></tr>
+      <tr><td>DeepSeek-V2-Lite</td><td class="num">0.090</td><td class="num">0.027</td><td class="num">0.295</td></tr>
+      <tr><td>L1-16B-A3B</td><td class="num">0.098</td><td class="num">0.044</td><td class="num">0.451</td></tr>
+      <tr><td>OLMoE-1B-7B</td><td class="num">0.124</td><td class="num">0.056</td><td class="num">0.453</td></tr>
     </table>
     <p style="font-size:0.9em;color:#7f8c8d;text-align:center;margin-top:-0.6em;">
       PubMedQA; block/residual $=$ relA/res $\div$ relA/block. The relA/res ranking is the block/residual ranking. relA/block does not order the column.
     </p>
 
     <p>
-      The cleanest read is <strong>Qwen3 versus OLMoE</strong>. Their relA/block is all but identical (0.139 vs 0.142): the routing mismatch is the same size in the routed computation. Their relA/res is opposite (0.020 vs 0.070), because the MoE block is about <strong>14% of Qwen3's residual and about 49% of OLMoE's</strong>. Same routing mismatch, a 3.5&times; difference in safety, set entirely by how much of the residual the always-on backbone owns.
+      The cleanest read is <strong>Qwen3 versus OLMoE</strong>. Their relA/block is comparable, both inside the tight band (0.133 vs 0.124), and the safer model, Qwen3, if anything carries the slightly <em>larger</em> routed-block mismatch. Their relA/res is opposite (0.019 vs 0.056), because the MoE block is about <strong>14% of Qwen3's residual and about 45% of OLMoE's</strong>. Comparable routing mismatch, a $\sim$3&times; difference in safety, set by how much of the residual the always-on backbone owns. That inverts the lazy reading: the safe model has <em>more</em> routing movement, so safety cannot be a routing property. For a pair with truly equal routed-block mismatch, take Mixtral and L1 (relA/block 0.094 and 0.098): L1's relA/res is double Mixtral's (0.044 vs 0.022) because its block owns double the residual (0.45 vs 0.23), the same mismatch diluted half as much.
     </p>
 
     <figure>
       <svg viewBox="0 0 660 400" width="660" role="img" aria-label="relA/res versus block-over-residual across five MoEs">
         <rect x="0" y="0" width="660" height="400" rx="12" fill="#f8f9fa" stroke="#e2e8f0"/>
-        <!-- wedge: the relA/block band [0.095, 0.142], two lines through the origin -->
-        <polygon points="80,330 600,57 600,147" fill="#ecfdf5"/>
-        <line x1="80" y1="330" x2="600" y2="57" stroke="#16a34a" stroke-width="1.3" stroke-dasharray="5,3"/>
-        <line x1="80" y1="330" x2="600" y2="147" stroke="#16a34a" stroke-width="1.3" stroke-dasharray="5,3"/>
-        <text x="325" y="196" text-anchor="middle" font-size="11" fill="#15803d" font-weight="600" transform="rotate(-28 325 196)">relA/block band: 0.095 to 0.142</text>
+        <!-- wedge: the relA/block band [0.090, 0.133], two lines through the origin -->
+        <polygon points="80,330 600,58 600,146" fill="#ecfdf5"/>
+        <line x1="80" y1="330" x2="600" y2="58" stroke="#16a34a" stroke-width="1.3" stroke-dasharray="5,3"/>
+        <line x1="80" y1="330" x2="600" y2="146" stroke="#16a34a" stroke-width="1.3" stroke-dasharray="5,3"/>
+        <text x="364" y="176" text-anchor="middle" font-size="11" fill="#15803d" font-weight="600" transform="rotate(-28 364 176)">relA/block band: 0.090 to 0.133</text>
         <!-- axes -->
         <line x1="80" y1="330" x2="628" y2="330" stroke="#94a3b8" stroke-width="1.5"/>
-        <line x1="80" y1="330" x2="80" y2="44" stroke="#94a3b8" stroke-width="1.5"/>
+        <line x1="80" y1="330" x2="80" y2="52" stroke="#94a3b8" stroke-width="1.5"/>
         <!-- x ticks -->
         <g font-size="10" fill="#94a3b8" text-anchor="middle">
           <text x="80" y="348">0</text><text x="174" y="348">0.1</text><text x="269" y="348">0.2</text>
@@ -927,25 +927,25 @@
         </g>
         <!-- y ticks -->
         <g font-size="10" fill="#94a3b8" text-anchor="end">
-          <text x="73" y="334">0</text><text x="73" y="264">0.02</text><text x="73" y="194">0.04</text>
-          <text x="73" y="124">0.06</text><text x="73" y="54">0.08</text>
+          <text x="73" y="334">0</text><text x="73" y="259">0.02</text><text x="73" y="185">0.04</text>
+          <text x="73" y="111">0.06</text>
         </g>
         <!-- points -->
-        <circle cx="212" cy="260" r="6" fill="#2563eb" stroke="#fff" stroke-width="1.5"/>
-        <text x="200" y="256" font-size="11" fill="#1d4ed8" font-weight="600" text-anchor="end">Qwen3</text>
-        <circle cx="288" cy="250" r="6" fill="#475569" stroke="#fff" stroke-width="1.5"/>
-        <text x="298" y="246" font-size="11" fill="#334155" font-weight="600">Mixtral</text>
-        <circle cx="449" cy="201" r="6" fill="#475569" stroke="#fff" stroke-width="1.5"/>
-        <text x="442" y="196" font-size="11" fill="#334155" font-weight="600" text-anchor="end">DeepSeek-V2-Lite</text>
-        <circle cx="505" cy="173" r="6" fill="#475569" stroke="#fff" stroke-width="1.5"/>
-        <text x="515" y="169" font-size="11" fill="#334155" font-weight="600">L1</text>
-        <circle cx="553" cy="85" r="6" fill="#c0392b" stroke="#fff" stroke-width="1.5"/>
-        <text x="564" y="82" font-size="11" fill="#c0392b" font-weight="700">OLMoE</text>
+        <circle cx="217" cy="259" r="6" fill="#2563eb" stroke="#fff" stroke-width="1.5"/>
+        <text x="205" y="254" font-size="11" fill="#1d4ed8" font-weight="600" text-anchor="end">Qwen3</text>
+        <circle cx="301" cy="248" r="6" fill="#475569" stroke="#fff" stroke-width="1.5"/>
+        <text x="301" y="267" font-size="11" fill="#334155" font-weight="600" text-anchor="middle">Mixtral</text>
+        <circle cx="359" cy="230" r="6" fill="#475569" stroke="#fff" stroke-width="1.5"/>
+        <text x="369" y="227" font-size="11" fill="#334155" font-weight="600">DeepSeek-V2-Lite</text>
+        <circle cx="506" cy="167" r="6" fill="#475569" stroke="#fff" stroke-width="1.5"/>
+        <text x="517" y="171" font-size="11" fill="#334155" font-weight="600">L1</text>
+        <circle cx="508" cy="122" r="6" fill="#c0392b" stroke="#fff" stroke-width="1.5"/>
+        <text x="519" y="118" font-size="11" fill="#c0392b" font-weight="700">OLMoE</text>
         <!-- axis titles -->
         <text x="354" y="378" text-anchor="middle" font-size="12.5" fill="#2c3e50" font-weight="600">block / residual&#160;&#160;(how much of the residual the MoE block owns)</text>
         <text x="26" y="190" text-anchor="middle" font-size="12.5" fill="#2c3e50" font-weight="600" transform="rotate(-90 26 190)">relA/res&#160;&#160;(safety margin)</text>
       </svg>
-      <figcaption>The mechanism in one plot. All five architectures sit inside a narrow wedge: their routing mismatch relative to the routed block (relA/block) is a tight band, 0.095 to 0.142, so the slope from the origin barely changes. What sets each model's height, its safety margin relA/res, is its <em>horizontal</em> position, how much of the residual the MoE block owns. Qwen3 and OLMoE share the same band but sit at opposite ends of the safety axis purely because the MoE block is 14% of one residual and 49% of the other. The router is not what moves; the backbone is.</figcaption>
+      <figcaption>The mechanism in one plot. All five architectures sit inside a narrow wedge: their routing mismatch relative to the routed block (relA/block) is a tight band, 0.090 to 0.133, so the slope from the origin barely changes. What sets each model's height, its safety margin relA/res, is its <em>horizontal</em> position, how much of the residual the MoE block owns. Qwen3 and OLMoE have comparable slopes (relA/block 0.133 and 0.124) yet sit at opposite ends of the safety axis because the MoE block is 14% of one residual and 45% of the other. Note that L1 and OLMoE sit at almost the same horizontal position with different heights: same backbone share, separated only by slope. The router is not what moves; the backbone is.</figcaption>
     </figure>
 
     <p>
@@ -958,15 +958,15 @@
     <h2>Three textures the screen leaves behind</h2>
 
     <p>
-      <strong>Granularity.</strong> Hold shared-status and gate convention fixed (the no-shared softmax models) and let only granularity move: relA/block rises cleanly with it, Mixtral 8/2 (0.121) $<$ OLMoE 64/8 (0.136) $<$ Qwen3 128/8 (0.150) on GSM8K, monotone. Finer routers respond more to content and move more per token, so the thin-margin corner of the design space is <em>fine-grained and shared-free</em>. It still survives; it is just where the backbone has the least to dilute with.
+      <strong>Granularity.</strong> Hold shared-status and gate convention fixed (the no-shared softmax models) and let only granularity move: relA/block rises cleanly with it, Mixtral 8/2 (0.110) $<$ OLMoE 64/8 (0.122) $<$ Qwen3 128/8 (0.139) on GSM8K, monotone. Finer routers respond more to content and move more per token, so the thin-margin corner of the design space is <em>fine-grained and shared-free</em>. It still survives; it is just where the backbone has the least to dilute with.
     </p>
 
     <p>
-      <strong>Dilution, not absorption.</strong> The shared expert dilutes the routing mismatch, it does not actively cancel it, and the distinction is one the data can defend. The numerator $\lVert A\rVert$ is the same whether we divide by the block output (relA/block) or by the routed output alone (relA/routed); the rise when the shared expert leaves the denominator (L1 0.099 $\to$ 0.130, DSv2 0.095 $\to$ 0.178) is <em>purely</em> the residual shrinking, the shared expert's share of the backbone (shared_frac 0.54 on L1, 0.71 on DSv2). That shows the shared expert is a large residual backbone, the term-(B) story, not that it reaches in and absorbs the mismatch, which would be a stronger causal claim a denominator decomposition cannot make. We claim the weaker, clean thing.
+      <strong>Dilution, not absorption.</strong> The shared expert dilutes the routing mismatch, it does not actively cancel it, and the distinction is one the data can defend. The numerator $\lVert A\rVert$ is the same whether we divide by the block output (relA/block) or by the routed output alone (relA/routed); the rise when the shared expert leaves the denominator (L1 0.098 $\to$ 0.126, DSv2 0.090 $\to$ 0.145) is <em>purely</em> the residual shrinking, the shared expert's share of the backbone (shared_frac 0.54 on L1, 0.65 on DSv2). That shows the shared expert is a large residual backbone, the term-(B) story, not that it reaches in and absorbs the mismatch, which would be a stronger causal claim a denominator decomposition cannot make. We claim the weaker, clean thing.
     </p>
 
     <p>
-      <strong>Cross-domain.</strong> Math runs a little hotter than medicine. From PubMedQA to GSM8K the relA/block band shifts up by about $+0.01$ at both ends (floor 0.095 $\to$ 0.104, ceiling 0.142 $\to$ 0.150) with its width preserved (0.047 $\to$ 0.046). The band moves up as a whole, spread intact, not a convergence: most architectures perturb slightly more on harder reasoning, with OLMoE the lone exception (it edges down, 0.142 $\to$ 0.136), and the ranking survives the move. The honest report is a range, math $\gtrsim$ medical, not a single number.
+      <strong>Cross-domain.</strong> Math runs a little hotter than medicine. From PubMedQA to GSM8K the relA/block band shifts up (floor 0.090 $\to$ 0.102, ceiling 0.133 $\to$ 0.139) with its width roughly preserved, slightly narrower (0.043 $\to$ 0.037). The band moves up as a whole, spread intact, not a convergence: most architectures perturb slightly more on harder reasoning, with OLMoE the lone exception (it edges down, 0.124 $\to$ 0.122), and the ranking survives the move. The honest report is a range, math $\gtrsim$ medical, not a single number.
     </p>
   </section>
 
@@ -992,7 +992,7 @@
     </p>
 
     <p>
-      The measurements put the operating point near the safe end and held it there, on every architecture and both domains. Routing barely moves (Jaccard 0.82 to 0.91), term (A) is a 2 to 7.4% perturbation of the residual that propagates, and the gap is carried by the dense-like term (B) a dense model already carries. And the screen handed back something a single model could not: the <em>reason</em>. The safety margin is not routing happening to be stable; it is the always-on backbone diluting a small routing mismatch, and the spread across architectures tracks how much of the residual that backbone owns. Where a model has more always-on path, attention plus a shared expert, term (A) is diluted more, and the margin is larger. On L1, the controls that would have broken the verdict all failed; across the screen, the verdict held everywhere and came with a mechanism.
+      The measurements put the operating point near the safe end and held it there, on every architecture and both domains. Routing barely moves (Jaccard 0.82 to 0.91), term (A) is a 2 to 6% perturbation of the residual that propagates, and the gap is carried by the dense-like term (B) a dense model already carries. And the screen handed back something a single model could not: the <em>reason</em>. The safety margin is not routing happening to be stable; it is the always-on backbone diluting a small routing mismatch, and the spread across architectures tracks how much of the residual that backbone owns. Where a model has more always-on path, attention plus a shared expert, term (A) is diluted more, and the margin is larger. On L1, the controls that would have broken the verdict all failed; across the screen, the verdict held everywhere and came with a mechanism.
     </p>
 
     <div class="insight-box">
@@ -1030,13 +1030,13 @@
     <p style="margin:1.8em 0 0.4em;"><strong>Cross-model screen (five term-(A) models, n = 200 per model per domain).</strong></p>
     <table>
       <tr><th>Quantity</th><th>Value</th><th>Reading</th></tr>
-      <tr><td>relA/res, 5 models &times; 2 domains</td><td>0.020 to 0.074</td><td>safety verdict: term (A) as a share of the propagating residual, single-digit percent everywhere</td></tr>
-      <tr><td>relA/block, 5 models &times; 2 domains</td><td>0.095 to 0.150</td><td>$\Sigma g$-invariant mechanism number: a tight 1.5&times; band</td></tr>
+      <tr><td>relA/res, 5 models &times; 2 domains</td><td>0.019 to 0.061</td><td>safety verdict: term (A) as a share of the propagating residual, single-digit percent everywhere</td></tr>
+      <tr><td>relA/block, 5 models &times; 2 domains</td><td>0.090 to 0.139</td><td>$\Sigma g$-invariant mechanism number: a tight 1.5&times; band</td></tr>
       <tr><td>Jaccard, screen</td><td>0.82 to 0.91</td><td>82 to 91% of selected experts shared between passes</td></tr>
-      <tr><td>block / residual</td><td>0.14 (Qwen3) to 0.49 (OLMoE)</td><td>sets the 3.5&times; relA/res spread; relA/res ranking $=$ block/residual ranking</td></tr>
-      <tr><td>Qwen3 vs OLMoE</td><td>relA/block 0.139 vs 0.142; relA/res 0.020 vs 0.070</td><td>same band, opposite safety, because block/residual is 0.14 vs 0.50</td></tr>
-      <tr><td>Granularity (GSM8K, no-shared softmax)</td><td>relA/block 0.121 &rarr; 0.136 &rarr; 0.150 (8/2, 64/8, 128/8)</td><td>monotone: finer routing moves more per token</td></tr>
-      <tr><td>Cross-domain shift</td><td>relA/block band $+0.01$ PubMedQA $\to$ GSM8K, width preserved</td><td>uniform upward shift, not convergence</td></tr>
+      <tr><td>block / residual</td><td>0.14 (Qwen3) to 0.45 (OLMoE)</td><td>sets the $\sim$3&times; relA/res spread; relA/res ranking $=$ block/residual ranking</td></tr>
+      <tr><td>Qwen3 vs OLMoE</td><td>relA/block 0.133 vs 0.124; relA/res 0.019 vs 0.056</td><td>comparable band, opposite safety, because block/residual is 0.14 vs 0.45</td></tr>
+      <tr><td>Granularity (GSM8K, no-shared softmax)</td><td>relA/block 0.110 &rarr; 0.122 &rarr; 0.139 (8/2, 64/8, 128/8)</td><td>monotone: finer routing moves more per token</td></tr>
+      <tr><td>Cross-domain shift</td><td>relA/block band shifts up PubMedQA $\to$ GSM8K, width slightly narrower (0.043 $\to$ 0.037)</td><td>upward shift, not convergence</td></tr>
     </table>
 
     <p class="references" style="margin-top:2em;">
