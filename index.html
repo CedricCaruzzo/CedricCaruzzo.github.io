@@ -27,6 +27,9 @@
     p, ul { margin-bottom: 1em; font-size: 1.05em; }
     .experience-item, .publication-item { margin-bottom: 2em; padding-bottom: 1.5em; border-bottom: 1px solid #eee; }
     .experience-item:last-child, .publication-item:last-child { border-bottom: none; }
+    .publication-item { display: flex; gap: 22px; align-items: flex-start; }
+    .publication-thumb { flex: 0 0 160px; width: 160px; height: 120px; object-fit: contain; background: #fff; border: 1px solid #e7e9ec; border-left: 4px solid #3498db; border-radius: 8px; padding: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+    .publication-content { flex: 1; min-width: 0; }
     .institution { font-weight: 600; color: #2c3e50; font-size: 1.1em; }
     .position { color: #34495e; font-style: italic; margin-bottom: 0.5em; }
     .position a { color: #34495e; text-decoration: underline; }
@@ -56,6 +59,8 @@
       .projects table { font-size: 0.95em; }
       section { text-align: left; }
       .banner { margin: -20px -15px 0 -15px; width: calc(100% + 30px); }
+      .publication-item { flex-direction: column; gap: 14px; }
+      .publication-thumb { flex: 0 0 auto; width: 100%; height: 150px; }
     }
     a {
       color: inherit;
@@ -105,29 +110,38 @@ Previously, I worked on pathology foundation models at Lunit, Cell Painting foun
 <section id="publications">
   <h2>Publications</h2>
   <div class="publication-item">
-    <div class="publication-title">CellPainTR: Generalizable Representation Learning for Cross-Dataset Cell Painting Analysis</div>
-    <div class="publication-authors"><strong>Cédric Caruzzo</strong>, Jong Chul Ye</div>
-    <div class="publication-venue">arXiv preprint, 2025</div>
-    <div class="publication-links">
-      <a href="https://doi.org/10.48550/arXiv.2509.06986" target="_blank">[arXiv]</a>
+    <img class="publication-thumb" src="img/proj_cellpaintr/training_v2.png" alt="CellPainTR figure">
+    <div class="publication-content">
+      <div class="publication-title">CellPainTR: Generalizable Representation Learning for Cross-Dataset Cell Painting Analysis</div>
+      <div class="publication-authors"><strong>Cédric Caruzzo</strong>, Jong Chul Ye</div>
+      <div class="publication-venue">arXiv preprint, 2025</div>
+      <div class="publication-links">
+        <a href="https://doi.org/10.48550/arXiv.2509.06986" target="_blank">[arXiv]</a>
+      </div>
     </div>
   </div>
 
   <div class="publication-item">
-    <div class="publication-title">Wolbachia detection in Aedes aegypti using MALDI-TOF MS coupled to artificial intelligence</div>
-    <div class="publication-authors">Antsa Rakotonirina, <strong>Cédric Caruzzo</strong>, et al.</div>
-    <div class="publication-venue">Scientific Reports, 2021</div>
-    <div class="publication-links">
-      <a href="http://dx.doi.org/10.1038/s41598-021-00888-1" target="_blank">[Paper]</a>
+    <img class="publication-thumb" src="img/wolbachia/wolbachia_fig.webp" alt="Wolbachia detection figure">
+    <div class="publication-content">
+      <div class="publication-title">Wolbachia detection in Aedes aegypti using MALDI-TOF MS coupled to artificial intelligence</div>
+      <div class="publication-authors">Antsa Rakotonirina, <strong>Cédric Caruzzo</strong>, et al.</div>
+      <div class="publication-venue">Scientific Reports, 2021</div>
+      <div class="publication-links">
+        <a href="http://dx.doi.org/10.1038/s41598-021-00888-1" target="_blank">[Paper]</a>
+      </div>
     </div>
   </div>
 
   <div class="publication-item">
-    <div class="publication-title">Cellular Phenotypic Profiling Combining Live Imaging & Cell Painting Techniques</div>
-    <div class="publication-authors">Soonju Park, <strong>Cédric Caruzzo</strong>, et al.</div>
-    <div class="publication-venue">Poster presented at: SLAS Europe 2024 Conference and Exhibition, Barcelona, Spain</div>
-    <div class="publication-links">
-      <a href="pdf/poster/Live-cell-painting-Institut-Pasteur-Korea.pdf" target="_blank">[Poster PDF]</a>
+    <img class="publication-thumb" src="img/cellular_phenotypic_profiling/cpp_fig.png" alt="Cellular phenotypic profiling figure">
+    <div class="publication-content">
+      <div class="publication-title">Cellular Phenotypic Profiling Combining Live Imaging & Cell Painting Techniques</div>
+      <div class="publication-authors">Soonju Park, <strong>Cédric Caruzzo</strong>, et al.</div>
+      <div class="publication-venue">Poster presented at: SLAS Europe 2024 Conference and Exhibition, Barcelona, Spain</div>
+      <div class="publication-links">
+        <a href="pdf/poster/Live-cell-painting-Institut-Pasteur-Korea.pdf" target="_blank">[Poster PDF]</a>
+      </div>
     </div>
   </div>
 </section>
