@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Deceptive Grounding: Entity Attribution Failure in Clinical Retrieval-Augmented Generation</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+  <style>
+    body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
+    h1 { font-size: 2.4em; color: #1a1a1a; margin-bottom: 0.2em; font-weight: 700; }
+    h2 { font-size: 1.6em; color: #2c3e50; margin-top: 2.5em; margin-bottom: 1.2em; font-weight: 600; border-bottom: 2px solid #e74c3c; padding-bottom: 0.3em; }
+    h3 { font-size: 1.3em; color: #34495e; margin-bottom: 0.5em; margin-top: 1.8em; font-weight: 600; }
+    p, ul, li { margin-bottom: 1em; font-size: 1.05em; text-align: justify; }
+    a { color: #e74c3c; text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; }
+    .top-back { display: block; text-align: left; margin-bottom: 22px; font-weight: 600; font-size: 0.95em; }
+    .paper-header { text-align: left; margin-bottom: 34px; }
+    .paper-header h1 { font-size: 2.5em; line-height: 1.16; color: #3f3f3a; margin: 0 0 0.7em 0; letter-spacing: -0.01em; }
+    .paper-header .authors { font-size: 1.15em; color: #333; margin: 0 0 0.45em 0; line-height: 1.6; text-align: left; }
+    .paper-header .authors a { color: #333; text-decoration: underline; text-underline-offset: 2px; font-weight: 500; }
+    .paper-header .authors a:hover { color: #e74c3c; }
+    .paper-header .affil { font-size: 1em; color: #777; margin: 0 0 1.15em 0; text-align: left; }
+    .paper-header .paper-links { margin: 0; text-align: left; }
+    .paper-header .paper-links a { color: #333; text-decoration: underline; text-underline-offset: 2px; font-weight: 700; font-size: 1.05em; }
+    .paper-header .paper-links a:hover { color: #e74c3c; }
+    .back-link { display: block; text-align: center; margin-bottom: 40px; font-weight: 600; }
+    figure { margin: 2.5em 0; text-align: center; }
+    figcaption { font-size: 0.9em; color: #7f8c8d; margin-top: 0.8em; line-height: 1.5; max-width: 85%; margin-left: auto; margin-right: auto; }
+    img { max-width: 100%; height: auto; }
+
+    /* Callout boxes */
+    .insight-box { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; padding: 22px 24px; margin: 2em 0; border-radius: 10px; }
+    .insight-box h4 { color: white; margin-top: 0; margin-bottom: 0.5em; font-size: 1.15em; }
+    .insight-box p { margin-bottom: 0; }
+    .solution-box { background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; padding: 22px 24px; margin: 2em 0; border-radius: 10px; }
+    .solution-box h4 { color: white; margin-top: 0; margin-bottom: 0.5em; font-size: 1.15em; }
+    .solution-box p { margin-bottom: 0; }
+
+    .quiet-note { margin: 2em 0; padding: 1em 1.4em; background: #f8f9fa; border-left: 4px solid #94a3b8; border-radius: 6px; font-size: 0.97em; color: #475569; }
+    .quiet-note p { margin: 0; font-size: 1em; }
+
+    /* BibTeX block */
+    .bibtex-block { margin: 1.2em 0 0 0; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; }
+    .bibtex-head { display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 8px 14px; font-size: 0.82em; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #64748b; }
+    .bibtex-head button { border: 1px solid #cbd5e1; background: #fff; color: #475569; font-family: inherit; font-size: 0.9em; font-weight: 600; padding: 4px 12px; border-radius: 6px; cursor: pointer; text-transform: none; letter-spacing: 0; }
+    .bibtex-head button:hover { background: #e2e8f0; }
+    .bibtex-block pre { margin: 0; padding: 16px 18px; background: #fbfbfa; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; font-size: 0.86em; line-height: 1.6; color: #334155; overflow-x: auto; text-align: left; white-space: pre; }
+
+    /* Figure shell reused across the post */
+    .fig-shell { background:#f8f9fa; border:1px solid #e2e8f0; border-radius:14px; padding:26px 22px; text-align:left; }
+
+    .stat-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:2em 0; }
+    .stat-tile { background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:18px 16px; text-align:center; }
+    .stat-tile .num { font-size:2em; font-weight:700; line-height:1; }
+    .stat-tile .lbl { font-size:0.82em; color:#64748b; margin-top:8px; line-height:1.4; }
+
+    @media (max-width: 620px){ .stat-strip { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+  <a href="../blog.html" class="top-back">&larr; Back to Projects &amp; Writing Hub</a>
+
+  <header class="paper-header">
+    <h1>Deceptive Grounding: Entity Attribution Failure in Clinical Retrieval-Augmented Generation</h1>
+    <p class="authors">
+      <a href="https://cedriccaruzzo.github.io/" target="_blank" rel="noopener">Cédric Caruzzo</a>,
+      <a href="https://dgyoo.github.io/" target="_blank" rel="noopener">Donggeun Yoo</a>,
+      <a href="https://taesoo-kim.github.io/" target="_blank" rel="noopener">Tae Soo Kim</a>
+    </p>
+    <p class="affil">Lunit</p>
+    <p class="paper-links"><a href="https://arxiv.org/pdf/2607.09349" target="_blank" rel="noopener">Paper</a></p>
+  </header>
+
+  <div style="background:#fffbeb; border:1px solid #f59e0b; border-left:5px solid #f59e0b; border-radius:6px; padding:1em 1.4em; margin:0 0 2.4em 0; font-size:0.98em;">
+    <p style="margin:0;">
+      <strong style="color:#92400e;">TL;DR.</strong>
+      We found a failure mode in clinical retrieval-augmented generation (RAG) that is invisible to every standard check. The model answers a question about drug <em>X</em>, but the documents it retrieved are about a different drug <em>Y</em>. It relays <em>Y</em>'s real evidence, a real trial, a real outcome, and quietly staples it onto <em>X</em>. No hallucination fires. Faithfulness scores it clean. The citation is genuine. We call this <strong>deceptive grounding</strong>, and in a live deployment it shows up in 7.8% of answers, rising to 13.6% for recently approved drugs. Fine-tuning a model on medicine makes it <em>worse</em>.
+    </p>
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 1: THE CONSULTATION                           -->
+  <!-- ====================================================== -->
+  <section>
+    <h2>A question, an answer, and a problem you cannot see</h2>
+
+    <p>
+      Put yourself in a clinician's chair. You have a patient with a rare, brutal disease: fibrodysplasia ossificans progressiva, or FOP, where soft tissue slowly turns to bone. You are wondering about an old, well-understood antibody, rituximab, and whether anyone has tried it here. So you ask your decision-support tool the obvious question.
+    </p>
+
+    <p>
+      It answers in seconds. It is specific, it is confident, and it cites a real trial by its registry number. It looks exactly like the good answer you were hoping for.
+    </p>
+
+    <p>
+      Read it first. Then click the button underneath and let the system check its own work.
+    </p>
+
+    <!-- FIGURE 1: interactive reveal -->
+    <figure>
+      <div class="fig-shell">
+
+        <div style="font-size:0.72em;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:#94a3b8;margin-bottom:14px;">Clinical decision support</div>
+
+        <!-- user query -->
+        <div style="display:flex;justify-content:flex-end;margin-bottom:14px;">
+          <div style="max-width:82%;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;border-radius:14px 14px 4px 14px;padding:12px 16px;font-size:0.96em;line-height:1.55;">
+            What does the literature say about using <strong>rituximab</strong> to treat fibrodysplasia ossificans progressiva (FOP)?
+          </div>
+        </div>
+
+        <!-- assistant answer -->
+        <div style="display:flex;justify-content:flex-start;margin-bottom:20px;">
+          <div style="max-width:88%;background:#fff;border:1px solid #e2e8f0;border-radius:14px 14px 14px 4px;padding:14px 18px;font-size:0.96em;line-height:1.6;box-shadow:0 2px 6px rgba(0,0,0,0.04);">
+            <span style="font-size:0.7em;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#7c3aed;">Assistant</span>
+            <p style="margin:8px 0 0 0;text-align:left;">
+              <span id="dg-drug" style="font-weight:600;">Rituximab</span> has been studied in FOP. A 2023 phase-2 trial
+              (<span id="dg-nct" style="font-family:monospace;font-weight:700;background:#fef9c3;padding:1px 5px;border-radius:4px;">NCT03188666</span>)
+              reported that <span class="dg-drug2" style="font-weight:600;">rituximab</span> reduced flare severity and duration, with meaningful improvement in quality of life.
+            </p>
+          </div>
+        </div>
+
+        <div style="text-align:center;">
+          <button id="dg-verify-btn" onclick="dgReveal()" style="padding:10px 22px;border-radius:24px;border:none;background:#2c3e50;color:#fff;font-family:inherit;font-size:0.9em;font-weight:600;cursor:pointer;">
+            Verify the evidence &nbsp;&#128269;
+          </button>
+        </div>
+
+        <!-- verification panel -->
+        <div id="dg-panel" style="max-height:0;overflow:hidden;transition:max-height 0.5s ease;margin-top:0;">
+          <div style="border-top:1px solid #e2e8f0;margin-top:22px;padding-top:20px;">
+
+            <div class="dg-check" style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;opacity:0;transform:translateY(6px);transition:all 0.4s ease;">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.8em;font-weight:700;">&#10003;</span>
+              <div><strong>The trial is real.</strong> NCT03188666 exists, is correctly formatted, and its content matches the citation.</div>
+            </div>
+
+            <div class="dg-check" style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;opacity:0;transform:translateY(6px);transition:all 0.4s ease;">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.8em;font-weight:700;">&#10003;</span>
+              <div><strong>The claim is faithful.</strong> Every fact in the answer, the trial name, the number, the outcome, comes straight from a retrieved document. Nothing is invented.</div>
+            </div>
+
+            <div class="dg-check" style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;opacity:0;transform:translateY(6px);transition:all 0.4s ease;">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.8em;font-weight:700;">&#10003;</span>
+              <div><strong>The citation checks out.</strong> The number points to exactly the document the model used.</div>
+            </div>
+
+            <div class="dg-check" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;margin-top:10px;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;opacity:0;transform:translateY(6px);transition:all 0.4s ease;">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:#dc2626;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.9em;font-weight:700;">&#10007;</span>
+              <div style="color:#991b1b;">
+                <strong>The evidence is about a different drug.</strong> NCT03188666 is LUMINA-1, a real phase-2 trial. It studied <strong>garetosmab</strong>, not rituximab. Rituximab was never in it. The whole answer is garetosmab's evidence, wearing rituximab's name.
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </figure>
+
+    <script>
+    function dgReveal(){
+      var panel = document.getElementById('dg-panel');
+      panel.style.maxHeight = '520px';
+      var checks = document.querySelectorAll('#dg-panel .dg-check');
+      checks.forEach(function(c,i){
+        setTimeout(function(){ c.style.opacity='1'; c.style.transform='translateY(0)'; }, 220 + i*430);
+      });
+      // flip the drug name on the last reveal
+      setTimeout(function(){
+        var d1 = document.getElementById('dg-drug');
+        var d2 = document.querySelectorAll('.dg-drug2');
+        var nct = document.getElementById('dg-nct');
+        if(d1){ d1.style.textDecoration='line-through'; d1.style.color='#dc2626'; d1.innerHTML='Rituximab <span style="text-decoration:none;color:#16a34a;">&rarr; garetosmab</span>'; }
+        d2.forEach(function(e){ e.style.textDecoration='line-through'; e.style.color='#dc2626'; });
+        if(nct){ nct.style.background='#fee2e2'; }
+      }, 220 + 3*430);
+      var btn = document.getElementById('dg-verify-btn');
+      btn.disabled = true; btn.style.opacity='0.5'; btn.style.cursor='default';
+    }
+    </script>
+
+    <p>
+      Nothing here is a hallucination. The model did not make up a trial or a number. It read a document that really was in front of it and told you, accurately, what that document said. The only thing it got wrong is <em>who the document was about</em>. And that single mistake, the one thing none of our tools inspect, is enough to turn a correct-sounding answer into a clinically dangerous one.
+    </p>
+
+    <p>
+      We call this <strong>deceptive grounding</strong>. The response is grounded in retrieved evidence, faithfully so. The deception is in the attribution.
+    </p>
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 2: WHY NOTHING CAUGHT IT                      -->
+  <!-- ====================================================== -->
+  <section>
+    <h2>Why every safety check missed it</h2>
+
+    <p>
+      When we evaluate a RAG system for safety, we mostly ask three questions. Did it make things up? Is it faithful to its sources? Are its citations real? Those three checks are the backbone of RAG evaluation, and they are good checks. The problem is what they have in common: every one of them is satisfied when the model accurately relays a real document, which is exactly what deceptive grounding does. So all three pass, and they pass for the right reasons.
+    </p>
+
+    <!-- FIGURE 2: three checks pass -->
+    <figure>
+      <div class="fig-shell" style="background:#fff;border:none;padding:0;">
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:20px 18px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-weight:700;color:#166534;">Hallucination detection</span>
+              <span style="background:#16a34a;color:#fff;font-size:0.72em;font-weight:700;letter-spacing:0.5px;padding:3px 10px;border-radius:20px;">PASS</span>
+            </div>
+            <p style="margin:0;font-size:0.9em;color:#3f6212;text-align:left;">Looks for claims with no support. Every fact came from a retrieved document, so nothing fires.</p>
+          </div>
+
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:20px 18px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-weight:700;color:#166534;">Faithfulness scoring</span>
+              <span style="background:#16a34a;color:#fff;font-size:0.72em;font-weight:700;letter-spacing:0.5px;padding:3px 10px;border-radius:20px;">PASS</span>
+            </div>
+            <p style="margin:0;font-size:0.9em;color:#3f6212;text-align:left;">Checks that the answer reflects the source. It does, faithfully. The entity mismatch is not a faithfulness question.</p>
+          </div>
+
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:20px 18px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-weight:700;color:#166534;">Citation verification</span>
+              <span style="background:#16a34a;color:#fff;font-size:0.72em;font-weight:700;letter-spacing:0.5px;padding:3px 10px;border-radius:20px;">PASS</span>
+            </div>
+            <p style="margin:0;font-size:0.9em;color:#3f6212;text-align:left;">Confirms the cited document exists and is referenced correctly. NCT03188666 is real and correctly formatted.</p>
+          </div>
+
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:20px 18px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-weight:700;color:#991b1b;">Entity attribution</span>
+              <span style="background:#dc2626;color:#fff;font-size:0.72em;font-weight:700;letter-spacing:0.5px;padding:3px 10px;border-radius:20px;">FAIL</span>
+            </div>
+            <p style="margin:0;font-size:0.9em;color:#991b1b;text-align:left;">Asks whether the evidence is about the drug you queried, and it is not. No standard framework runs this check.</p>
+          </div>
+
+        </div>
+      </div>
+    </figure>
+
+    <p>
+      It helps to line deceptive grounding up next to the failures we already know how to catch. A <strong>hallucination</strong> invents a fact, so a faithfulness or accuracy check can catch it. A <strong>knowledge conflict</strong> is when the retrieved document contradicts what the model believes, and that contradiction is a signal you can detect. Deceptive grounding has neither. It invents nothing, and it contradicts nothing. The retrieved evidence about <em>Y</em> lines up perfectly with what the model expected about <em>X</em>, because they are similar drugs for the same disease. It sits precisely in the blind spot: the case where the context and the model agree, and both are pointed at the wrong entity.
+    </p>
+
+    <p>A RAG response can be simultaneously accurate, grounded, and clinically wrong. Accuracy and grounding are exactly the properties our safety checks measure, which is why they cannot see this.</p>
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 3: MEDICAL MODELS ARE WORSE                   -->
+  <!-- ====================================================== -->
+  <section>
+    <h2>The more expert the model, the worse it gets</h2>
+
+    <p>
+      We ran the same controlled stress test across 13 models, from small general-purpose models up to large ones fine-tuned specifically on medicine and biomedical text. If domain expertise were protective, the medical models should have been the safest; instead, they were the most dangerous.
+    </p>
+
+    <p>
+      The chart below is the peak deceptive-grounding rate for each model under the worst retrieval conditions we could construct. The two models fine-tuned on biomedical and medical corpora sit right at the top. A biomedical model misattributes in nearly nine out of ten answers at the peak.
+    </p>
+
+    <!-- FIGURE 3: cross-model bar chart -->
+    <figure>
+      <div class="fig-shell">
+        <div style="display:flex;gap:22px;align-items:center;margin-bottom:18px;font-size:0.85em;color:#475569;">
+          <span style="display:inline-flex;align-items:center;gap:7px;"><span style="width:13px;height:13px;border-radius:3px;background:#e74c3c;display:inline-block;"></span> Medical / biomedical fine-tune</span>
+          <span style="display:inline-flex;align-items:center;gap:7px;"><span style="width:13px;height:13px;border-radius:3px;background:#2a78d6;display:inline-block;"></span> General-purpose</span>
+        </div>
+        <div id="dg-bars"></div>
+        <div style="font-size:0.75em;color:#94a3b8;margin-top:12px;text-align:right;">Peak deceptive-grounding rate (%), worst-case retrieval</div>
+      </div>
+      <figcaption>
+        Peak deceptive-grounding rate across 13 models. Medical and biomedical fine-tunes cluster at the top. One medical model, Med42-70B, is the honest exception at 25%, which the paper treats as a distinct behavioral profile.
+      </figcaption>
+    </figure>
+
+    <script>
+    (function(){
+      var data = [
+        {m:"OpenBioLLM-70B", v:86.7, med:true,  t:"Biomedical"},
+        {m:"L1-16B-A3B",     v:73.1, med:true,  t:"Medical"},
+        {m:"Qwen2.5-14B",    v:67.0, med:false, t:"General"},
+        {m:"Qwen2.5-7B",     v:66.3, med:false, t:"General"},
+        {m:"Qwen2.5-72B",    v:58.3, med:false, t:"General"},
+        {m:"Qwen2.5-32B",    v:53.8, med:false, t:"General"},
+        {m:"Llama-3.1-70B",  v:40.9, med:false, t:"General"},
+        {m:"Med42-70B",      v:25.0, med:true,  t:"Medical"},
+        {m:"Gemma4-27B-A4B", v:18.9, med:false, t:"General"},
+        {m:"Qwen3.5-122B",   v:17.8, med:false, t:"General"},
+        {m:"Gemma4-31B",     v:13.6, med:false, t:"General"},
+        {m:"GPT-OSS-120B",   v:12.1, med:false, t:"General"},
+        {m:"GPT-OSS-20B",    v:8.0,  med:false, t:"General"}
+      ];
+      var max = 90;
+      var host = document.getElementById('dg-bars');
+      data.forEach(function(d){
+        var row = document.createElement('div');
+        row.style.cssText = "display:grid;grid-template-columns:130px 1fr;gap:10px;align-items:center;margin:5px 0;";
+        var name = document.createElement('div');
+        name.style.cssText = "font-size:0.8em;color:#334155;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;";
+        name.textContent = d.m;
+        var track = document.createElement('div');
+        track.style.cssText = "position:relative;height:24px;";
+        var bar = document.createElement('div');
+        var color = d.med ? "#e74c3c" : "#2a78d6";
+        bar.style.cssText = "height:100%;width:0;background:"+color+";border-radius:4px;transition:width 0.9s cubic-bezier(.2,.7,.2,1);min-width:2px;";
+        var lab = document.createElement('span');
+        lab.style.cssText = "position:absolute;top:50%;transform:translateY(-50%);left:calc("+(d.v/max*100)+"% + 8px);font-size:0.78em;font-weight:700;color:"+color+";font-variant-numeric:tabular-nums;white-space:nowrap;";
+        lab.textContent = d.v.toFixed(1)+"%";
+        track.appendChild(bar); track.appendChild(lab);
+        row.appendChild(name); row.appendChild(track);
+        host.appendChild(row);
+        requestAnimationFrame(function(){ setTimeout(function(){ bar.style.width = (d.v/max*100)+"%"; }, 60); });
+      });
+    })();
+    </script>
+
+    <p>
+      Why would expertise hurt? Fine-tuning a model on medicine packs its weights with a cleaner, tighter map of <em>pharmacological classes</em>: which drugs belong together, share a mechanism, target the same pathway. That map is useful knowledge. But it is also exactly the structure that says "these two drugs are the same kind of thing," and once the model believes that, it becomes more willing to treat one drug's evidence as if it applies to its cousin. The stronger the class knowledge, the wider the door opens. This is not a knowledge gap. It is a knowledge strength, aimed at the wrong target.
+    </p>
+
+    <div class="quiet-note">
+      <p>
+        <strong>An honest caveat:</strong> Those peak numbers come from a deliberately adversarial benchmark, engineered to trigger the failure as hard as possible. They measure <em>susceptibility</em>, not everyday prevalence. In a real deployment the rate is far lower. We will get to the real number at the end, and it is still high enough to matter.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 4: CONTENT NOT NAME                           -->
+  <!-- ====================================================== -->
+  <section>
+    <h2>It is not fooled by the name. It is seduced by the evidence.</h2>
+
+    <p>
+      Take the alternate drug <em>Y</em> and replace its real name with a completely made-up one, a drug that does not exist, while keeping the exact same clinical evidence attached to it. If the model were being tricked by a familiar name, a fake name should make things better; instead, it made things worse.
+    </p>
+
+    <div class="stat-strip">
+      <div class="stat-tile">
+        <div class="num" style="color:#2a78d6;">67.0%</div>
+        <div class="lbl">misattribution when <em>Y</em> is a <strong>real</strong> drug with matching evidence</div>
+      </div>
+      <div class="stat-tile">
+        <div class="num" style="color:#e74c3c;">73.1%</div>
+        <div class="lbl">when <em>Y</em> is a <strong>made-up</strong> drug carrying the same evidence</div>
+      </div>
+      <div class="stat-tile">
+        <div class="num" style="color:#e74c3c;">+30 to +65<span style="font-size:0.5em;"> pp</span></div>
+        <div class="lbl">jump in silent misattribution when the real name is swapped for an <strong>anonymous label</strong></div>
+      </div>
+    </div>
+
+    <p>
+      A drug that does not exist gets its evidence handed off <em>more</em> often than a real one. And when we replace a real name with an anonymous code like "XC-9941," misattribution climbs by 30 to 65 percentage points depending on the model. What drives the failure is the <em>evidence</em>: a trial, a number, an outcome that snaps neatly into the slot the model was already expecting for your drug. Content, not label.
+    </p>
+
+    <p>
+      If you are still holding onto the idea that this is a perception failure, that the model does not notice the two drugs are different, we tested that too. We labeled the alternate drug with a nonsense tag so obviously anomalous that the model would have to notice it.
+    </p>
+
+    <p>The model flagged the mismatched entity in 80% of responses. Of the responses where it explicitly noticed, 73% still committed deceptive grounding. The misattribution happens downstream of perception, in the act of writing the answer.</p>
+
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 5: THE MECHANISM                              -->
+  <!-- ====================================================== -->
+  <section>
+    <h2>One trigger, two exits</h2>
+
+    <p>
+      Underneath all of this is a simple two-step structure, and you can watch it switch. Step one: shared disease context primes the model to treat <em>Y</em>'s evidence as relevant to <em>X</em>, opening the door. Step two decides what walks through. If the retrieved document carries what we call completing information, the concrete specifics like trial names, registry numbers, and outcome figures, the model borrows those specifics and commits deceptive grounding. If that completing information is absent, the model has nothing to borrow, so it generates from memory instead, and you get plain confabulation.
+    </p>
+
+    <p>
+      The clean way to prove this is to change one thing and watch the outcome flip. Toggle the completing information below.
+    </p>
+
+    <!-- FIGURE 4: the gate toggle -->
+    <figure>
+      <div class="fig-shell">
+
+        <div style="display:flex;justify-content:center;gap:0;margin-bottom:24px;">
+          <div style="display:inline-flex;background:#e2e8f0;border-radius:24px;padding:4px;">
+            <button id="gate-on"  onclick="gateSet(true)"  style="padding:8px 18px;border:none;border-radius:20px;font-family:inherit;font-size:0.85em;font-weight:600;cursor:pointer;background:#2c3e50;color:#fff;">Completing info: present</button>
+            <button id="gate-off" onclick="gateSet(false)" style="padding:8px 18px;border:none;border-radius:20px;font-family:inherit;font-size:0.85em;font-weight:600;cursor:pointer;background:transparent;color:#475569;">absent</button>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:stretch;justify-content:center;gap:14px;flex-wrap:wrap;">
+
+          <!-- stage 1 -->
+          <div style="flex:1 1 190px;min-width:170px;background:#eff6ff;border:2px solid #3b82f6;border-radius:12px;padding:16px;text-align:center;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-size:0.72em;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#2563eb;margin-bottom:8px;">Step 1 &middot; always opens</div>
+            <div style="font-size:0.92em;color:#1e3a8a;">Shared disease context primes the model to treat <em>Y</em>'s evidence as relevant to <em>X</em>.</div>
+          </div>
+
+          <div style="display:flex;align-items:center;color:#94a3b8;font-size:1.8em;">&rarr;</div>
+
+          <!-- stage 2 outcome -->
+          <div id="gate-outcome" style="flex:1 1 220px;min-width:200px;border-radius:12px;padding:18px;text-align:center;display:flex;flex-direction:column;justify-content:center;transition:all 0.35s ease;">
+            <div id="gate-tag" style="font-size:0.72em;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;"></div>
+            <div id="gate-title" style="font-size:1.15em;font-weight:700;margin-bottom:6px;"></div>
+            <div id="gate-desc" style="font-size:0.9em;"></div>
+          </div>
+
+        </div>
+
+        <div id="gate-stats" style="display:flex;justify-content:center;gap:28px;margin-top:22px;padding-top:18px;border-top:1px solid #e2e8f0;text-align:center;"></div>
+
+      </div>
+      <figcaption>
+        The completing-information ablation. Removing the specifics from the retrieved document drops deceptive grounding from 67% to 0%, while the total error rate climbs to 98%. The gate never closes. The model just takes the other door.
+      </figcaption>
+    </figure>
+
+    <script>
+    function gateSet(present){
+      var outcome = document.getElementById('gate-outcome');
+      var tag = document.getElementById('gate-tag');
+      var title = document.getElementById('gate-title');
+      var desc = document.getElementById('gate-desc');
+      var stats = document.getElementById('gate-stats');
+      var onBtn = document.getElementById('gate-on');
+      var offBtn = document.getElementById('gate-off');
+
+      if(present){
+        onBtn.style.background='#2c3e50'; onBtn.style.color='#fff';
+        offBtn.style.background='transparent'; offBtn.style.color='#475569';
+        outcome.style.background='#fef2f2'; outcome.style.border='2px solid #ef4444';
+        tag.textContent='Step 2 · with specifics to borrow'; tag.style.color='#dc2626';
+        title.textContent='Deceptive grounding'; title.style.color='#991b1b';
+        desc.style.color='#991b1b';
+        desc.innerHTML="The model lifts the real trial and outcome from <em>Y</em>'s document and presents them as <em>X</em>'s.";
+        stats.innerHTML =
+          '<div><div style="font-size:1.9em;font-weight:700;color:#dc2626;">67%</div><div style="font-size:0.78em;color:#64748b;">deceptive grounding</div></div>'+
+          '<div><div style="font-size:1.9em;font-weight:700;color:#334155;">~70%</div><div style="font-size:0.78em;color:#64748b;">total wrong answers</div></div>';
+      } else {
+        offBtn.style.background='#2c3e50'; offBtn.style.color='#fff';
+        onBtn.style.background='transparent'; onBtn.style.color='#475569';
+        outcome.style.background='#fff7ed'; outcome.style.border='2px solid #f59e0b';
+        tag.textContent='Step 2 · nothing to borrow'; tag.style.color='#b45309';
+        title.textContent='Confabulation'; title.style.color='#92400e';
+        desc.style.color='#92400e';
+        desc.innerHTML="With no specifics in the document, the model cannot borrow. So it invents evidence for <em>X</em> from scratch.";
+        stats.innerHTML =
+          '<div><div style="font-size:1.9em;font-weight:700;color:#16a34a;">0%</div><div style="font-size:0.78em;color:#64748b;">deceptive grounding</div></div>'+
+          '<div><div style="font-size:1.9em;font-weight:700;color:#334155;">98%</div><div style="font-size:0.78em;color:#64748b;">total wrong answers</div></div>';
+      }
+    }
+    gateSet(true);
+    </script>
+
+    <p>
+      When we strip the specifics out, deceptive grounding goes to zero, and it looks like a win, until you notice the total error rate went <em>up</em>, to 98%. The model did not become correct. It stopped borrowing and started generating from memory.
+    </p>
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 6: THE FIX                                    -->
+  <!-- ====================================================== -->
+  <section>
+    <h2>What actually helps</h2>
+
+    <p>
+      For each claim in the answer, ask one more question that no standard framework asks: <em>does the evidence supporting this claim actually belong to the drug I asked about, or to a different drug?</em> We call it entity-attribution verification. It runs per claim, it needs no custom-trained model, and it bolts onto an existing evaluation pipeline.
+    </p>
+
+    <p>Find the document behind each claim, read off which drug that document is really about, and flag the claim if that drug is not the one in the query. In our tests this catches deceptive grounding at 97% precision and 98.7% recall, and it fires on 0% of correctly-attributed answers.</p>
+
+    <p>
+      Detection is necessary, but it is not where the biggest win is. If you can only do one thing, fix your <strong>retrieval</strong>. Every result in this paper points back to a single lever: the failure is triggered by the absence of the right document. When the system actually retrieves the queried drug's own evidence, deceptive grounding drops to at most 6.4%, from peaks in the 70s and 80s. Retrieving the right document is the highest-leverage intervention we found, by a wide margin.
+    </p>
+
+    <p>
+      And the tempting shortcut, just telling the model to be careful, only half works. An explicit instruction to verify the drug's identity before answering cut misattribution from 36% to 6% on the models driven by a strong internal prior. On other models it moved the number by four points and no more. Prompting is not a general fix, because, remember, the model already notices. The identity check has to be enforced before the model synthesizes its answer, not requested politely and ignored.
+    </p>
+
+    <p>
+      So the levers, in order of leverage: get retrieval right so the correct evidence is actually present; add entity-attribution verification to your evaluation so you can see the failure at all; and treat entity identity as a hard constraint in the model, not a suggestion.
+    </p>
+  </section>
+
+
+  <!-- ====================================================== -->
+  <!--  SECTION 7: WHY IT MATTERS                             -->
+  <!-- ====================================================== -->
+  <section>
+    <h2>Why this is not an edge case</h2>
+
+    <p>
+      We measured deceptive grounding in a real, deployed clinical decision-support system across 740 pre-registered drug and disease pairs, and it showed up in <strong>7.8%</strong> of answers. For recently approved drugs, where the literature is thin and entity-specific evidence is hardest to retrieve, it rose to <strong>13.6%</strong>.
+    </p>
+
+    <p>
+      New drugs are exactly the situation where a clinician is most likely to reach for an AI assistant, because they have the least experience to fall back on, and exactly the situation where the system is most likely to fill the gap with a similar drug's evidence dressed up under the new name. The failure concentrates precisely where the stakes are highest and the human is least equipped to catch it.
+    </p>
+
+    <p>
+      And it hides in plain sight, because it looks right. It is fluent, it is specific, it cites a real trial. Our existing safety nets, the ones that hunt for fabrication and unfaithfulness, will keep waving it through, not by accident but by design, because the failure lives below the level they inspect. A response can be accurate, grounded, and still about the wrong drug. Catching it means evaluating the one thing surface behavior conceals: not whether the evidence is real, but whether it is about the patient's drug at all.
+    </p>
+
+    <h3 style="margin-top:2.2em;">Citation</h3>
+    <div class="bibtex-block">
+      <div class="bibtex-head">
+        <span>BibTeX</span>
+        <button onclick="copyBibtex()" id="bibtex-btn">Copy</button>
+      </div>
+      <pre id="bibtex-src">@article{caruzzo2026deceptive,
+  title={Deceptive Grounding: Entity Attribution Failure in Clinical Retrieval-Augmented Generation},
+  author={Caruzzo, Cedric and Yoo, Donggeun and Kim, Tae Soo},
+  journal={arXiv preprint arXiv:2607.09349},
+  year={2026}
+}</pre>
+    </div>
+    <script>
+    function copyBibtex(){
+      var t = document.getElementById('bibtex-src').innerText;
+      navigator.clipboard.writeText(t).then(function(){
+        var b = document.getElementById('bibtex-btn');
+        var old = b.textContent; b.textContent = 'Copied';
+        setTimeout(function(){ b.textContent = old; }, 1600);
+      });
+    }
+    </script>
+  </section>
+
+  <a href="../blog.html" class="back-link" style="margin-top:50px;">&larr; Back to Projects &amp; Writing Hub</a>
+
+</body>
+</html>

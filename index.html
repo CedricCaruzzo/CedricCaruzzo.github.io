@@ -52,6 +52,23 @@
     .publication-venue { font-size: 0.95em; color: #7f8c8d; margin-bottom: 10px; }
     .publication-links a { margin-right: 15px; font-weight: 500; color: #3498db; text-decoration: none; font-size: 0.95em; }
     .publication-links a:hover { text-decoration: underline; }
+    /* Publication list (academic format) */
+    .pub { display: flex; gap: 22px; align-items: flex-start; margin-bottom: 1.9em; padding-bottom: 1.7em; border-bottom: 1px solid #eee; }
+    .pub:last-child { border-bottom: none; }
+    .pub-tagcol { flex: 0 0 150px; display: flex; flex-direction: column; gap: 8px; padding-top: 3px; }
+    .pub-body { flex: 1; min-width: 0; }
+    .venue-tag { display: block; text-align: center; background: #3498db; color: #fff; font-size: 0.78em; font-weight: 700; letter-spacing: 0.3px; padding: 7px 10px; border-radius: 7px; white-space: nowrap; }
+    .venue-tag.secondary { background: #fff; color: #64748b; border: 1px solid #d0d7de; font-weight: 600; }
+    .pub-title { font-weight: 700; font-size: 1.12em; color: #1a1a1a; margin-bottom: 6px; line-height: 1.35; }
+    .pub-authors { color: #444; margin-bottom: 5px; font-size: 1em; }
+    .pub-authors strong { color: #1a1a1a; }
+    .more-authors { border: none; background: none; padding: 0; margin: 0; font: inherit; color: #9aa0a6; cursor: pointer; text-decoration: underline; text-decoration-style: dashed; text-underline-offset: 3px; }
+    .more-authors:hover { color: #e74c3c; }
+    .pub-venue { font-style: italic; color: #7f8c8d; font-size: 0.95em; margin-bottom: 12px; }
+    .pub-links { display: flex; flex-wrap: wrap; gap: 0; }
+    .pub-btn { display: inline-block; border: 1px solid #cbd5e1; background: #fff; color: #2c3e50; font-family: inherit; font-size: 0.72em; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; padding: 7px 15px; border-radius: 6px; text-decoration: none; margin: 0 8px 8px 0; cursor: pointer; transition: all 0.15s ease; }
+    .pub-btn:hover { background: #2c3e50; color: #fff; border-color: #2c3e50; text-decoration: none; }
+    .pub-bib { margin: 6px 0 10px 0; padding: 14px 16px; background: #f8f9fa; border: 1px solid #e2e8f0; border-radius: 8px; font-family: Consolas, "Liberation Mono", Menlo, monospace; font-size: 0.8em; line-height: 1.55; color: #334155; overflow-x: auto; white-space: pre; text-align: left; }
     @media (max-width: 768px) {
       body { padding: 20px 15px; }
       h1 { font-size: 2em; }
@@ -61,6 +78,9 @@
       .banner { margin: -20px -15px 0 -15px; width: calc(100% + 30px); }
       .publication-item { flex-direction: column; gap: 14px; }
       .publication-thumb { flex: 0 0 auto; width: 100%; height: 150px; }
+      .pub { flex-direction: column; gap: 12px; }
+      .pub-tagcol { flex: 0 0 auto; flex-direction: row; flex-wrap: wrap; }
+      .venue-tag { display: inline-block; }
     }
     a {
       color: inherit;
@@ -83,7 +103,7 @@
   </p>
   <div class="social-links">
     <a href="mailto:cedric.caruzzo@lunit.io" title="Email"><img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/></a>
-    <a href="https://scholar.google.com/citations?user=0M8qZDsAAAAJ&hl=fr" target="_blank" title="Google Scholar"><img src="https://img.shields.io/badge/Google_Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white" alt="Google Scholar"/></a>
+    <a href="https://scholar.google.com/citations?user=0M8qZDsAAAAJ&hl=fr" target="_blank" title="Google Scholar"><img src="https://img.shields.io/badge/Google_Scholar-4285F4?style=for-the-badge&logo=googlescholar&logoColor=white" alt="Google Scholar"/></a>
     <a href="https://github.com/CedricCaruzzo" target="_blank" title="GitHub"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
     <a href="https://www.linkedin.com/in/cedric-caruzzo/" target="_blank" title="LinkedIn"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
   </div>
@@ -109,42 +129,124 @@ Previously, I worked on pathology foundation models at Lunit, Cell Painting foun
 
 <section id="publications">
   <h2>Publications</h2>
-  <div class="publication-item">
-    <img class="publication-thumb" src="img/proj_cellpaintr/training_v2.png" alt="CellPainTR figure">
-    <div class="publication-content">
-      <div class="publication-title">CellPainTR: Generalizable Representation Learning for Cross-Dataset Cell Painting Analysis</div>
-      <div class="publication-authors"><strong>Cédric Caruzzo</strong>, Jong Chul Ye</div>
-      <div class="publication-venue">arXiv preprint, 2025</div>
-      <div class="publication-links">
-        <a href="https://doi.org/10.48550/arXiv.2509.06986" target="_blank">[arXiv]</a>
+
+  <!-- 2026 -->
+  <div class="pub">
+    <div class="pub-tagcol">
+      <span class="venue-tag">arXiv ’26</span>
+    </div>
+    <div class="pub-body">
+      <div class="pub-title">Deceptive Grounding: Entity Attribution Failure in Clinical Retrieval-Augmented Generation</div>
+      <div class="pub-authors"><strong>Cédric Caruzzo</strong>, Donggeun Yoo, Tae Soo Kim</div>
+      <div class="pub-venue">arXiv preprint arXiv:2607.09349, 2026</div>
+      <div class="pub-links">
+        <button class="pub-btn" onclick="toggleBib(this)">Bib</button>
+        <a class="pub-btn" href="https://arxiv.org/pdf/2607.09349" target="_blank" rel="noopener">PDF</a>
+        <a class="pub-btn" href="blog/deceptive_grounding.html">Website</a>
+        <a class="pub-btn" href="https://x.com/CaruzzoCedric/status/2076988026685919437?s=20" target="_blank" rel="noopener">Thread</a>
       </div>
+      <pre class="pub-bib" style="display:none;">@article{caruzzo2026deceptive,
+  title={Deceptive Grounding: Entity Attribution Failure in Clinical Retrieval-Augmented Generation},
+  author={Caruzzo, Cedric and Yoo, Donggeun and Kim, Tae Soo},
+  journal={arXiv preprint arXiv:2607.09349},
+  year={2026}
+}</pre>
     </div>
   </div>
 
-  <div class="publication-item">
-    <img class="publication-thumb" src="img/wolbachia/wolbachia_fig.webp" alt="Wolbachia detection figure">
-    <div class="publication-content">
-      <div class="publication-title">Wolbachia detection in Aedes aegypti using MALDI-TOF MS coupled to artificial intelligence</div>
-      <div class="publication-authors">Antsa Rakotonirina, <strong>Cédric Caruzzo</strong>, et al.</div>
-      <div class="publication-venue">Scientific Reports, 2021</div>
-      <div class="publication-links">
-        <a href="http://dx.doi.org/10.1038/s41598-021-00888-1" target="_blank">[Paper]</a>
+  <!-- 2025 -->
+  <div class="pub">
+    <div class="pub-tagcol">
+      <span class="venue-tag">arXiv ’25</span>
+    </div>
+    <div class="pub-body">
+      <div class="pub-title">CellPainTR: Generalizable Representation Learning for Cross-Dataset Cell Painting Analysis</div>
+      <div class="pub-authors"><strong>Cédric Caruzzo</strong>, Jong Chul Ye</div>
+      <div class="pub-venue">arXiv preprint arXiv:2509.06986, 2025</div>
+      <div class="pub-links">
+        <button class="pub-btn" onclick="toggleBib(this)">Bib</button>
+        <a class="pub-btn" href="https://arxiv.org/pdf/2509.06986" target="_blank" rel="noopener">PDF</a>
+        <a class="pub-btn" href="https://github.com/CellPainTR/CellPainTR" target="_blank" rel="noopener">Code</a>
+        <a class="pub-btn" href="blog/cellpaintr.html">Website</a>
+        <a class="pub-btn" href="https://www.linkedin.com/posts/cedric-caruzzo_machinelearning-ai-deeplearning-activity-7371410953273454592-pVOo" target="_blank" rel="noopener">Thread</a>
       </div>
+      <pre class="pub-bib" style="display:none;">@article{caruzzo2025cellpaintr,
+  title={CellPainTR: Generalizable Representation Learning for Cross-Dataset Cell Painting Analysis},
+  author={Caruzzo, Cedric and Ye, Jong Chul},
+  journal={arXiv preprint arXiv:2509.06986},
+  year={2025}
+}</pre>
     </div>
   </div>
 
-  <div class="publication-item">
-    <img class="publication-thumb" src="img/cellular_phenotypic_profiling/cpp_fig.png" alt="Cellular phenotypic profiling figure">
-    <div class="publication-content">
-      <div class="publication-title">Cellular Phenotypic Profiling Combining Live Imaging & Cell Painting Techniques</div>
-      <div class="publication-authors">Soonju Park, <strong>Cédric Caruzzo</strong>, et al.</div>
-      <div class="publication-venue">Poster presented at: SLAS Europe 2024 Conference and Exhibition, Barcelona, Spain</div>
-      <div class="publication-links">
-        <a href="pdf/poster/Live-cell-painting-Institut-Pasteur-Korea.pdf" target="_blank">[Poster PDF]</a>
+  <!-- 2024 -->
+  <div class="pub">
+    <div class="pub-tagcol">
+      <span class="venue-tag">SLAS Europe ’24</span>
+      <span class="venue-tag secondary">Poster</span>
+    </div>
+    <div class="pub-body">
+      <div class="pub-title">Cellular Phenotypic Profiling: Combining Live Imaging &amp; Cell Painting Techniques</div>
+      <div class="pub-authors">
+        <span class="authors-short">Soonju Park, <strong>Cédric Caruzzo</strong>, Nakyung Lee, <button class="more-authors" onclick="expandAuthors(this)">and 6 more authors</button></span>
+        <span class="authors-full" style="display:none;">Soonju Park, <strong>Cédric Caruzzo</strong>, Nakyung Lee, Felix L. Perusse, Maria Roa Oyaga, Victor Wong, Wienand Omta, David Egan, David Shum</span>
       </div>
+      <div class="pub-venue">Poster presented at SLAS Europe 2024, Barcelona, Spain, 2024</div>
+      <div class="pub-links">
+        <button class="pub-btn" onclick="toggleBib(this)">Bib</button>
+        <a class="pub-btn" href="https://www.saguarobio.com/blogs/resources/institut-pasteur-korea-slas-europe-2024-poster-on-live-cell-painting" target="_blank" rel="noopener">Poster</a>
+      </div>
+      <pre class="pub-bib" style="display:none;">@misc{caruzzo2024cellular,
+  title={Cellular Phenotypic Profiling: Combining Live Imaging \&amp; Cell Painting Techniques},
+  author={Park, Soonju and Caruzzo, Cedric and Lee, Nakyung and Perusse, Felix L. and Roa Oyaga, Maria and Wong, Victor and Omta, Wienand and Egan, David and Shum, David},
+  howpublished={Poster presented at SLAS Europe 2024, Barcelona, Spain},
+  year={2024}
+}</pre>
     </div>
   </div>
+
+  <!-- 2021 -->
+  <div class="pub">
+    <div class="pub-tagcol">
+      <span class="venue-tag">Sci Reports ’21</span>
+    </div>
+    <div class="pub-body">
+      <div class="pub-title">Wolbachia detection in Aedes aegypti using MALDI-TOF MS coupled to artificial intelligence</div>
+      <div class="pub-authors">
+        <span class="authors-short">Antsa Rakotonirina, <strong>Cédric Caruzzo</strong>, Valentine Ballan, <button class="more-authors" onclick="expandAuthors(this)">and 7 more authors</button></span>
+        <span class="authors-full" style="display:none;">Antsa Rakotonirina, <strong>Cédric Caruzzo</strong>, Valentine Ballan, Malia Kainiu, Marie Marin, Julien Colot, Vincent Richard, Myrielle Dupont-Rouzeyrol, Nazha Selmaoui-Folcher, Nicolas Pocquet</span>
+      </div>
+      <div class="pub-venue">Scientific Reports 11, 21355, 2021</div>
+      <div class="pub-links">
+        <button class="pub-btn" onclick="toggleBib(this)">Bib</button>
+        <a class="pub-btn" href="https://www.nature.com/articles/s41598-021-00888-1" target="_blank" rel="noopener">PDF</a>
+      </div>
+      <pre class="pub-bib" style="display:none;">@article{rakotonirina2021wolbachia,
+  title={Wolbachia detection in Aedes aegypti using MALDI-TOF MS coupled to artificial intelligence},
+  author={Rakotonirina, Antsa and Caruzzo, C{\'e}dric and Ballan, Valentine and Kainiu, Malia and Marin, Marie and Colot, Julien and Richard, Vincent and Dupont-Rouzeyrol, Myrielle and Selmaoui-Folcher, Nazha and Pocquet, Nicolas},
+  journal={Scientific reports},
+  volume={11},
+  number={1},
+  pages={21355},
+  year={2021},
+  publisher={Nature Publishing Group UK London}
+}</pre>
+    </div>
+  </div>
+
 </section>
+
+<script>
+function toggleBib(btn){
+  var pre = btn.closest('.pub').querySelector('.pub-bib');
+  pre.style.display = (pre.style.display === 'none' || !pre.style.display) ? 'block' : 'none';
+}
+function expandAuthors(btn){
+  var box = btn.closest('.pub-authors');
+  box.querySelector('.authors-short').style.display = 'none';
+  box.querySelector('.authors-full').style.display = 'inline';
+}
+</script>
 
 <footer>
   <p>&copy; 2026 Cédric Caruzzo</p>
