@@ -3,254 +3,532 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Cédric Caruzzo is an AI Research Scientist at Lunit studying reliable foundation models, post-training, retrieval, and evaluation under distribution shift in biomedical AI.">
+  <meta name="author" content="Cédric Caruzzo">
+  <link rel="canonical" href="https://cedriccaruzzo.github.io/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Cédric Caruzzo | Reliable Foundation Models">
+  <meta property="og:description" content="Research on foundation models that adapt, generalize, and reason reliably when their data or evidence changes.">
+  <meta property="og:url" content="https://cedriccaruzzo.github.io/">
+  <meta property="og:image" content="https://cedriccaruzzo.github.io/img/banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Cédric Caruzzo | Reliable Foundation Models">
+  <meta name="twitter:description" content="Representation learning, post-training, and evidence-grounded biomedical AI.">
+  <meta name="twitter:image" content="https://cedriccaruzzo.github.io/img/banner.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <title>Cédric Caruzzo | Research Scientist</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+  <title>Cédric Caruzzo | Reliable Foundation Models</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23176b87'/%3E%3Ctext x='50' y='64' text-anchor='middle' font-size='42' font-family='Arial' fill='white'%3ECC%3C/text%3E%3C/svg%3E">
   <style>
-    body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
-    h1 { font-size: 2.4em; color: #1a1a1a; margin-bottom: 0.2em; font-weight: 700; }
-    h2 { font-size: 1.6em; color: #2c3e50; margin-top: 2.5em; margin-bottom: 1.2em; font-weight: 600; border-bottom: 2px solid #3498db; padding-bottom: 0.3em; }
-    h3 { font-size: 1.2em; color: #34495e; margin-bottom: 0.5em; font-weight: 600; }
-    header { text-align: center; margin-bottom: 50px; padding-bottom: 30px; border-bottom: 1px solid #eee; }
-    .banner { margin: -40px -20px 0 -20px; width: calc(100% + 40px); height: 200px; background: url('img/banner.png') center/cover no-repeat; }
-    .subtitle { font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; }
-    .affiliation { font-size: 1.05em; color: #2c3e50; margin-bottom: 1em; }
-    .affiliation a { color: #3498db; text-decoration: none; font-weight: 600; }
-    .affiliation a:hover { text-decoration: underline; }
-    .profile-pic { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-top: -75px; margin-bottom: 20px; margin-left: auto; margin-right: auto; display: block; border: 4px solid #fff; box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
-    nav { margin-top: 25px; font-size: 1em; }
-    nav a { margin: 0 12px; text-decoration: none; color: #3498db; font-weight: 500; transition: color 0.2s; }
-    nav a:hover { color: #2980b9; text-decoration: underline; }
-    section { margin-bottom: 3em; text-align: justify; }
-    p, ul { margin-bottom: 1em; font-size: 1.05em; }
-    .experience-item, .publication-item { margin-bottom: 2em; padding-bottom: 1.5em; border-bottom: 1px solid #eee; }
-    .experience-item:last-child, .publication-item:last-child { border-bottom: none; }
-    .publication-item { display: flex; gap: 22px; align-items: flex-start; }
-    .publication-thumb { flex: 0 0 160px; width: 160px; height: 120px; object-fit: contain; background: #fff; border: 1px solid #e7e9ec; border-left: 4px solid #3498db; border-radius: 8px; padding: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-    .publication-content { flex: 1; min-width: 0; }
-    .institution { font-weight: 600; color: #2c3e50; font-size: 1.1em; }
-    .position { color: #34495e; font-style: italic; margin-bottom: 0.5em; }
-    .position a { color: #34495e; text-decoration: underline; }
-    .duration { color: #7f8c8d; font-size: 0.9em; margin-bottom: 0.8em; }
-    .projects table { width: 100%; border-collapse: collapse; margin-top: 1em; font-size: 1.02em; }
-    .projects th { background: #f8f9fa; color: #2c3e50; padding: 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #3498db; }
-    .projects td { border-bottom: 1px solid #eee; padding: 12px; vertical-align: top; }
-    .projects tr:hover { background: #f9f9f9; }
-    .project-title a { color: inherit; text-decoration: none; font-weight: 600; }
-    .project-title a:hover { color: #3498db; text-decoration: underline; }
-    .project-contribution { font-size: 1em; margin-top: 4px; }
-    .project-methods { font-size: 0.9em; color: #7f8c8d; margin-top: 5px; font-family: monospace; }
-    footer { margin-top: 60px; padding-top: 30px; text-align: center; font-size: 0.9em; color: #7f8c8d; border-top: 1px solid #eee; }
-    .social-links { margin-top: 25px; display: flex; justify-content: center; gap: 10px; align-items: center; }
-    .social-links a { display: inline-block; transition: transform 0.2s; }
-    .social-links a:hover { transform: scale(1.1); }
-    .social-links img { height: 32px; }
-    .publication-title { font-weight: 600; font-size: 1.1em; margin-bottom: 5px; }
-    .publication-authors { font-style: italic; color: #555; margin-bottom: 5px; }
-    .publication-venue { font-size: 0.95em; color: #7f8c8d; margin-bottom: 10px; }
-    .publication-links a { margin-right: 15px; font-weight: 500; color: #3498db; text-decoration: none; font-size: 0.95em; }
-    .publication-links a:hover { text-decoration: underline; }
-    /* Publication list (academic format) */
-    .pub { display: flex; gap: 22px; align-items: flex-start; margin-bottom: 1.9em; padding-bottom: 1.7em; border-bottom: 1px solid #eee; }
-    .pub:last-child { border-bottom: none; }
-    .pub-tagcol { flex: 0 0 150px; display: flex; flex-direction: column; gap: 8px; padding-top: 3px; }
-    .pub-body { flex: 1; min-width: 0; }
-    .venue-tag { display: block; text-align: center; background: #3498db; color: #fff; font-size: 0.78em; font-weight: 700; letter-spacing: 0.3px; padding: 7px 10px; border-radius: 7px; white-space: nowrap; }
-    .venue-tag.secondary { background: #fff; color: #64748b; border: 1px solid #d0d7de; font-weight: 600; }
-    .pub-title { font-weight: 700; font-size: 1.12em; color: #1a1a1a; margin-bottom: 6px; line-height: 1.35; }
-    .pub-authors { color: #444; margin-bottom: 5px; font-size: 1em; }
-    .pub-authors strong { color: #1a1a1a; }
-    .more-authors { border: none; background: none; padding: 0; margin: 0; font: inherit; color: #9aa0a6; cursor: pointer; text-decoration: underline; text-decoration-style: dashed; text-underline-offset: 3px; }
-    .more-authors:hover { color: #e74c3c; }
-    .pub-venue { font-style: italic; color: #7f8c8d; font-size: 0.95em; margin-bottom: 12px; }
-    .pub-links { display: flex; flex-wrap: wrap; gap: 0; }
-    .pub-btn { display: inline-block; border: 1px solid #cbd5e1; background: #fff; color: #2c3e50; font-family: inherit; font-size: 0.72em; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; padding: 7px 15px; border-radius: 6px; text-decoration: none; margin: 0 8px 8px 0; cursor: pointer; transition: all 0.15s ease; }
-    .pub-btn:hover { background: #2c3e50; color: #fff; border-color: #2c3e50; text-decoration: none; }
-    .pub-bib { margin: 6px 0 10px 0; padding: 14px 16px; background: #f8f9fa; border: 1px solid #e2e8f0; border-radius: 8px; font-family: Consolas, "Liberation Mono", Menlo, monospace; font-size: 0.8em; line-height: 1.55; color: #334155; overflow-x: auto; white-space: pre; text-align: left; }
-    @media (max-width: 768px) {
-      body { padding: 20px 15px; }
-      h1 { font-size: 2em; }
-      nav a { margin: 0 8px; display: inline-block; margin-bottom: 5px; }
-      .projects table { font-size: 0.95em; }
-      section { text-align: left; }
-      .banner { margin: -20px -15px 0 -15px; width: calc(100% + 30px); }
-      .publication-item { flex-direction: column; gap: 14px; }
-      .publication-thumb { flex: 0 0 auto; width: 100%; height: 150px; }
-      .pub { flex-direction: column; gap: 12px; }
-      .pub-tagcol { flex: 0 0 auto; flex-direction: row; flex-wrap: wrap; }
-      .venue-tag { display: inline-block; }
+    :root {
+      --ink: #17212b;
+      --muted: #52606d;
+      --accent: #176b87;
+      --accent-dark: #0f5067;
+      --accent-soft: #e9f4f7;
+      --line: #d8e2e7;
+      --surface: #f7fafb;
+      --white: #fff;
     }
-    a {
-      color: inherit;
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 24px 48px;
+      color: var(--ink);
+      background: var(--white);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-dark); text-decoration: underline; }
+    header { text-align: center; padding-bottom: 32px; border-bottom: 1px solid var(--line); }
+    .banner {
+      width: calc(100% + 48px);
+      height: 210px;
+      margin-left: -24px;
+      background: url("img/banner.png") center/cover no-repeat;
+    }
+    .profile-pic {
+      display: block;
+      width: 148px;
+      height: 148px;
+      margin: -74px auto 18px;
+      border: 5px solid var(--white);
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 10px 30px rgba(23, 33, 43, 0.2);
+    }
+    h1 { margin: 0; font-size: clamp(2.35rem, 6vw, 3.35rem); line-height: 1.1; letter-spacing: -0.035em; }
+    h2 {
+      margin: 0 0 22px;
+      padding-bottom: 9px;
+      border-bottom: 2px solid var(--accent);
+      font-size: 1.65rem;
+      line-height: 1.25;
+      letter-spacing: -0.015em;
+    }
+    h3 { margin: 0 0 8px; font-size: 1.16rem; line-height: 1.35; }
+    p { margin: 0 0 1em; }
+    .role { margin: 10px 0 2px; color: var(--muted); font-size: 1.05rem; }
+    .research-thesis { margin: 12px 0 2px; color: var(--accent-dark); font-size: 1.36rem; font-weight: 700; }
+    .research-topics { margin: 3px 0 21px; color: var(--muted); font-size: 1rem; }
+    .quick-links, .cta-row, nav, .card-links, .metric-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    .quick-link, .button, .card-link, .pub-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 8px 13px;
+      border: 1px solid #bdd0d8;
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--ink);
+      font-size: 0.86rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      text-decoration: none;
+      transition: 0.15s ease;
+    }
+    .quick-link:hover, .button:hover, .card-link:hover, .pub-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+    .button.primary { border-color: var(--accent); background: var(--accent); color: var(--white); }
+    .button.primary:hover { background: var(--accent-dark); color: var(--white); }
+    .cta-row { margin-top: 18px; }
+    nav { margin-top: 24px; gap: 22px; }
+    nav a { color: var(--accent-dark); font-size: 0.94rem; font-weight: 700; }
+    main { padding-top: 8px; }
+    section { margin-top: 58px; scroll-margin-top: 24px; }
+    .intro {
+      max-width: 840px;
+      margin: 0 auto;
+      color: #2f3b45;
+      font-size: 1.05rem;
+    }
+    .intro strong { color: var(--ink); }
+    .research-grid, .writing-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+    .research-card, .writing-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--white);
+      box-shadow: 0 8px 24px rgba(23, 33, 43, 0.06);
+    }
+    .research-card img {
+      display: block;
+      width: 100%;
+      height: 210px;
+      padding: 14px;
+      background: var(--surface);
+      object-fit: contain;
+    }
+    .card-body { padding: 22px; }
+    .eyebrow {
+      margin-bottom: 8px;
+      color: var(--accent);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+    .card-summary { color: var(--muted); font-size: 0.96rem; }
+    .contribution {
+      margin: 14px 0;
+      padding: 12px 14px;
+      border-left: 3px solid var(--accent);
+      border-radius: 0 7px 7px 0;
+      background: var(--accent-soft);
+      color: #29414d;
+      font-size: 0.9rem;
+    }
+    .metric-row { justify-content: flex-start; margin: 14px 0 17px; }
+    .metric {
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+    .card-links { justify-content: flex-start; }
+    .card-link { min-height: 34px; padding: 6px 10px; font-size: 0.78rem; }
+    .pub {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr);
+      gap: 24px;
+      padding: 0 0 27px;
+      margin-bottom: 27px;
+      border-bottom: 1px solid var(--line);
+    }
+    .pub:last-child { margin-bottom: 0; border-bottom: 0; }
+    .pub-tagcol { display: flex; flex-direction: column; gap: 8px; }
+    .venue-tag {
+      display: block;
+      padding: 7px 10px;
+      border-radius: 7px;
+      background: var(--accent);
+      color: var(--white);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    .venue-tag.secondary { border: 1px solid var(--line); background: var(--white); color: var(--muted); }
+    .pub-title { margin-bottom: 5px; font-size: 1.1rem; font-weight: 700; line-height: 1.4; }
+    .pub-authors { margin-bottom: 4px; color: #37434d; }
+    .pub-venue { margin-bottom: 8px; color: var(--muted); font-size: 0.9rem; font-style: italic; }
+    .pub-summary { margin-bottom: 12px; color: var(--muted); font-size: 0.93rem; }
+    .pub-links { display: flex; flex-wrap: wrap; }
+    .pub-btn {
+      min-height: 32px;
+      margin: 0 7px 7px 0;
+      padding: 5px 10px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+    button.pub-btn { cursor: pointer; font-family: inherit; }
+    .pub-bib {
+      overflow-x: auto;
+      margin: 7px 0 10px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: #334155;
+      font-family: Consolas, "Liberation Mono", monospace;
+      font-size: 0.79rem;
+      line-height: 1.55;
+      text-align: left;
+      white-space: pre;
+    }
+    .more-authors {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
       text-decoration: underline;
+      text-decoration-style: dashed;
+      text-underline-offset: 3px;
     }
-
+    .experience-list { display: grid; gap: 16px; }
+    .experience-card {
+      padding: 21px 22px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+    .experience-head { display: flex; justify-content: space-between; gap: 20px; align-items: baseline; }
+    .experience-title { font-weight: 700; }
+    .experience-date { flex: 0 0 auto; color: var(--muted); font-size: 0.88rem; }
+    .experience-role { margin: 2px 0 10px; color: var(--accent-dark); font-size: 0.91rem; font-weight: 600; }
+    .experience-card ul { margin: 0; padding-left: 1.25rem; color: #37434d; }
+    .experience-card li + li { margin-top: 5px; }
+    .section-action { margin-top: 18px; }
+    .writing-card { padding: 22px; }
+    .writing-card p { color: var(--muted); font-size: 0.94rem; }
+    footer {
+      margin-top: 64px;
+      padding-top: 28px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.88rem;
+      text-align: center;
+    }
+    @media (max-width: 760px) {
+      body { padding: 0 16px 36px; }
+      .banner { width: calc(100% + 32px); height: 160px; margin-left: -16px; }
+      .profile-pic { width: 126px; height: 126px; margin-top: -63px; }
+      .research-grid, .writing-grid { grid-template-columns: 1fr; }
+      .pub { grid-template-columns: 1fr; gap: 12px; }
+      .pub-tagcol { flex-direction: row; flex-wrap: wrap; }
+      .venue-tag { display: inline-block; }
+      .experience-head { display: block; }
+      .experience-date { margin-top: 3px; }
+      nav { gap: 14px; }
+      section { margin-top: 44px; }
+    }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Cédric Caruzzo",
+    "jobTitle": "AI Research Scientist",
+    "worksFor": {"@type": "Organization", "name": "Lunit"},
+    "url": "https://cedriccaruzzo.github.io/",
+    "email": "mailto:cedric.caruzzo@gmail.com",
+    "sameAs": [
+      "https://github.com/CedricCaruzzo",
+      "https://www.linkedin.com/in/cedric-caruzzo/",
+      "https://scholar.google.com/citations?user=0M8qZDsAAAAJ"
+    ]
+  }
+  </script>
 </head>
 <body>
 
 <header>
-  <div class="banner"></div>
-  <img src="img/profile.jpeg" alt="Cédric Caruzzo" class="profile-pic">
+  <div class="banner" aria-hidden="true"></div>
+  <img src="img/profile.jpeg" alt="Portrait of Cédric Caruzzo" class="profile-pic">
   <h1>Cédric Caruzzo</h1>
-  <div class="affiliation">
-    AI Research Scientist at <a href="https://lunit.io/" target="_blank">Lunit Inc.</a>
+  <p class="role">AI Research Scientist at <a href="https://lunit.io/" target="_blank" rel="noopener">Lunit</a></p>
+  <p class="research-thesis">Reliable foundation models under distribution shift</p>
+  <p class="research-topics">Representation learning &middot; Post-training &middot; Evidence-grounded biomedical AI</p>
+
+  <div class="quick-links" aria-label="Profile links">
+    <a class="quick-link" href="mailto:cedric.caruzzo@gmail.com">Email</a>
+    <a class="quick-link" href="https://scholar.google.com/citations?user=0M8qZDsAAAAJ" target="_blank" rel="noopener">Google Scholar</a>
+    <a class="quick-link" href="https://github.com/CedricCaruzzo" target="_blank" rel="noopener">GitHub</a>
+    <a class="quick-link" href="https://www.linkedin.com/in/cedric-caruzzo/" target="_blank" rel="noopener">LinkedIn</a>
   </div>
-  <p class="subtitle">
-    Vision Foundation Models &middot; LLM Post-Training &middot; Medical AI
-  </p>
-  <div class="social-links">
-    <a href="mailto:cedric.caruzzo@lunit.io" title="Email"><img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/></a>
-    <a href="https://scholar.google.com/citations?user=0M8qZDsAAAAJ&hl=fr" target="_blank" title="Google Scholar"><img src="https://img.shields.io/badge/Google_Scholar-4285F4?style=for-the-badge&logo=googlescholar&logoColor=white" alt="Google Scholar"/></a>
-    <a href="https://github.com/CedricCaruzzo" target="_blank" title="GitHub"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
-    <a href="https://www.linkedin.com/in/cedric-caruzzo/" target="_blank" title="LinkedIn"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
+  <div class="cta-row">
+    <a class="button primary" href="#research">Selected research</a>
+    <a class="button" href="pdf/Cedric_Caruzzo_CV.pdf" target="_blank" rel="noopener">Download CV</a>
   </div>
-  <nav>
-    <a href="#about">About</a>
+  <nav aria-label="Main navigation">
+    <a href="#research">Research</a>
     <a href="#publications">Publications</a>
-    <a href="blog.html">Projects & Writing</a>
+    <a href="#experience">Experience</a>
+    <a href="#writing">Writing</a>
+    <a href="pdf/Cedric_Caruzzo_CV.pdf">CV</a>
   </nav>
 </header>
 
-<section id="about">
-<h2>About Me</h2>
-<p>
-I'm an AI Research Scientist at <a href="https://lunit.io/" target="_blank">Lunit</a> working on foundation models and post-training for medical AI.
-</p>
-<p>
-I'm interested in how learned systems behave under change: how they adapt, generalize, forget, exploit objectives, and fail when deployed beyond their training distribution. My work spans representation learning, post-training, evaluation, and increasingly agentic systems, with a focus on understanding and improving model reliability.
-</p>
-<p>
-Previously, I worked on pathology foundation models at Lunit, Cell Painting foundation models at <a href="https://gsai.kaist.ac.kr/" target="_blank">KAIST</a>, and computer vision for drug discovery at <a href="https://www.pasteur.fr/en" target="_blank">Institut Pasteur</a>.
-</p>
-</section>
-
-<section id="publications">
-  <h2>Publications</h2>
-
-  <!-- 2026 -->
-  <div class="pub">
-    <div class="pub-tagcol">
-      <span class="venue-tag">arXiv ’26</span>
+<main>
+  <section id="about">
+    <h2>Research Profile</h2>
+    <div class="intro">
+      <p><strong>I study how foundation models behave when their data, tasks, and evidence change.</strong> My research spans representation learning, post-training, retrieval, and evaluation, with a focus on reliable biomedical AI.</p>
+      <p>At Lunit, I work on self-supervised vision models for whole-slide pathology and post-training and evaluation of large medical language models. My recent first-author work introduced <em>deceptive grounding</em>, a clinical RAG failure in which a model can faithfully cite real evidence while assigning it to the wrong medical entity.</p>
+      <p>At KAIST, I developed CellPainTR, a Transformer for cross-dataset Cell Painting analysis that generalizes to unseen datasets without target-dataset fine-tuning. Earlier, at Institut Pasteur, I built machine-learning systems for phenotypic drug discovery and infectious-disease research.</p>
+      <p>I am particularly interested in adaptive and multimodal learning, reliable post-training, and medical AI systems whose evidence and intermediate reasoning can be independently verified.</p>
     </div>
-    <div class="pub-body">
-      <div class="pub-title">Deceptive Grounding: Entity Attribution Failure in Clinical Retrieval-Augmented Generation</div>
-      <div class="pub-authors"><strong>Cédric Caruzzo</strong>, Donggeun Yoo, Tae Soo Kim</div>
-      <div class="pub-venue">arXiv preprint arXiv:2607.09349, 2026</div>
-      <div class="pub-links">
-        <button class="pub-btn" onclick="toggleBib(this)">Bib</button>
-        <a class="pub-btn" href="https://arxiv.org/pdf/2607.09349" target="_blank" rel="noopener">PDF</a>
-        <a class="pub-btn" href="blog/deceptive_grounding.html">Website</a>
-        <a class="pub-btn" href="https://x.com/CaruzzoCedric/status/2076988026685919437?s=20" target="_blank" rel="noopener">Thread</a>
-      </div>
-      <pre class="pub-bib" style="display:none;">@article{caruzzo2026deceptive,
+  </section>
+
+  <section id="research">
+    <h2>Selected Research</h2>
+    <div class="research-grid">
+      <article class="research-card">
+        <img src="img/proj_deceptive_grounding/hero.svg" alt="Deceptive Grounding failure structure">
+        <div class="card-body">
+          <div class="eyebrow">First-author preprint &middot; 2026</div>
+          <h3>Deceptive Grounding</h3>
+          <p class="card-summary">Clinical RAG can relay real evidence, cite a genuine source, and still attribute that evidence to the wrong medical entity. Standard hallucination and faithfulness checks miss the failure.</p>
+          <div class="metric-row">
+            <span class="metric">New Failure Mode</span>
+            <span class="metric">13 models</span>
+            <span class="metric">740 production pairs</span>
+          </div>
+          <p class="contribution"><strong>My contribution:</strong> I conceived and led the study from the initial failure observation through benchmark design, software, formal analysis, production validation, visualization, and writing.</p>
+          <div class="card-links">
+            <a class="card-link" href="https://arxiv.org/abs/2607.09349" target="_blank" rel="noopener">Paper</a>
+            <a class="card-link" href="blog/deceptive_grounding.html">Project page</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="research-card">
+        <img src="img/proj_cellpaintr/concept_v2.png" alt="CellPainTR cross-dataset representation-learning concept">
+        <div class="card-body">
+          <div class="eyebrow">First-author preprint and code &middot; 2025</div>
+          <h3>CellPainTR</h3>
+          <p class="card-summary">A Transformer for Cell Painting representations that preserves biological signal across batch and feature shifts, including generalization to an entirely unseen dataset without fine-tuning.</p>
+          <div class="metric-row">
+            <span class="metric">Cross-dataset OOD</span>
+            <span class="metric">No target fine-tuning</span>
+            <span class="metric">Open source</span>
+          </div>
+          <p class="contribution"><strong>Research contribution:</strong> Source-specific context tokens and a staged self-supervised and contrastive curriculum make heterogeneous biological datasets usable through one representation model.</p>
+          <div class="card-links">
+            <a class="card-link" href="https://arxiv.org/abs/2509.06986" target="_blank" rel="noopener">Paper</a>
+            <a class="card-link" href="https://github.com/CellPainTR/CellPainTR" target="_blank" rel="noopener">Code</a>
+            <a class="card-link" href="blog/cellpaintr.html">Project page</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="publications">
+    <h2>Publications and Research Outputs</h2>
+
+    <article class="pub">
+      <div class="pub-tagcol"><span class="venue-tag">arXiv 2026</span></div>
+      <div class="pub-body">
+        <div class="pub-title">Deceptive Grounding: Entity Attribution Failure in Clinical Retrieval-Augmented Generation</div>
+        <div class="pub-authors"><strong>Cédric Caruzzo</strong>, Donggeun Yoo, Tae Soo Kim</div>
+        <div class="pub-venue">arXiv preprint arXiv:2607.09349, 2026</div>
+        <p class="pub-summary">Introduces an entity-attribution failure missed by standard RAG evaluation, characterizes it in controlled and production settings, and proposes entity-attribution verification.</p>
+        <div class="pub-links">
+          <button class="pub-btn" type="button" onclick="toggleBib(this)">Bib</button>
+          <a class="pub-btn" href="https://arxiv.org/pdf/2607.09349" target="_blank" rel="noopener">PDF</a>
+          <a class="pub-btn" href="blog/deceptive_grounding.html">Project</a>
+        </div>
+        <pre class="pub-bib" hidden>@article{caruzzo2026deceptive,
   title={Deceptive Grounding: Entity Attribution Failure in Clinical Retrieval-Augmented Generation},
   author={Caruzzo, Cedric and Yoo, Donggeun and Kim, Tae Soo},
   journal={arXiv preprint arXiv:2607.09349},
   year={2026}
 }</pre>
-    </div>
-  </div>
-
-  <!-- 2025 -->
-  <div class="pub">
-    <div class="pub-tagcol">
-      <span class="venue-tag">arXiv ’25</span>
-    </div>
-    <div class="pub-body">
-      <div class="pub-title">CellPainTR: Generalizable Representation Learning for Cross-Dataset Cell Painting Analysis</div>
-      <div class="pub-authors"><strong>Cédric Caruzzo</strong>, Jong Chul Ye</div>
-      <div class="pub-venue">arXiv preprint arXiv:2509.06986, 2025</div>
-      <div class="pub-links">
-        <button class="pub-btn" onclick="toggleBib(this)">Bib</button>
-        <a class="pub-btn" href="https://arxiv.org/pdf/2509.06986" target="_blank" rel="noopener">PDF</a>
-        <a class="pub-btn" href="https://github.com/CellPainTR/CellPainTR" target="_blank" rel="noopener">Code</a>
-        <a class="pub-btn" href="blog/cellpaintr.html">Website</a>
-        <a class="pub-btn" href="https://www.linkedin.com/posts/cedric-caruzzo_machinelearning-ai-deeplearning-activity-7371410953273454592-pVOo" target="_blank" rel="noopener">Thread</a>
       </div>
-      <pre class="pub-bib" style="display:none;">@article{caruzzo2025cellpaintr,
+    </article>
+
+    <article class="pub">
+      <div class="pub-tagcol"><span class="venue-tag">arXiv 2025</span></div>
+      <div class="pub-body">
+        <div class="pub-title">CellPainTR: Generalizable Representation Learning for Cross-Dataset Cell Painting Analysis</div>
+        <div class="pub-authors"><strong>Cédric Caruzzo</strong>, Jong Chul Ye</div>
+        <div class="pub-venue">arXiv preprint arXiv:2509.06986, 2025</div>
+        <p class="pub-summary">Learns batch-robust cellular representations across heterogeneous studies and generalizes to an unseen dataset without target-dataset fine-tuning.</p>
+        <div class="pub-links">
+          <button class="pub-btn" type="button" onclick="toggleBib(this)">Bib</button>
+          <a class="pub-btn" href="https://arxiv.org/pdf/2509.06986" target="_blank" rel="noopener">PDF</a>
+          <a class="pub-btn" href="https://github.com/CellPainTR/CellPainTR" target="_blank" rel="noopener">Code</a>
+          <a class="pub-btn" href="blog/cellpaintr.html">Project</a>
+        </div>
+        <pre class="pub-bib" hidden>@article{caruzzo2025cellpaintr,
   title={CellPainTR: Generalizable Representation Learning for Cross-Dataset Cell Painting Analysis},
   author={Caruzzo, Cedric and Ye, Jong Chul},
   journal={arXiv preprint arXiv:2509.06986},
   year={2025}
 }</pre>
-    </div>
-  </div>
+      </div>
+    </article>
 
-  <!-- 2024 -->
-  <div class="pub">
-    <div class="pub-tagcol">
-      <span class="venue-tag">SLAS Europe ’24</span>
-      <span class="venue-tag secondary">Poster</span>
-    </div>
-    <div class="pub-body">
-      <div class="pub-title">Cellular Phenotypic Profiling: Combining Live Imaging &amp; Cell Painting Techniques</div>
-      <div class="pub-authors">
-        <span class="authors-short">Soonju Park, <strong>Cédric Caruzzo</strong>, Nakyung Lee, <button class="more-authors" onclick="expandAuthors(this)">and 6 more authors</button></span>
-        <span class="authors-full" style="display:none;">Soonju Park, <strong>Cédric Caruzzo</strong>, Nakyung Lee, Felix L. Perusse, Maria Roa Oyaga, Victor Wong, Wienand Omta, David Egan, David Shum</span>
+    <article class="pub">
+      <div class="pub-tagcol">
+        <span class="venue-tag">SLAS Europe 2024</span>
+        <span class="venue-tag secondary">Poster</span>
       </div>
-      <div class="pub-venue">Poster presented at SLAS Europe 2024, Barcelona, Spain, 2024</div>
-      <div class="pub-links">
-        <button class="pub-btn" onclick="toggleBib(this)">Bib</button>
-        <a class="pub-btn" href="https://www.saguarobio.com/blogs/resources/institut-pasteur-korea-slas-europe-2024-poster-on-live-cell-painting" target="_blank" rel="noopener">Poster</a>
-      </div>
-      <pre class="pub-bib" style="display:none;">@misc{caruzzo2024cellular,
-  title={Cellular Phenotypic Profiling: Combining Live Imaging \&amp; Cell Painting Techniques},
-  author={Park, Soonju and Caruzzo, Cedric and Lee, Nakyung and Perusse, Felix L. and Roa Oyaga, Maria and Wong, Victor and Omta, Wienand and Egan, David and Shum, David},
-  howpublished={Poster presented at SLAS Europe 2024, Barcelona, Spain},
+      <div class="pub-body">
+        <div class="pub-title">Cellular Phenotypic Profiling: Combining Live Imaging and Cell Painting Techniques</div>
+        <div class="pub-authors">
+          <span class="authors-short">Soonju Park, <strong>Cédric Caruzzo</strong>, Nakyung Lee, <button class="more-authors" type="button" onclick="expandAuthors(this)">and 6 more authors</button></span>
+          <span class="authors-full" hidden>Soonju Park, <strong>Cédric Caruzzo</strong>, Nakyung Lee, Felix L. Perusse, Maria Roa Oyaga, Victor Wong, Wienand Omta, David Egan, David Shum</span>
+        </div>
+        <div class="pub-venue">Poster presented at SLAS Europe 2024, Barcelona, Spain</div>
+        <p class="pub-summary">Combines longitudinal live-cell imaging with endpoint Cell Painting for richer phenotypic profiling in high-content drug discovery.</p>
+        <div class="pub-links">
+          <button class="pub-btn" type="button" onclick="toggleBib(this)">Bib</button>
+          <a class="pub-btn" href="https://www.saguarobio.com/blogs/resources/institut-pasteur-korea-slas-europe-2024-poster-on-live-cell-painting" target="_blank" rel="noopener">Poster</a>
+        </div>
+        <pre class="pub-bib" hidden>@misc{park2024cellular,
+  title={Cellular Phenotypic Profiling: Combining Live Imaging and Cell Painting Techniques},
+  author={Park, Soonju and Caruzzo, Cedric and Lee, Nakyung and others},
+  howpublished={Poster presented at SLAS Europe 2024},
   year={2024}
 }</pre>
-    </div>
-  </div>
+      </div>
+    </article>
 
-  <!-- 2021 -->
-  <div class="pub">
-    <div class="pub-tagcol">
-      <span class="venue-tag">Sci Reports ’21</span>
-    </div>
-    <div class="pub-body">
-      <div class="pub-title">Wolbachia detection in Aedes aegypti using MALDI-TOF MS coupled to artificial intelligence</div>
-      <div class="pub-authors">
-        <span class="authors-short">Antsa Rakotonirina, <strong>Cédric Caruzzo</strong>, Valentine Ballan, <button class="more-authors" onclick="expandAuthors(this)">and 7 more authors</button></span>
-        <span class="authors-full" style="display:none;">Antsa Rakotonirina, <strong>Cédric Caruzzo</strong>, Valentine Ballan, Malia Kainiu, Marie Marin, Julien Colot, Vincent Richard, Myrielle Dupont-Rouzeyrol, Nazha Selmaoui-Folcher, Nicolas Pocquet</span>
-      </div>
-      <div class="pub-venue">Scientific Reports 11, 21355, 2021</div>
-      <div class="pub-links">
-        <button class="pub-btn" onclick="toggleBib(this)">Bib</button>
-        <a class="pub-btn" href="https://www.nature.com/articles/s41598-021-00888-1" target="_blank" rel="noopener">PDF</a>
-      </div>
-      <pre class="pub-bib" style="display:none;">@article{rakotonirina2021wolbachia,
+    <article class="pub">
+      <div class="pub-tagcol"><span class="venue-tag">Scientific Reports 2021</span></div>
+      <div class="pub-body">
+        <div class="pub-title">Wolbachia detection in Aedes aegypti using MALDI-TOF MS coupled to artificial intelligence</div>
+        <div class="pub-authors">
+          <span class="authors-short">Antsa Rakotonirina, <strong>Cédric Caruzzo</strong>, Valentine Ballan, <button class="more-authors" type="button" onclick="expandAuthors(this)">and 7 more authors</button></span>
+          <span class="authors-full" hidden>Antsa Rakotonirina, <strong>Cédric Caruzzo</strong>, Valentine Ballan, Malia Kainiu, Marie Marin, Julien Colot, Vincent Richard, Myrielle Dupont-Rouzeyrol, Nazha Selmaoui-Folcher, Nicolas Pocquet</span>
+        </div>
+        <div class="pub-venue">Scientific Reports 11, 21355, 2021</div>
+        <p class="pub-summary">Uses machine learning with MALDI-TOF mass spectrometry to detect Wolbachia infection in Aedes aegypti mosquitoes for vector-control research.</p>
+        <div class="pub-links">
+          <button class="pub-btn" type="button" onclick="toggleBib(this)">Bib</button>
+          <a class="pub-btn" href="https://doi.org/10.1038/s41598-021-00888-1" target="_blank" rel="noopener">Paper</a>
+        </div>
+        <pre class="pub-bib" hidden>@article{rakotonirina2021wolbachia,
   title={Wolbachia detection in Aedes aegypti using MALDI-TOF MS coupled to artificial intelligence},
-  author={Rakotonirina, Antsa and Caruzzo, C{\'e}dric and Ballan, Valentine and Kainiu, Malia and Marin, Marie and Colot, Julien and Richard, Vincent and Dupont-Rouzeyrol, Myrielle and Selmaoui-Folcher, Nazha and Pocquet, Nicolas},
-  journal={Scientific reports},
+  author={Rakotonirina, Antsa and Caruzzo, Cedric and Ballan, Valentine and others},
+  journal={Scientific Reports},
   volume={11},
-  number={1},
   pages={21355},
-  year={2021},
-  publisher={Nature Publishing Group UK London}
+  year={2021}
 }</pre>
+      </div>
+    </article>
+  </section>
+
+  <section id="experience">
+    <h2>Selected Experience</h2>
+    <div class="experience-list">
+      <article class="experience-card">
+        <div class="experience-head">
+          <div class="experience-title">Lunit, Seoul</div>
+          <div class="experience-date">Mar 2025 - Present</div>
+        </div>
+        <div class="experience-role">AI Research Scientist</div>
+        <ul>
+          <li>Own post-training and evaluation pipelines for large medical language models, including benchmark design, retrieval, and knowledge-grounded reasoning.</li>
+          <li>Develop self-supervised Vision Transformers for whole-slide pathology and distributed inference systems for clinical-scale image collections.</li>
+          <li>Lead research on evaluation blind spots in medical RAG, including the first-author Deceptive Grounding study.</li>
+        </ul>
+      </article>
+      <article class="experience-card">
+        <div class="experience-head">
+          <div class="experience-title">KAIST, Kim Jaechul Graduate School of AI</div>
+          <div class="experience-date">Feb 2023 - Feb 2025</div>
+        </div>
+        <div class="experience-role">M.S. Researcher, advisor: Prof. Jong Chul Ye</div>
+        <ul>
+          <li>Developed CellPainTR for cross-dataset Cell Painting representation learning and ChemPainTR for chemical-to-phenotype translation.</li>
+          <li>Completed the thesis <a href="https://koasas.kaist.ac.kr/handle/10203/333276" target="_blank" rel="noopener"><em>Development of Foundation Models in the Context of Cell Painting</em></a>.</li>
+        </ul>
+      </article>
     </div>
-  </div>
+    <p class="section-action"><a class="button" href="experience.html">Full research experience</a></p>
+  </section>
 
-</section>
-
-<script>
-function toggleBib(btn){
-  var pre = btn.closest('.pub').querySelector('.pub-bib');
-  pre.style.display = (pre.style.display === 'none' || !pre.style.display) ? 'block' : 'none';
-}
-function expandAuthors(btn){
-  var box = btn.closest('.pub-authors');
-  box.querySelector('.authors-short').style.display = 'none';
-  box.querySelector('.authors-full').style.display = 'inline';
-}
-</script>
+  <section id="writing">
+    <h2>Selected Technical Writing</h2>
+    <div class="writing-grid">
+      <article class="writing-card">
+        <div class="eyebrow">Research note &middot; June 2026</div>
+        <h3><a href="blog/blog_moe_routing.html">Does SDFT Survive the Jump to Mixture-of-Experts?</a></h3>
+        <p>Derives the routing-mismatch term introduced by sparse expert selection and measures the bound across six MoE architectures and two domains.</p>
+        <a class="card-link" href="blog/blog_moe_routing.html">Read article</a>
+      </article>
+      <article class="writing-card">
+        <div class="eyebrow">Technical article &middot; May 2026</div>
+        <h3><a href="blog/dr_grpo.html">You Could Have Invented Dr.GRPO Yourself</a></h3>
+        <p>A ground-up derivation from REINFORCE through Actor-Critic, PPO, RLHF, GRPO, and Dr.GRPO, with each method motivated by one concrete failure.</p>
+        <a class="card-link" href="blog/dr_grpo.html">Read article</a>
+      </article>
+    </div>
+    <p class="section-action"><a class="button" href="blog.html">All research and writing</a></p>
+  </section>
+</main>
 
 <footer>
+  <p>Research questions, collaboration, or correspondence: <a href="mailto:cedric.caruzzo@gmail.com">cedric.caruzzo@gmail.com</a></p>
   <p>&copy; 2026 Cédric Caruzzo</p>
 </footer>
+
+<script>
+function toggleBib(button) {
+  const bib = button.closest(".pub").querySelector(".pub-bib");
+  bib.hidden = !bib.hidden;
+}
+function expandAuthors(button) {
+  const container = button.closest(".pub-authors");
+  container.querySelector(".authors-short").hidden = true;
+  container.querySelector(".authors-full").hidden = false;
+}
+</script>
 
 </body>
 </html>

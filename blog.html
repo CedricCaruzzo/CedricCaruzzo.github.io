@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Research projects and technical writing by Cédric Caruzzo on reliable foundation models, post-training, Cell Painting, medical RAG, and model evaluation.">
+  <link rel="canonical" href="https://cedriccaruzzo.github.io/blog.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <title>Projects & Writing | Cédric Caruzzo</title>
+  <title>Research &amp; Writing | Cédric Caruzzo</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
   <style>
     /* Basic Page Styles */
@@ -209,7 +211,7 @@
 <body>
 
 <header>
-  <h1>Projects & Writing</h1>
+  <h1>Research &amp; Writing</h1>
   <a href="index.html">&larr; Back to main page</a>
 </header>
 
@@ -233,6 +235,40 @@
           <span class="tag">LLM Safety</span>
           <span class="tag">Hallucination</span>
           <span class="tag">Evaluation</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="blog/cellpaintr.html" class="project-card featured" style="margin-top: 30px;">
+      <img src="img/proj_cellpaintr/concept_v2.png" alt="CellPainTR concept for cross-dataset Cell Painting analysis">
+      <div class="card-content">
+        <div class="card-category academic">First-author Preprint and Code</div>
+        <h3>CellPainTR: Generalizable Representation Learning for Cross-Dataset Cell Painting Analysis</h3>
+        <p>
+          A Transformer for batch-robust Cell Painting representations that generalizes to an entirely unseen dataset without target-dataset fine-tuning.
+        </p>
+        <div class="card-tags">
+          <span class="tag">Representation Learning</span>
+          <span class="tag">Distribution Shift</span>
+          <span class="tag">Cell Painting</span>
+          <span class="tag">Open Source</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="blog/blog_moe_routing.html" class="project-card featured" style="margin-top: 30px;">
+      <img src="img/moe_routing/watercolor_2.png" alt="Watercolor illustration for the SDFT Mixture-of-Experts post">
+      <div class="card-content">
+        <div class="card-category academic">Research Note</div>
+        <h3>Does SDFT Survive the Jump to Mixture-of-Experts?</h3>
+        <p>
+          A theory-first investigation: derive the routing-mismatch bound for self-distillation in Mixture-of-Experts models, then measure it across six architectures and two domains.
+        </p>
+        <div class="card-tags">
+          <span class="tag">Mixture-of-Experts</span>
+          <span class="tag">SDFT</span>
+          <span class="tag">Trust Region</span>
+          <span class="tag">LLMs</span>
         </div>
       </div>
     </a>
@@ -272,22 +308,6 @@
       </div>
     </a>
 
-    <a href="blog/blog_moe_routing.html" class="project-card featured" style="margin-top: 30px;">
-      <img src="img/moe_routing/watercolor_2.png" alt="Watercolor illustration for the SDFT Mixture-of-Experts post">
-      <div class="card-content">
-        <div class="card-category academic">Academic Project</div>
-        <h3>Does SDFT Survive the Jump to Mixture-of-Experts?</h3>
-        <p>
-          A theory-first investigation: derive the bound that decides whether self-distillation's trust-region guarantee survives in a Mixture-of-Experts, then measure directly where a real 16B MoE lands on it.
-        </p>
-        <div class="card-tags">
-          <span class="tag">Mixture-of-Experts</span>
-          <span class="tag">SDFT</span>
-          <span class="tag">Trust Region</span>
-          <span class="tag">LLMs</span>
-        </div>
-      </div>
-    </a>
   </section>
 
 

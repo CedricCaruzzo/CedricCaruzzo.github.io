@@ -3,102 +3,197 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Research experience of Cédric Caruzzo across reliable medical foundation models, post-training, Cell Painting, and infectious-disease machine learning.">
+  <link rel="canonical" href="https://cedriccaruzzo.github.io/experience.html">
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="Research Experience | Cédric Caruzzo">
+  <meta property="og:description" content="From controlled evaluation of medical language models to cross-dataset biological representation learning.">
+  <meta property="og:url" content="https://cedriccaruzzo.github.io/experience.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <title>Experience | Cédric Caruzzo</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+  <title>Research Experience | Cédric Caruzzo</title>
   <style>
-    body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
-    h1 { font-size: 2.4em; color: #1a1a1a; margin-bottom: 0.2em; font-weight: 700; }
-    h2 { font-size: 1.6em; color: #2c3e50; margin-top: 2.5em; margin-bottom: 1.2em; font-weight: 600; border-bottom: 2px solid #3498db; padding-bottom: 0.3em; }
-    header { text-align: left; margin-bottom: 50px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
-    header h1 { font-size: 1.8em; }
-    header a { color: #3498db; text-decoration: none; font-weight: 500;}
-    header a:hover { text-decoration: underline; }
-    section { margin-bottom: 3em; }
-    .experience-item { margin-bottom: 2em; padding-bottom: 1.5em; border-bottom: 1px solid #eee; }
-    .experience-item:last-child { border-bottom: none; }
-    .institution { font-weight: 600; color: #2c3e50; font-size: 1.1em; }
-    .position { color: #34495e; font-style: italic; margin-bottom: 0.5em; }
-    .position a { color: #34495e; text-decoration: underline; }
-    .duration { color: #7f8c8d; font-size: 0.9em; margin-bottom: 0.8em; }
-    .experience-item ul { list-style-type: disc; padding-left: 20px; margin-top: 10px; text-align: justify; }
-    .experience-item li { margin-bottom: 0.5em; }
-    .experience-item li a { color: #333; font-weight: 500; }
-    footer { margin-top: 60px; padding-top: 30px; text-align: center; font-size: 0.9em; color: #7f8c8d; border-top: 1px solid #eee; }
-    @media (max-width: 768px) {
-      body { padding: 20px 15px; }
-      .experience-item ul { text-align: left; }
+    :root {
+      --ink: #17212b;
+      --muted: #52606d;
+      --accent: #176b87;
+      --accent-dark: #0f5067;
+      --accent-soft: #e9f4f7;
+      --line: #d8e2e7;
+      --surface: #f7fafb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 38px 24px 52px;
+      color: var(--ink);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-dark); text-decoration: underline; }
+    header { padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+    h1 { margin: 0 0 7px; font-size: clamp(2rem, 6vw, 2.7rem); letter-spacing: -0.03em; }
+    h2 { margin: 0 0 25px; padding-bottom: 9px; border-bottom: 2px solid var(--accent); font-size: 1.55rem; }
+    p { margin: 0 0 1em; }
+    .header-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center; }
+    nav { display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.91rem; font-weight: 700; }
+    .tagline { margin: 0; color: var(--muted); }
+    main { padding-top: 50px; }
+    .intro { max-width: 760px; margin-bottom: 42px; color: var(--muted); font-size: 1.03rem; }
+    .entry { position: relative; margin-bottom: 35px; padding: 0 0 30px 22px; border-bottom: 1px solid var(--line); }
+    .entry:last-child { border-bottom: 0; }
+    .entry::before {
+      position: absolute;
+      top: 5px;
+      bottom: 30px;
+      left: 0;
+      width: 4px;
+      border-radius: 999px;
+      background: var(--accent);
+      content: "";
+    }
+    .entry-head { display: flex; justify-content: space-between; gap: 20px; align-items: baseline; }
+    .institution { font-size: 1.15rem; font-weight: 700; }
+    .date { flex: 0 0 auto; color: var(--muted); font-size: 0.9rem; font-weight: 600; }
+    .role { margin: 2px 0 12px; color: var(--accent-dark); font-size: 0.96rem; font-weight: 600; }
+    .entry ul { margin: 0; padding-left: 1.2rem; }
+    .entry li + li { margin-top: 7px; }
+    .result {
+      margin-top: 13px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: var(--accent-soft);
+      color: #29414d;
+      font-size: 0.91rem;
+    }
+    .subrole { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--line); }
+    .subrole-head { display: flex; justify-content: space-between; gap: 20px; }
+    .subrole-title { font-weight: 700; }
+    .button {
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      padding: 8px 13px;
+      border: 1px solid #bdd0d8;
+      border-radius: 8px;
+      color: var(--ink);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+    .button:hover { border-color: var(--accent); background: var(--accent-soft); text-decoration: none; }
+    footer { margin-top: 48px; padding-top: 26px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.88rem; text-align: center; }
+    @media (max-width: 680px) {
+      body { padding: 24px 16px 40px; }
+      .entry-head, .subrole-head { display: block; }
+      .date { margin-top: 3px; }
+      .entry { padding-left: 17px; }
+      main { padding-top: 38px; }
     }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>Cédric Caruzzo</h1>
-  <a href="index.html">&larr; Back to main page</a>
+  <div class="header-row">
+    <div>
+      <h1>Cédric Caruzzo</h1>
+      <p class="tagline">Research experience in reliable biomedical foundation models</p>
+    </div>
+    <nav aria-label="Page navigation">
+      <a href="index.html">Home</a>
+      <a href="index.html#research">Research</a>
+      <a href="index.html#publications">Publications</a>
+      <a href="blog.html">Writing</a>
+      <a href="pdf/Cedric_Caruzzo_CV.pdf">CV</a>
+    </nav>
+  </div>
 </header>
 
-<section id="experience">
-  <h2>Experience</h2>
-  <div class="experience-item">
-    <div class="institution">Lunit Inc.</div>
-    <div class="position">AI Research Scientist</div>
-    <div class="duration">Mar 2025 — Present</div>
-    <ul>
-      <li><strong>Vision Foundation Models:</strong> Training self-supervised ViT-based pathology FMs (DINOv2/v3-style SSL) for high-resolution whole-slide imaging; investigating positional encodings and hyperparameters at scale; Mayo Clinic collaboration on clinical validation.</li>
-      <li><strong>Distributed Inference:</strong> Architecting a fault-tolerant Python/NCCL orchestrator for clinical-scale inference over hundreds of TBs of whole-slide images; reduced compute overhead 60–80% through dynamic scheduling and failure recovery.</li>
-      <li><strong>LLM Post-Training (Chain of Evidence consortium):</strong> Curating 292B+ token Korean/English medical corpora; building RAG pipelines and biomedical knowledge graphs; post-training and aligning 21B dense and 16B MoE models; designing benchmarks and evaluation frameworks for medical reasoning.</li>
-      <li><strong>AI Safety &amp; Alignment:</strong> Studying medical LLM failure modes; developing safety guardrails for clinical deployment; applying mechanistic interpretability to identify and correct problematic circuits and attention behaviors in deployed models.</li>
-      <li><strong>Agentic Framework:</strong> Designing a multi-agent system for clinical reasoning over structured biomedical data, lab reports, and free-text clinical notes.</li>
-    </ul>
-  </div>
-  <div class="experience-item">
-    <div class="institution">KAIST, Graduate School of AI</div>
-    <div class="position">Master's Student (Advisor: <a href="https://scholar.google.com/citations?user=HNMjoNEAAAAJ&hl=en" target="_blank">Prof. Ye Jong Chul</a>)</div>
-    <div class="duration">Feb 2023 — Mar 2025</div>
-    <ul>
-      <li>Thesis: <em>Development of Foundation Models in the Context of Cell Painting <a href="https://library.kaist.ac.kr/search/detail/view.do?bibCtrlNo=1122202&flag=dissertation" target="_blank">[Thesis]</a></em></li>
-      <li>Developed foundation models for Cell Painting to automate phenotype profiling in drug discovery.</li>
-      <li>Designed bidirectional generative models for cross-modal translation between visual phenotypes and chemical structures.</li>
-      <li>Investigated methods to mitigate batch effects and improve data harmonization for large-scale bio-imaging.</li>
-    </ul>
-  </div>
+<main>
+  <h2>Research Experience</h2>
+  <p class="intro">My work connects controlled research questions with systems that operate at biomedical scale. Reliability under change: new datasets, new knowledge, retrieved evidence, and deployment conditions.</p>
 
-  <div class="experience-item">
-    <div class="institution">Institut Pasteur Korea & Institut Pasteur Paris</div>
-    <div class="position">Data Scientist (Part-time), Pasteur International Unit AI3D</div>
-    <div class="duration">Feb 2023 — Dec 2024</div>
+  <article class="entry">
+    <div class="entry-head">
+      <div class="institution">Lunit, Seoul</div>
+      <div class="date">Mar 2025 - Present</div>
+    </div>
+    <div class="role">AI Research Scientist</div>
     <ul>
-      <li>Continued core development responsibilities on a part-time basis (40 hours/month) after transitioning to full-time Master's studies.</li>
-      <li>Led the ongoing implementation and extension of the institute's primary AI analysis pipeline for high-content screening.</li>
+      <li><strong>Deceptive Grounding:</strong> conceived and led a first-author study of entity-attribution failure in clinical RAG, from benchmark design and software through formal analysis, production validation, visualization, and writing.</li>
+      <li><strong>Medical-model post-training and evaluation:</strong> own training and evaluation pipelines for large medical language models, including benchmark construction, retrieval, knowledge-grounded reasoning, and capability-retention analysis.</li>
+      <li><strong>Self-distillation:</strong> led comparative evaluation of self-distillation fine-tuning for medical-model adaptation and its integration into the post-training workflow.</li>
+      <li><strong>Pathology foundation models:</strong> develop self-supervised Vision Transformers for whole-slide imaging, studying positional encoding, optimization, and transfer at scale.</li>
+      <li><strong>Distributed inference:</strong> built fault-tolerant Python and NCCL orchestration for clinical-scale whole-slide image collections.</li>
+      <li><strong>Research culture:</strong> lead recurring paper-study sessions and write long-form technical articles on post-training, reasoning models, and evaluation.</li>
     </ul>
-  </div>
+    <p class="result"><strong>Public result:</strong> Deceptive Grounding was evaluated across 13 models and 740 production drug-disease pairs. <a href="https://arxiv.org/abs/2607.09349" target="_blank" rel="noopener">Read the preprint</a>.</p>
+  </article>
 
-  <div class="experience-item">
-    <div class="institution">Institut Pasteur Korea & Institut Pasteur Paris</div>
-    <div class="position">Data Scientist, Pasteur International Unit AI3D</div>
-    <div class="duration">Oct 2021 — Feb 2023</div>
+  <article class="entry">
+    <div class="entry-head">
+      <div class="institution">KAIST, Bio Imaging, Signal Processing and Learning Lab</div>
+      <div class="date">Feb 2023 - Feb 2025</div>
+    </div>
+    <div class="role">M.S. Researcher, advisor: Prof. Jong Chul Ye</div>
     <ul>
-      <li>Worked within the Pasteur International Unit (PIU) AI3D, a joint initiative between Institut Pasteur Korea (lead: <a href="https://scholar.google.com/citations?user=8xzsh0wAAAAJ&hl=en" target="_blank">Dr. Spencer Shorte</a>) and Institut Pasteur Paris (lead: <a href="https://scholar.google.com/citations?user=cPAja4UAAAAJ&hl=en" target="_blank">Dr. Christophe Zimmer</a>).</li>
-      <li>Designed and implemented the institute’s primary analysis pipeline for high-content screening, boosting throughput and reproducibility.</li>
-      <li>Applied computer vision models to Cell Painting assays to improve phenotypic profiling for drug discovery campaigns.</li>
+      <li>Developed <a href="https://arxiv.org/abs/2509.06986" target="_blank" rel="noopener"><strong>CellPainTR</strong></a>, a Transformer with source-context tokens and staged self-supervised and contrastive training for batch-robust Cell Painting representations.</li>
+      <li>Evaluated out-of-distribution generalization under dataset, batch, and feature shift, including transfer to an unseen dataset without target-dataset fine-tuning.</li>
+      <li>Developed ChemPainTR, a dual-encoder framework for bidirectional translation between chemical structures and cellular phenotypes.</li>
+      <li>Completed the thesis <a href="https://koasas.kaist.ac.kr/handle/10203/333276" target="_blank" rel="noopener"><em>Development of Foundation Models in the Context of Cell Painting</em></a> as a KAIST Global Presidential Scholar.</li>
     </ul>
-  </div>
+  </article>
 
-  <div class="experience-item">
-    <div class="institution">Institut Pasteur New Caledonia / ISEA</div>
-    <div class="position">Research Intern, Undergraduate (Supervisor: <a href="https://scholar.google.com/citations?user=I3ysxxkAAAAJ&hl=en" target="_blank">Prof. Nazha Selmaoui-Folcher</a>)</div>
-    <div class="duration">Oct 2020 — Oct 2021</div>
+  <article class="entry">
+    <div class="entry-head">
+      <div class="institution">Institut Pasteur Korea, Pasteur International Unit AI3D</div>
+      <div class="date">2021 - 2024</div>
+    </div>
+
+    <div class="subrole">
+      <div class="subrole-head">
+        <div class="subrole-title">Consultant, Data Science</div>
+        <div class="date">Feb 2023 - Nov 2024</div>
+      </div>
+      <ul>
+        <li>Extended Cell Painting analysis and phenotypic-profiling workflows for high-content drug-discovery programs.</li>
+        <li>Collaborated across biology, chemistry, imaging, and data science; contributed to a live-cell and Cell Painting poster at SLAS Europe 2024.</li>
+      </ul>
+    </div>
+
+    <div class="subrole">
+      <div class="subrole-head">
+        <div class="subrole-title">Research Scientist Intern</div>
+        <div class="date">Oct 2021 - Feb 2023</div>
+      </div>
+      <ul>
+        <li>Designed and implemented the institute's primary analysis pipeline for high-content screening.</li>
+        <li>Developed scalable experiment-analysis and data-harmonization workflows for phenotypic drug discovery.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="entry-head">
+      <div class="institution">Institut Pasteur New Caledonia and ISEA</div>
+      <div class="date">Oct 2020 - Oct 2021</div>
+    </div>
+    <div class="role">Research Intern, Machine Learning for Infectious Disease</div>
     <ul>
-        <li>Developed novel feature extraction and classification methods (CNNs, ML classifiers) for high-dimensional MALDI-TOF mass spectrometry data.</li>
-        <li>Created an interpretable deconvolution framework to identify discriminative biomarkers for pathogen detection.</li>
+      <li>Built machine-learning classifiers and interpretable feature-extraction methods for MALDI-TOF mass spectrometry.</li>
+      <li>Supported Wolbachia detection, mosquito-species identification, and leptospirosis studies with public-health and hospital collaborators.</li>
+      <li>Contributed data analysis to the <a href="https://doi.org/10.1038/s41598-021-00888-1" target="_blank" rel="noopener">Scientific Reports paper on Wolbachia detection</a>.</li>
     </ul>
-  </div>
-</section>
+  </article>
+
+  <a class="button" href="pdf/Cedric_Caruzzo_CV.pdf" target="_blank" rel="noopener">Download CV</a>
+</main>
 
 <footer>
+  <p><a href="index.html">Back to the research homepage</a></p>
   <p>&copy; 2026 Cédric Caruzzo</p>
 </footer>
 
