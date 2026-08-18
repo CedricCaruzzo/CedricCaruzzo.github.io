@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A research program by Cedric Caruzzo and collaborators on measuring MoE routing changes from gate movement to residual exposure, correspondence geometry, and behavioral consequence.">
+  <link rel="canonical" href="https://cedriccaruzzo.github.io/blog/moe-routing/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="MoE Routing: From Movement to Behavioral Consequence">
+  <meta property="og:description" content="A measurement ladder for mixture-of-experts routing changes: decompose, quantify exposure, diagnose correspondence, and verify behavior.">
+  <meta property="og:image" content="https://cedriccaruzzo.github.io/img/proj_moe_routing/program-hero.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <title>MoE Routing: From Movement to Behavioral Consequence</title>
+</head>
+<body>
+
+  <a href="../../blog.html" class="top-back">&larr; Back to Projects &amp; Writing Hub</a>
+
+  <header class="paper-header program-overview-header">
+    <h1>MoE Routing: From Movement to Behavioral Consequence</h1>
+  </header>
+
+  <div class="tldr">
+    <p><strong>TL;DR.</strong> A router can change without telling us how much of that change reaches the model's residual stream, which expert-output directions receive the moved mass, or whether the final behavior changes at all. This program builds that missing measurement ladder. The aim is not to find one more routing score; it is to separate the questions that routing diagnostics often collapse.</p>
+  </div>
+
+  <figure>
+    <div class="program-hero">
+      <img src="../../img/proj_moe_routing/program-hero.svg" alt="Research-program diagram connecting MoE routing change, residual exposure, correspondence geometry, and behavioral verification">
+    </div>
+    <figcaption>The program separates four questions that routing statistics often collapse: what moved, how much propagated, where the mass landed, and whether behavior changed.</figcaption>
+  </figure>
+
+  <div class="insight-box">
+    <h4>Program thesis</h4>
+    <p>Use router divergence to locate change, residual exposure to quantify propagation, correspondence geometry to diagnose where moved mass lands, and behavioral intervention to establish consequence.</p>
+  </div>
+
+  <section>
+    <h2>Two complementary studies</h2>
+    <p>
+      Both studies compare two forward passes of the same MoE with the same frozen weights: a demonstration-conditioned teacher and a query-only student. They share the experimental backbone, but their primary estimands are deliberately distinct.
+    </p>
+
+    <div class="study-grid">
+      <a class="study-card" href="routing-divergence.html">
+        <img src="../../img/proj_moe_routing/routing-divergence-hero.svg" alt="Two same-weight MoE passes decomposed into routing and content terms before residual exposure">
+        <div class="study-card-body">
+          <div class="eyebrow">Residual exposure study &middot; arXiv:2608.15787</div>
+          <h3>Routing Divergence Is Not Evidence of Behavioral Influence</h3>
+          <p>An exact routing/content decomposition tracks a same-weight routing mismatch from the routed block into the residual stream, then tests its effect with causal patches.</p>
+          <div class="cta">Read the project page &rarr;</div>
+        </div>
+      </a>
+
+      <a class="study-card" href="expert-directions.html">
+        <img src="../../img/proj_moe_routing/expert-directions-hero.svg" alt="Moved MoE gate mass aligned with expert-output directions and compared with an exact relabeling reference">
+        <div class="study-card-body">
+          <div class="eyebrow">Correspondence study &middot; Workshop paper under review</div>
+          <h3>Which Expert Directions Receive Moved Gate Mass?</h3>
+          <p>An exact conditional reference asks whether observed gate movement aligns unusually with captured expert-output directions, then tests whether that geometry allocates behavioral measurement.</p>
+          <div class="cta">Read the project page &rarr;</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>The measurement ladder</h2>
+    <div class="fig-shell">
+      <div class="flow-grid">
+        <div class="flow-card">
+          <div class="step">Question 1</div>
+          <h4>What changed?</h4>
+          <p>Separate gate-induced routing mismatch from the dense-like content shift created by changed conditioning.</p>
+        </div>
+        <div class="flow-card">
+          <div class="step">Question 2</div>
+          <h4>Where did it propagate?</h4>
+          <p>Measure the routing term relative to the routed block and to the residual stream instead of treating gate movement as influence.</p>
+        </div>
+        <div class="flow-card">
+          <div class="step">Question 3</div>
+          <h4>Did behavior change?</h4>
+          <p>Use geometry as a diagnostic and a behavioral intervention as the evidence when the downstream decision matters.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Program roadmap</h2>
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <h3>Decompose and trace the mismatch</h3>
+        <p>The residual-exposure study isolates the gate-change component and follows it through the block, backbone, and output.</p>
+      </div>
+      <div class="roadmap-item">
+        <h3>Characterize expert correspondence</h3>
+        <p>The correspondence study conditions on captured expert outputs and intact gate pairs to ask where moved mass lands.</p>
+      </div>
+      <div class="roadmap-item">
+        <h3>Allocate expensive behavioral audits</h3>
+        <p>An ongoing challenge formulation asks which layers and routing changes are worth measuring when interventions have unequal cost.</p>
+      </div>
+      <div class="roadmap-item future">
+        <h3>Integrate the ladder</h3>
+        <p>Future main-conference work will connect these pieces into a broader account. Details will be added when that study is ready to be public.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What the program does not claim</h2>
+    <p>
+      The current results concern same-weight, conditioning-induced routing changes. They do not yet establish what happens across accumulated optimization, separately parameterized teachers, reinforcement-learning trajectories, or deployment-scale task outcomes. The studies also show why a single scalar proxy is unlikely to be enough: exposure does not order every behavioral effect, and correspondence geometry reverses as an allocator across checkpoints.
+    </p>
+  </section>
+
+  <a href="../../blog-academic.html" class="bottom-back">&larr; Back to Academic Projects</a>
+
+</body>
+</html>

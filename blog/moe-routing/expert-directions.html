@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Project page for Which Expert Directions Receive Moved Gate Mass? by Cedric Caruzzo, Donggeun Yoo, and Tae Soo Kim.">
+  <link rel="canonical" href="https://cedriccaruzzo.github.io/blog/moe-routing/expert-directions.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Which Expert Directions Receive Moved Gate Mass?">
+  <meta property="og:description" content="An exact correspondence reference for MoE routing changes, its capacity-utilization factorization, and an honest behavioral allocation test.">
+  <meta property="og:image" content="https://cedriccaruzzo.github.io/img/proj_moe_routing/expert-directions-hero.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <title>Which Expert Directions Receive Moved Gate Mass?</title>
+</head>
+<body>
+
+  <a href="../../blog.html" class="top-back">&larr; Back to Projects &amp; Writing Hub</a>
+
+  <header class="paper-header">
+    <h1>Which Expert Directions Receive Moved Gate Mass? An Exact Correspondence Reference for MoE Routing Changes</h1>
+    <p class="authors">
+      <a href="https://cedriccaruzzo.github.io/" target="_blank" rel="noopener">C&eacute;dric Caruzzo</a>,
+      <a href="https://dgyoo.github.io/" target="_blank" rel="noopener">Donggeun Yoo</a>,
+      <a href="https://taesoo-kim.github.io/" target="_blank" rel="noopener">Tae Soo Kim</a>
+    </p>
+    <p class="affil">Lunit &middot; Workshop paper under review, 2026</p>
+    <p class="paper-links">
+      <a href="index.html">Research program</a>
+      <a href="routing-divergence.html">Companion study</a>
+    </p>
+  </header>
+
+  <div class="tldr">
+    <p><strong>TL;DR.</strong> Gate-space metrics tell us how much routing mass moved, not which expert-output directions received it. We define an exact conditional reference that preserves the captured expert outputs, expert union, and intact before/after gate pairs while relabeling their correspondence. Its centered ratio factors as spectral capacity times directional utilization. Most layers lie below the reference mean, but a few aligned layers dominate checkpoint averages. A preregistered geometry-based allocator then reverses across checkpoints. The geometry is a fast diagnostic, not a model-agnostic shortcut to behavioral importance.</p>
+  </div>
+
+  <aside class="program-banner">
+    <div class="program-kicker">Research program &middot; MoE routing and behavioral consequence</div>
+    <h3>One study in a shared measurement ladder</h3>
+    <p>The companion exposure study asks how much routing mismatch reaches the residual stream. This study asks which expert-output directions receive the moved gate mass.</p>
+    <nav class="program-nav" aria-label="MoE research program">
+      <a href="index.html">Program overview</a>
+      <a href="routing-divergence.html">Residual exposure</a>
+      <a href="expert-directions.html" aria-current="page">Expert correspondence</a>
+    </nav>
+  </aside>
+
+  <section>
+    <h2>The same gate movement can mean opposite things</h2>
+    <p>
+      Suppose two experts receive equal and opposite gate changes: one gains mass <em>a</em>, the other loses <em>a</em>. A router-only metric sees the same displacement in every case. The output perturbation, however, depends on the expert vectors receiving that displacement.
+    </p>
+
+    <div class="equation">A = a(f1 - f2)</div>
+
+    <p>Switch the expert configuration; the gate movement stays fixed.</p>
+
+    <figure>
+      <div class="fig-shell">
+        <div class="toggle-row" aria-label="Expert direction example">
+          <button type="button" id="case-cancel" class="active" aria-pressed="true" aria-controls="case-panel" onclick="showCase('cancel')">Experts agree</button>
+          <button type="button" id="case-amplify" aria-pressed="false" aria-controls="case-panel" onclick="showCase('amplify')">Experts oppose</button>
+        </div>
+        <div id="case-panel" class="case-grid" aria-live="polite" aria-atomic="true">
+          <div style="padding:18px;border:1px solid #cbd5e1;border-radius:11px;background:#fff;text-align:center;">
+            <div style="color:var(--routing);font-size:.74em;font-weight:800;letter-spacing:.08em;text-transform:uppercase;">Gate change</div>
+            <div style="margin-top:7px;color:var(--ink);font-size:1.3em;font-weight:800;">(+a, -a)</div>
+            <div style="margin-top:4px;color:var(--muted);font-size:.86em;">identical in both cases</div>
+          </div>
+          <div style="color:var(--program);font-size:1.7em;font-weight:800;">&times;</div>
+          <div id="case-result" style="padding:18px;border:2px solid var(--success);border-radius:11px;background:#edf9f5;text-align:center;transition:all .25s ease;">
+            <div id="case-label" style="color:var(--success);font-size:.74em;font-weight:800;letter-spacing:.08em;text-transform:uppercase;">f1 = f2</div>
+            <div id="case-value" style="margin-top:7px;color:var(--ink);font-size:1.3em;font-weight:800;">A = 0</div>
+            <div id="case-copy" style="margin-top:4px;color:var(--muted);font-size:.86em;">The moved mass cancels exactly.</div>
+          </div>
+        </div>
+      </div>
+      <figcaption>No statistic of the gate displacement alone can distinguish zero output change from maximal amplification. Correspondence between gate movement and expert-output direction is the missing object.</figcaption>
+    </figure>
+
+    <script>
+    function showCase(which) {
+      var cancel = document.getElementById('case-cancel');
+      var amplify = document.getElementById('case-amplify');
+      var result = document.getElementById('case-result');
+      var label = document.getElementById('case-label');
+      var value = document.getElementById('case-value');
+      var copy = document.getElementById('case-copy');
+      cancel.className = which === 'cancel' ? 'active' : '';
+      amplify.className = which === 'amplify' ? 'active' : '';
+      cancel.setAttribute('aria-pressed', which === 'cancel' ? 'true' : 'false');
+      amplify.setAttribute('aria-pressed', which === 'amplify' ? 'true' : 'false');
+      if (which === 'cancel') {
+        result.style.borderColor = 'var(--success)'; result.style.background = '#edf9f5';
+        label.style.color = 'var(--success)'; label.textContent = 'f1 = f2';
+        value.textContent = 'A = 0'; copy.textContent = 'The moved mass cancels exactly.';
+      } else {
+        result.style.borderColor = 'var(--direction)'; result.style.background = 'var(--direction-soft)';
+        label.style.color = 'var(--direction)'; label.textContent = 'f2 = -f1';
+        value.textContent = '|A| = 2|a||f1|'; copy.textContent = 'The same gate movement is maximally amplified.';
+      }
+    }
+    </script>
+  </section>
+
+  <section>
+    <h2>An exact reference for expert correspondence</h2>
+    <p>
+      The experiment replays one generated continuation under query-only and gold-conditioned contexts. At each token and layer, it captures the student expert outputs and the teacher/student gate pairs over their observed expert union. The reference then relabels the intact gate pairs across those fixed expert-output columns.
+    </p>
+
+    <figure>
+      <div class="fig-shell">
+        <div class="flow-grid">
+          <div class="flow-card">
+            <div class="step">Condition</div>
+            <h4>Hold the evidence fixed</h4>
+            <p>Keep the generated tokens, captured student expert outputs, expert union, sparsity, overlap, total mass, and intact before/after gate pairs.</p>
+          </div>
+          <div class="flow-card">
+            <div class="step">Relabel</div>
+            <h4>Change only correspondence</h4>
+            <p>Uniformly permute which expert-output column receives each intact gate pair. The resulting assignments need not be executable routes.</p>
+          </div>
+          <div class="flow-card">
+            <div class="step">Compare</div>
+            <h4>Compute the orbit mean</h4>
+            <p>An analytic second moment gives the exact conditional reference in O(dm) time after capture, without Monte Carlo reruns.</p>
+          </div>
+        </div>
+      </div>
+      <figcaption>This is a conditional attribution reference, not a route generator or a claim that experts are exchangeable.</figcaption>
+    </figure>
+
+    <p>
+      The centered correspondence ratio compares the observed gate-to-expert alignment with the mean alignment over that relabeling orbit. A value below one means below the conditional mean; it does not mean rare, harmless, or behaviorally irrelevant.
+    </p>
+  </section>
+
+  <section>
+    <h2>Capacity is not enough; the direction must use it</h2>
+    <p>
+      The centered ratio factors exactly into two interpretable terms. Spectral capacity describes how strongly the captured expert outputs could amplify a centered gate direction. Directional utilization measures how much of that available capacity the observed movement actually uses.
+    </p>
+
+    <div class="equation">R<sub>C</sub> = &Lambda; &times; U &nbsp;&nbsp; (spectral capacity &times; directional utilization)</div>
+
+    <div class="stat-strip">
+      <div class="stat-tile">
+        <div class="num">127 / 141</div>
+        <div class="label">layers below the conditional correspondence-orbit mean across five informative checkpoints</div>
+      </div>
+      <div class="stat-tile">
+        <div class="num">23 / 26</div>
+        <div class="label">DeepSeek layers below one even though the checkpoint mean is above one</div>
+      </div>
+      <div class="stat-tile">
+        <div class="num">28.3-29.3&times;</div>
+        <div class="label">speedup of the exact calculation over 64-sample Monte Carlo after activation capture</div>
+      </div>
+    </div>
+
+    <p>
+      DeepSeek makes the sparse-tail problem vivid. Its equal-layer mean is 1.374 even though 23 of 26 layers lie below one. A few aligned layers dominate the checkpoint summary. The factorization explains why: capacity amplifies only when the realized gate direction uses it.
+    </p>
+  </section>
+
+  <section>
+    <h2>The preregistered allocator reverses</h2>
+    <p>
+      A useful diagnostic does not automatically make a useful allocator. We froze a rule that selected the layer with maximum centered correspondence ratio and compared it with a high-capacity, low-ratio control. Selection used 200 prompts; evaluation used a disjoint 400-prompt pool and a complete 42-layer census across OLMoE and DeepSeek.
+    </p>
+
+    <figure>
+      <div class="fig-shell">
+        <div class="contrast-guide">
+          <span>favors comparator</span><span>favors R<sub>C</sub> guide</span>
+        </div>
+        <div class="contrast-chart">
+          <div class="contrast-row">
+            <div class="contrast-label">OLMoE</div>
+            <div class="contrast-axis"><span class="contrast-marker" style="left:80.1%;background:var(--success);"></span></div>
+            <div class="contrast-value">+0.904 [0.395, 1.432]</div>
+          </div>
+          <div class="contrast-row">
+            <div class="contrast-label">DeepSeek</div>
+            <div class="contrast-axis"><span class="contrast-marker" style="left:4.9%;background:var(--direction);"></span></div>
+            <div class="contrast-value">-1.354 [-1.643, -1.093]</div>
+          </div>
+          <div class="contrast-row">
+            <div class="contrast-label">Equal-model mean</div>
+            <div class="contrast-axis"><span class="contrast-marker" style="left:42.5%;background:var(--program);"></span></div>
+            <div class="contrast-value">-0.225 [-0.524, 0.065]</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;color:var(--muted);font-size:.75em;text-align:center;">Correspondence-specific behavioral lift: guided layer minus frozen control (95% intervals)</div>
+      </div>
+      <figcaption>The sole primary required both checkpoint contrasts to be positive and the equal-model mean's lower bound to exceed zero. It failed. The effects reverse rather than merely shrinking toward zero.</figcaption>
+    </figure>
+
+    <p>
+      The failure mechanism replicates on a disjoint MATH census. Capacity consistently enlarges the relabeling reference and correlates negatively with held-out lift, while utilization correlates positively. Their product is checkpoint-unstable. Maximizing utilization alone also selects no oracle. The factorization diagnoses the reversal; it does not rescue zero-shot allocation.
+    </p>
+
+    <div class="insight-box">
+      <h3>Honest negative result</h3>
+      <p>The exact orbit answers where moved gate mass lands. It does not provide a checkpoint-independent ranking of which layers matter behaviorally.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>What survives is behavioral calibration</h2>
+    <p>
+      A more promising signal appears within the same checkpoint across related tasks. Full per-layer behavioral profiles correlate across GSM8K and MATH at Spearman 0.70 for OLMoE and 0.85 for DeepSeek. Using a costed prior-task census to select a target-task layer gets close to the target-task oracle without any target-task selector forwards.
+    </p>
+
+    <div class="stat-strip">
+      <div class="stat-tile">
+        <div class="num">0.70 / 0.85</div>
+        <div class="label">cross-task rank correlation of held-out layer profiles for OLMoE / DeepSeek</div>
+      </div>
+      <div class="stat-tile">
+        <div class="num">0.693 / 0.713</div>
+        <div class="label">prior-task selection versus oracle value in OLMoE</div>
+      </div>
+      <div class="stat-tile">
+        <div class="num">1.006 / 1.049</div>
+        <div class="label">prior-task selection versus oracle value in DeepSeek</div>
+      </div>
+    </div>
+
+    <p>
+      This is descriptive evidence from two tasks and two anchor checkpoints, not a universal transfer theorem. It nevertheless changes the engineering hypothesis: amortize one checkpoint-level behavioral calibration across related tasks, then verify the transferred candidates.
+    </p>
+  </section>
+
+  <section>
+    <h2>A provisional measurement protocol</h2>
+    <div class="fig-shell">
+      <div class="flow-grid">
+        <div class="flow-card">
+          <div class="step">Filter</div>
+          <h4>Start with cheap routing summaries</h4>
+          <p>Use overlap, variation, or related gate statistics to locate where routing changed, without treating them as functional evidence.</p>
+        </div>
+        <div class="flow-card">
+          <div class="step">Diagnose</div>
+          <h4>Compute the exact orbit</h4>
+          <p>Once expert outputs are captured, use the correspondence reference to explain whether moved mass aligns unusually with available directions.</p>
+        </div>
+        <div class="flow-card">
+          <div class="step">Verify</div>
+          <h4>Calibrate and intervene</h4>
+          <p>Acquire a behavioral layer profile when the cost is justified, transfer a shortlist only within a calibrated checkpoint, and test finalists directly.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="solution-box">
+      <h3>Practical lead</h3>
+      <p>Geometry narrows and explains the search. Behavioral calibration decides where consequence actually lies.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Scope and limitations</h2>
+    <p>
+      Relabeled assignments are a conditional attribution reference and need not be executable routes. The orbit does not test whether the original expert union was well chosen. The behavioral allocation study covers two anchor checkpoints, one primary task, one perturbation family, and a descriptive two-task transfer analysis. It is not causal mediation evidence or a deployment guarantee, and a new checkpoint still requires calibration.
+    </p>
+    <div class="quiet-note">
+      <p><strong>Status note.</strong> This page describes a workshop paper under review. Venue and paper links will be updated after the review process permits a stable public reference.</p>
+    </div>
+
+    <h3>Citation</h3>
+    <div class="bibtex-block">
+      <div class="bibtex-head">
+        <span>BibTeX</span>
+        <button type="button" onclick="copyBibtex()" id="bibtex-btn">Copy</button>
+      </div>
+      <pre id="bibtex-src">@unpublished{caruzzo2026expertdirections,
+  title={Which Expert Directions Receive Moved Gate Mass? An Exact Correspondence Reference for MoE Routing Changes},
+  author={Caruzzo, Cedric and Yoo, Donggeun and Kim, Tae Soo},
+  note={Workshop paper under review},
+  year={2026}
+}</pre>
+    </div>
+  </section>
+
+  <a href="index.html" class="bottom-back">&larr; Back to the MoE Routing research program</a>
+
+  <script>
+  function copyBibtex() {
+    var text = document.getElementById('bibtex-src').innerText;
+    navigator.clipboard.writeText(text).then(function () {
+      var button = document.getElementById('bibtex-btn');
+      button.textContent = 'Copied';
+      setTimeout(function () { button.textContent = 'Copy'; }, 1600);
+    });
+  }
+  </script>
+</body>
+</html>
