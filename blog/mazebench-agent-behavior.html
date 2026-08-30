@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>A Maze as a Microscope: Watching a Local Agent Stop Learning</title>
+  <meta name="description" content="What 1,021 MazeBench decisions taught me about belief inertia, representation, memory, and long-horizon language-model agents.">
+  <link rel="canonical" href="https://cedriccaruzzo.github.io/blog/mazebench-agent-behavior.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="A Maze as a Microscope: Watching a Local Agent Stop Learning">
+  <meta property="og:description" content="What 1,021 MazeBench decisions taught me about belief inertia, representation, memory, and long-horizon language-model agents.">
+  <meta property="og:image" content="https://cedriccaruzzo.github.io/img/mazebench/control-center-qwen.png">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <style>
+    :root {
+      --ink: #17201c;
+      --muted: #66736c;
+      --paper: #fbfcfa;
+      --panel: #0b120f;
+      --panel-2: #111b16;
+      --line: #dfe7e1;
+      --lime: #bff45a;
+      --cyan: #68ddd5;
+      --orange: #ffad62;
+      --red: #ff746f;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--paper); }
+    body {
+      max-width: 980px;
+      margin: 0 auto;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.72;
+    }
+    main, .site-nav { width: min(100% - 36px, 980px); margin-inline: auto; }
+    .site-nav { padding: 28px 0 10px; font-size: .92rem; }
+    .site-nav a { color: #386554; text-decoration: none; font-weight: 600; }
+    .site-nav a:hover { text-decoration: underline; }
+
+    .hero { padding: 64px 0 42px; max-width: 900px; }
+    .eyebrow, .figure-label, .mini-label {
+      font: 600 .74rem/1.2 "JetBrains Mono", monospace;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: #54826c;
+    }
+    h1 { font-size: clamp(2.45rem, 7vw, 5.35rem); line-height: .99; letter-spacing: -.055em; margin: 18px 0 26px; }
+    .dek { font-size: clamp(1.12rem, 2.4vw, 1.42rem); line-height: 1.55; color: #455149; max-width: 760px; margin: 0; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 28px; color: var(--muted); font-size: .9rem; }
+    .meta code { color: #385a4b; font-family: "JetBrains Mono", monospace; }
+
+    article { max-width: 760px; margin: 0 auto; }
+    article > p, article > ul { font-size: 1.08rem; }
+    article h2 { font-size: clamp(1.72rem, 4vw, 2.35rem); line-height: 1.15; letter-spacing: -.035em; margin: 3.1em 0 .8em; }
+    article h3 { font-size: 1.25rem; line-height: 1.3; margin: 2.2em 0 .55em; }
+    article a { color: #18785a; font-weight: 600; text-underline-offset: 3px; }
+    article code { font-family: "JetBrains Mono", monospace; font-size: .9em; background: #edf2ee; padding: .12em .35em; border-radius: 4px; }
+    article li { margin-bottom: .55em; }
+
+    .wide { width: min(1120px, calc(100vw - 28px)); margin-left: 50%; transform: translateX(-50%); }
+    figure { margin-top: 42px; margin-bottom: 42px; }
+    figure img { display: block; width: 100%; border-radius: 14px; border: 1px solid #1d2c24; box-shadow: 0 24px 70px rgba(15, 31, 23, .17); }
+    figcaption { color: var(--muted); font-size: .88rem; line-height: 1.5; margin-top: 12px; }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #dfe7e1; border: 1px solid #dfe7e1; border-radius: 13px; overflow: hidden; margin: 38px 0; }
+    .stat { background: white; padding: 22px 18px; }
+    .stat strong { display: block; font-size: 1.9rem; letter-spacing: -.04em; line-height: 1.15; }
+    .stat span { display: block; color: var(--muted); font-size: .78rem; margin-top: 6px; }
+
+    .note { border-left: 4px solid var(--lime); background: #f1f7ea; padding: 18px 22px; margin: 30px 0; border-radius: 0 9px 9px 0; }
+    .note p { margin: 0; font-size: .98rem; }
+    .quote { font-size: 1.34rem; line-height: 1.48; letter-spacing: -.015em; border-left: 3px solid #90a49a; margin: 34px 0; padding: 6px 0 6px 24px; color: #36473f; }
+
+    .lab {
+      background: var(--panel);
+      color: #e7eee9;
+      border: 1px solid #203027;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 65px rgba(9, 24, 16, .18);
+      margin-top: 42px;
+      margin-bottom: 42px;
+    }
+    .lab-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; padding: 23px 26px; border-bottom: 1px solid #223129; }
+    .lab-header h3 { color: white; margin: 5px 0 0; font-size: 1.18rem; }
+    .lab-header .figure-label { color: #799387; }
+    .lab-badge { font: 500 .72rem "JetBrains Mono", monospace; color: #9eb0a7; white-space: nowrap; padding-top: 7px; }
+    .lab-grid { display: grid; grid-template-columns: minmax(330px, 1.1fr) minmax(300px, .9fr); }
+    .map-panel { padding: 24px; border-right: 1px solid #223129; }
+    canvas { width: 100%; height: auto; display: block; }
+    .trace-panel { min-height: 440px; display: flex; flex-direction: column; }
+    .trace-tabs { display: flex; gap: 8px; padding: 20px 20px 0; flex-wrap: wrap; }
+    .trace-tabs button, .mode-button {
+      border: 1px solid #31443a;
+      background: #111b16;
+      color: #b7c4bd;
+      border-radius: 7px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font: 500 .72rem "JetBrains Mono", monospace;
+    }
+    .trace-tabs button.active, .mode-button.active { color: #09110d; background: var(--lime); border-color: var(--lime); }
+    .trace-copy { padding: 22px 22px 18px; flex: 1; }
+    .turn-line { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 18px; }
+    .turn-line strong { color: var(--lime); font: 600 .9rem "JetBrains Mono", monospace; }
+    .action-pill { color: #07100c; background: var(--cyan); border-radius: 99px; padding: 5px 10px; font: 600 .72rem "JetBrains Mono", monospace; }
+    .reasoning { color: #d3ddd7; font-size: .96rem; line-height: 1.65; min-height: 145px; }
+    .reasoning::before { content: "MODEL REASONING"; display: block; color: #6f897c; font: 600 .69rem "JetBrains Mono", monospace; letter-spacing: .12em; margin-bottom: 10px; }
+    .environment { border-top: 1px solid #223129; padding-top: 16px; margin-top: 18px; color: #91a49a; font: .76rem/1.55 "JetBrains Mono", monospace; }
+    .environment b { color: var(--orange); }
+    .timeline-control { padding: 17px 22px 22px; border-top: 1px solid #223129; }
+    .timeline-control input { width: 100%; accent-color: var(--lime); }
+    .timeline-labels { display: flex; justify-content: space-between; color: #708479; font: .68rem "JetBrains Mono", monospace; margin-top: 5px; }
+    .map-legend { display: flex; gap: 16px; flex-wrap: wrap; color: #84988d; font: .68rem "JetBrains Mono", monospace; margin-top: 12px; }
+    .key { display: inline-flex; align-items: center; gap: 6px; }
+    .key::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--key-color); }
+
+    .chart-wrap { padding: 24px 24px 16px; }
+    .chart-controls { display: flex; gap: 9px; margin-bottom: 14px; }
+    .chart-note { color: #81958a; font-size: .78rem; margin: 12px 0 0; }
+
+    .loop { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 34px 0; }
+    .loop-step { position: relative; border: 1px solid var(--line); background: white; border-radius: 11px; padding: 18px; min-height: 145px; }
+    .loop-step:not(:last-child)::after { content: "→"; position: absolute; right: -18px; top: 50%; color: #75a18c; z-index: 2; font-size: 1.25rem; }
+    .loop-step b { display: block; font: 600 .72rem "JetBrains Mono", monospace; color: #4c8268; margin-bottom: 10px; }
+    .loop-step span { font-size: .9rem; color: #53625a; line-height: 1.45; }
+
+    .conditions { display: block; width: 100%; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: 30px 0; font-size: .9rem; }
+    .conditions th, .conditions td { text-align: left; border-bottom: 1px solid var(--line); padding: 13px 10px; vertical-align: top; }
+    .conditions th { color: #52635a; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; }
+    .conditions td:first-child { font-family: "JetBrains Mono", monospace; font-size: .78rem; color: #3e6e58; }
+
+    .closing { background: #eef5ef; border-radius: 14px; padding: 26px 30px; margin: 48px 0; }
+    .closing p:last-child { margin-bottom: 0; }
+    footer { border-top: 1px solid var(--line); padding: 30px 0 50px; margin-top: 70px; color: var(--muted); font-size: .85rem; }
+
+    @media (max-width: 780px) {
+      .hero { padding-top: 38px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .lab-grid { grid-template-columns: 1fr; }
+      .map-panel { border-right: 0; border-bottom: 1px solid #223129; }
+      .loop { grid-template-columns: 1fr 1fr; }
+      .loop-step:nth-child(2)::after { display: none; }
+    }
+    @media (max-width: 480px) {
+      main, .site-nav { width: min(100% - 24px, 980px); }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .stat { padding: 18px 14px; }
+      .stat strong { font-size: 1.55rem; }
+      .lab-header { display: block; }
+      .lab-badge { display: block; margin-top: 7px; }
+      .map-panel { padding: 14px; }
+      .loop { grid-template-columns: 1fr; }
+      .loop-step::after { display: none; }
+      .conditions { font-size: .78rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav"><a href="../blog.html">&larr; Projects &amp; Writing</a></nav>
+  <main>
+    <header class="hero">
+      <div class="eyebrow">Research notebook · local agents · August 2026</div>
+      <h1>A maze as a microscope</h1>
+      <p class="dek">I watched a local 27B model take 1,021 actions in MazeBench. It did not simply get lost. It formed theories, contradicted them, recovered, forgot, and sometimes preserved the wrong idea through compaction. That was much more interesting.</p>
+      <div class="meta">
+        <span>Cédric Caruzzo</span>
+        <span><code>Qwen3.8-27B · UD-IQ4_XS</code></span>
+        <span>Mac Mini M4 Pro · 24 GB</span>
+      </div>
+    </header>
+
+    <article>
+      <p>I started this project because I wanted to run <a href="https://mazebench.com/">MazeBench</a> locally. Very quickly, running it was no longer enough. I wanted to see what the agent saw, what it believed, why it chose an action, and what changed after the environment answered.</p>
+
+      <p>So I built a local Control Center around the benchmark. It launches trials, archives every interaction, replays movement in the official 3D engine, tracks exploration, and places model reasoning beside the action it produced. I also added explicit context compaction because a long run can outgrow an 81,920-token window long before it finishes.</p>
+
+      <figure class="wide">
+        <img src="../img/mazebench/control-center-qwen.png" alt="MazeBench Control Center showing a completed Qwen run, exploration charts, room coverage, and the combined reasoning and action stream">
+        <figcaption>The Control Center on the completed JSON run. The model reached two rooms in 256 actions. The reasoning and movement stream at the bottom is the part I kept coming back to.</figcaption>
+      </figure>
+
+      <div class="stats">
+        <div class="stat"><strong>1,021</strong><span>recorded action attempts</span></div>
+        <div class="stat"><strong>11</strong><span>archived Qwen runs</span></div>
+        <div class="stat"><strong>91</strong><span>successful compactions</span></div>
+        <div class="stat"><strong>2</strong><span>completed runs</span></div>
+      </div>
+
+      <div class="note"><p><strong>A necessary caveat:</strong> this is an exploratory research notebook, not a leaderboard result. I changed representation, temperature, reasoning budget, prompts, and memory while building the harness. Comparisons below are descriptive. They tell me what to test next, not what has already been proven.</p></div>
+
+      <h2>The first surprising failure was not navigation</h2>
+
+      <p>In the hidden-symbol ASCII condition, the model had to infer the meaning of random characters from interaction. Early in one run, it saw a block of <code>?</code> symbols and made a plausible guess: perhaps those were gems.</p>
+
+      <p>There is nothing strange about the initial hypothesis. The strange part is what happened after repeated evidence against it.</p>
+
+      <div class="quote">“Maybe the ? tiles are not gems at all. Maybe they’re just a visual element. The actual gems might be in other rooms or levels.” <small>Model reasoning, turn 88</small></div>
+
+      <p>That sounds like belief revision. Behaviorally, it was much weaker. The agent repeatedly rediscovered the same doubt, announced a “completely different approach,” and then returned to a narrow movement pattern. By turns 120 to 132, large parts of its reasoning were nearly repeated while its action remained <code>left</code>.</p>
+
+      <section class="lab wide" aria-labelledby="trace-title">
+        <div class="lab-header">
+          <div><div class="figure-label">Interactive trace microscope</div><h3 id="trace-title">Reasoning beside movement</h3></div>
+          <span class="lab-badge" id="traceModeLabel">ASCII · HxI · 136 turns</span>
+        </div>
+        <div class="lab-grid">
+          <div class="map-panel">
+            <canvas id="traceMap" width="720" height="720" aria-label="Movement trace on a 16 by 16 room grid"></canvas>
+            <div class="map-legend">
+              <span class="key" style="--key-color:#68ddd5">movement</span>
+              <span class="key" style="--key-color:#bff45a">selected turn</span>
+              <span class="key" style="--key-color:#ff746f">death</span>
+            </div>
+          </div>
+          <div class="trace-panel">
+            <div class="trace-tabs" id="traceTabs"></div>
+            <div class="trace-copy">
+              <div class="turn-line"><strong id="turnNumber">TURN 80</strong><span class="action-pill" id="turnAction">up</span></div>
+              <div class="reasoning" id="turnReasoning"></div>
+              <div class="environment" id="turnEnvironment"></div>
+            </div>
+            <div class="timeline-control">
+              <input id="traceSlider" type="range" min="0" max="4" value="0" step="1" aria-label="Select an annotated turn">
+              <div class="timeline-labels"><span>first doubt</span><span>repeated loop</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <p>The gap matters. A model can generate the sentence “my hypothesis may be wrong” without reorganizing the policy that follows from that hypothesis. Linguistic self-correction is not necessarily operational self-correction.</p>
+
+      <div class="loop">
+        <div class="loop-step"><b>HYPOTHESIS</b><span>The <code>?</code> block may contain gems.</span></div>
+        <div class="loop-step"><b>ACTION</b><span>Approach it, probe it, and try another side.</span></div>
+        <div class="loop-step"><b>RESULT</b><span>No gem, no passage, and no useful state change.</span></div>
+        <div class="loop-step"><b>NARRATION</b><span>Question the idea, then behave as if it still organizes the world.</span></div>
+      </div>
+
+      <h2>Representation changed the character of the run</h2>
+
+      <p>The ASCII map is exact, but it is visually dense and its symbols must be grounded. MazeBench also provides an official JSON observation mode that exposes typed objects and coordinates. I made that existing mode selectable and auditable in the Control Center. It is still the same game and action interface, but the representational burden is different.</p>
+
+      <p>On the first full corrected JSON run, Qwen crossed from room <code>HxI</code> into <code>HxH</code> at action 67. This was the first time one of my local runs discovered a new room without intervention. The new room immediately exposed an explicitly typed gem at coordinate <code>[1,3,1]</code>.</p>
+
+      <p>It still did not collect it. The run finished all 256 actions with zero gems, accumulated 17 deaths, and eventually plateaued around a familiar corridor. Better state encoding helped exploration, but it did not solve planning, consequence tracking, or recovery.</p>
+
+      <section class="lab wide" aria-labelledby="curve-title">
+        <div class="lab-header">
+          <div><div class="figure-label">Descriptive comparison</div><h3 id="curve-title">Unique positions discovered over time</h3></div>
+          <span class="lab-badge">same model · different conditions</span>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-controls">
+            <button class="mode-button active" data-series="both">both runs</button>
+            <button class="mode-button" data-series="ascii">ASCII only</button>
+            <button class="mode-button" data-series="json">JSON only</button>
+          </div>
+          <canvas id="explorationChart" width="1080" height="470" aria-label="Line chart comparing unique positions discovered in ASCII and JSON runs"></canvas>
+          <p class="chart-note">The vertical green marker is the JSON run’s first room transition at action 67. Compaction boundaries are shown as short ticks along the top. Different settings make this a hypothesis-generating comparison, not an estimate of a JSON treatment effect.</p>
+        </div>
+      </section>
+
+      <table class="conditions">
+        <thead><tr><th>Run</th><th>Observation</th><th>Settings</th><th>Outcome</th></tr></thead>
+        <tbody>
+          <tr><td>20260825-103937</td><td>ASCII, hidden symbols</td><td>temperature 0.7, 1,024 reasoning tokens, generic compaction</td><td>136 actions, 1 room, 55 unique room positions</td></tr>
+          <tr><td>20260827-192543</td><td>JSON, literal names</td><td>temperature 0, 2,048 reasoning tokens, continuation capsule</td><td>256 actions, 2 rooms, 92 unique room positions</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Memory can preserve failure</h2>
+
+      <p>My first intuition was simple: long-horizon agents need better memory. That is true, but incomplete.</p>
+
+      <p>A compaction system has to decide what survives. If it preserves a mistaken object interpretation, a stale coordinate map, or an unproductive plan with high confidence, it gives the mistake a longer life. The summary becomes part of the next context, and the model can treat that compacted text as established history.</p>
+
+      <p>The JSON run used 31 continuation capsules, usually one every eight or nine calls. This kept a 256-action experiment alive inside the available context window. It also made a second problem visible: after action 144, the unique-position curve is almost flat for a long stretch despite continued reasoning and repeated compaction.</p>
+
+      <p>So the useful question is not just “how much can the agent remember?” It is “what does memory make easier to revise?” A good memory should preserve observations and uncertainty separately. It should record failed transitions as evidence, not quietly turn hypotheses into facts.</p>
+
+      <h2>What I think is happening</h2>
+
+      <p>Across these runs, four behaviors stand out:</p>
+      <ul>
+        <li><strong>Belief inertia.</strong> The model can verbalize doubt while an earlier interpretation continues to organize its actions.</li>
+        <li><strong>Action perseveration.</strong> Once a local policy feels coherent, repeated unchanged outcomes do not reliably trigger a strategy change.</li>
+        <li><strong>Representation sensitivity.</strong> Typed coordinates reduce symbol-grounding work and coincide with broader exploration in this small corpus.</li>
+        <li><strong>Memory amplification.</strong> Compaction extends the run, but whatever it selects, correct or incorrect, gains persistence.</li>
+      </ul>
+
+      <p>I originally thought this project might become mostly about long-term memory architecture. The traces changed my mind. The more basic bottleneck may be <em>updating from consequences</em>. If an action predicts movement and the player does not move, that should sharply change the next hypothesis. In these traces, it often changes the prose more than the policy.</p>
+
+      <div class="quote">Long-horizon failure may begin well before the context window fills. It begins when the agent stops treating the environment’s answer as evidence.</div>
+
+      <h2>What this does not show</h2>
+
+      <p>Eleven exploratory runs are enough to find behaviors worth studying. They are not enough to rank models or isolate causes. The best JSON run also had a lower temperature, a larger reasoning budget, a corrected prompt contract, and a different memory system. Any of those could matter.</p>
+
+      <p>The harness is also a hosted, one-command adapter around the official MazeBench environment. It is not the benchmark’s native coding-agent route with shell and tools. I prefer making that boundary explicit because “same maze” does not mean “same agent condition.”</p>
+
+      <h2>The next experiment is much smaller</h2>
+
+      <p>Instead of immediately running another million-token trajectory, I want a controlled diagnostic suite around one question:</p>
+
+      <div class="quote"><strong>How do language-model agents detect and recover from failed state transitions, and how do representation and memory affect that belief revision?</strong></div>
+
+      <p>That suggests shorter paired experiments:</p>
+      <ul>
+        <li>the same room, seed, checkpoint, and action budget;</li>
+        <li>ASCII versus JSON, with everything else fixed;</li>
+        <li>memory off versus a continuation capsule with an explicit uncertainty ledger;</li>
+        <li>controlled contradictions where an expected move fails;</li>
+        <li>metrics for repeated actions, unchanged states, time to abandon a hypothesis, and recovery after contradiction.</li>
+      </ul>
+
+      <p>I would also test more models before adding more machinery. If several models fail at the same transition, the environment or representation may be the culprit. If only the local 27B model collapses, that is evidence for a capability limit. If a small prompt nudge fixes it, then the failure is closer to elicitation. Those are different research stories.</p>
+
+      <div class="closing">
+        <p><strong>The Control Center is becoming its own open-source project.</strong> It is useful beyond this specific Qwen experiment because it makes the whole agent loop inspectable: observation, reasoning, action, environment result, memory event, and replay.</p>
+        <p>You can follow the code in <a href="https://github.com/CedricCaruzzo/mazebench-control-center">mazebench-control-center</a>. The current post is a snapshot of a research process, including the parts that failed. That is exactly why the traces are useful.</p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="site-nav">© 2026 Cédric Caruzzo · Built from locally recorded MazeBench traces.</footer>
+
+  <script>
+    const asciiPath = [["HxI",4,13,0],["HxI",4,13,0],["HxI",4,12,0],["HxI",5,12,0],["HxI",6,12,0],["HxI",7,12,0],["HxI",7,11,0],["HxI",7,10,0],["HxI",8,10,0],["HxI",8,9,0],["HxI",7,9,0],["HxI",7,10,0],["HxI",7,11,0],["HxI",7,12,0],["HxI",8,12,0],["HxI",8,13,0],["HxI",9,13,0],["HxI",10,13,0],["HxI",11,13,0],["HxI",12,13,0],["HxI",13,13,0],["HxI",13,12,0],["HxI",13,12,0],["HxI",12,12,0],["HxI",11,12,0],["HxI",10,12,0],["HxI",10,12,0],["HxI",10,12,0],["HxI",9,12,0],["HxI",9,12,0],["HxI",9,12,0],["HxI",9,12,0],["HxI",8,12,0],["HxI",8,11,0],["HxI",8,10,0],["HxI",8,9,0],["HxI",8,9,0],["HxI",8,9,0],["HxI",8,10,0],["HxI",8,11,0],["HxI",8,12,0],["HxI",8,13,0],["HxI",9,13,0],["HxI",10,13,0],["HxI",11,13,0],["HxI",11,12,0],["HxI",12,12,0],["HxI",13,12,0],["HxI",13,11,0],["HxI",13,10,0],["HxI",13,9,0],["HxI",null,null,1],["HxI",13,9,0],["HxI",12,9,0],["HxI",12,8,0],["HxI",12,7,0],["HxI",12,6,0],["HxI",11,6,0],["HxI",10,6,0],["HxI",9,6,0],["HxI",8,6,0],["HxI",8,5,0],["HxI",7,5,0],["HxI",6,5,0],["HxI",5,5,0],["HxI",4,5,0],["HxI",3,5,0],["HxI",3,5,0],["HxI",3,4,0],["HxI",3,4,0],["HxI",3,5,0],["HxI",3,5,0],["HxI",3,6,0],["HxI",3,6,0],["HxI",3,6,0],["HxI",3,6,0],["HxI",3,5,0],["HxI",3,5,0],["HxI",4,5,0],["HxI",4,5,0],["HxI",4,6,0],["HxI",5,6,0],["HxI",5,5,0],["HxI",5,6,0],["HxI",6,6,0],["HxI",6,5,0],["HxI",6,6,0],["HxI",7,6,0],["HxI",8,6,0],["HxI",9,6,0],["HxI",9,6,0],["HxI",10,6,0],["HxI",10,5,0],["HxI",9,5,0],["HxI",8,5,0],["HxI",7,5,0],["HxI",6,5,0],["HxI",5,5,0],["HxI",4,5,0],["HxI",3,5,0],["HxI",3,5,0],["HxI",3,6,0],["HxI",4,6,0],["HxI",5,6,0],["HxI",6,6,0],["HxI",7,6,0],["HxI",8,6,0],["HxI",9,6,0],["HxI",9,5,0],["HxI",10,5,0],["HxI",10,5,0],["HxI",11,5,0],["HxI",11,4,0],["HxI",11,3,0],["HxI",11,3,0],["HxI",11,2,0],["HxI",12,2,0],["HxI",12,1,0],["HxI",12,2,0],["HxI",11,2,0],["HxI",11,2,0],["HxI",11,1,0],["HxI",11,1,0],["HxI",11,1,0],["HxI",11,2,0],["HxI",11,2,0],["HxI",11,3,0],["HxI",11,3,0],["HxI",11,4,0],["HxI",11,4,0],["HxI",11,5,0],["HxI",10,5,0],["HxI",10,6,0],["HxI",9,6,0],["HxI",8,6,0],["HxI",7,6,0]];
+
+    const traceEvents = [
+      {turn:80, action:"up", reasoning:"The ? gems are still at the left. I’ve confirmed that ? tiles are not walkable. Maybe the ? tiles are not the gems. Maybe they’re just a visual element, and the actual gems are somewhere else on the map.", result:"position (4,5) · no movement · 0 gems · room HxI"},
+      {turn:85, action:"right", reasoning:"I’m going in circles. Let me take a step back and think about this problem differently. The ? tiles are not walkable. Maybe the ? tiles are not gems at all.", result:"position (6,6) · moved · 0 gems · room HxI"},
+      {turn:88, action:"right", reasoning:"Maybe the ? tiles are not gems at all. Maybe they’re just a visual element. The actual gems might be in other rooms or levels. Let me try to explore the rest of the map.", result:"position (7,6) · moved · 0 gems · room HxI"},
+      {turn:120, action:"left", reasoning:"I’ve been exploring this area for a while and I’m not making progress. Let me try a completely different approach. Actually, I just realized something. Maybe the ? tiles are not gems at all.", result:"position (11,2) · moved · 0 gems · room HxI"},
+      {turn:132, action:"left", reasoning:"I’ve been exploring this area for a while and I’m not making progress. Let me try a completely different approach. Actually, I just realized something. Maybe the ? tiles are not gems at all.", result:"position (10,5) · moved · 0 gems · room HxI"}
+    ];
+
+    const asciiSamples = [[1,1],[8,7],[16,12],[24,19],[32,22],[40,23],[48,23],[56,29],[64,37],[72,41],[80,42],[88,46],[96,48],[104,48],[112,49],[120,54],[128,55],[136,55]];
+    const jsonSamples = [[1,1],[8,8],[16,12],[24,13],[32,16],[40,24],[48,32],[56,40],[64,46],[72,54],[80,59],[88,63],[96,65],[104,68],[112,72],[120,74],[128,78],[136,83],[144,85],[152,85],[160,85],[168,85],[176,85],[184,85],[192,85],[200,88],[208,88],[216,88],[224,88],[232,89],[240,92],[248,92],[256,92]];
+    const compactions = [10,17,24,33,42,51,60,68,76,84,92,100,107,116,124,132,141,149,158,166,174,182,189,196,204,212,220,228,236,244,253];
+
+    const mapCanvas = document.getElementById("traceMap");
+    const mapCtx = mapCanvas.getContext("2d");
+    const slider = document.getElementById("traceSlider");
+    const tabs = document.getElementById("traceTabs");
+
+    traceEvents.forEach((event, index) => {
+      const button = document.createElement("button");
+      button.textContent = `turn ${event.turn}`;
+      button.addEventListener("click", () => selectTrace(index));
+      tabs.appendChild(button);
+    });
+
+    function selectTrace(index) {
+      slider.value = index;
+      [...tabs.children].forEach((button, i) => button.classList.toggle("active", i === index));
+      const event = traceEvents[index];
+      document.getElementById("turnNumber").textContent = `TURN ${event.turn}`;
+      document.getElementById("turnAction").textContent = event.action;
+      document.getElementById("turnReasoning").textContent = event.reasoning;
+      document.getElementById("turnEnvironment").innerHTML = `<b>ENVIRONMENT RESULT</b><br>${event.result}`;
+      drawTrace(event.turn);
+    }
+
+    function drawTrace(turn) {
+      const size = mapCanvas.width;
+      const pad = 40;
+      const cell = (size - pad * 2) / 16;
+      mapCtx.clearRect(0, 0, size, size);
+      mapCtx.fillStyle = "#08100c";
+      mapCtx.fillRect(0, 0, size, size);
+      mapCtx.strokeStyle = "#17251d";
+      mapCtx.lineWidth = 1;
+      for (let i = 0; i <= 16; i++) {
+        const v = pad + i * cell;
+        mapCtx.beginPath(); mapCtx.moveTo(v, pad); mapCtx.lineTo(v, size - pad); mapCtx.stroke();
+        mapCtx.beginPath(); mapCtx.moveTo(pad, v); mapCtx.lineTo(size - pad, v); mapCtx.stroke();
+      }
+      mapCtx.fillStyle = "#789084";
+      mapCtx.font = "20px JetBrains Mono";
+      mapCtx.fillText("ROOM HxI", pad, 27);
+
+      mapCtx.strokeStyle = "#68ddd5";
+      mapCtx.lineWidth = 5;
+      mapCtx.lineJoin = "round";
+      mapCtx.lineCap = "round";
+      mapCtx.beginPath();
+      let started = false;
+      asciiPath.slice(0, turn).forEach((point) => {
+        if (point[1] === null) { started = false; return; }
+        const px = pad + (point[1] + .5) * cell;
+        const py = pad + (point[2] + .5) * cell;
+        if (!started) { mapCtx.moveTo(px, py); started = true; } else { mapCtx.lineTo(px, py); }
+      });
+      mapCtx.stroke();
+
+      asciiPath.slice(0, turn).forEach((point) => {
+        if (!point[3]) return;
+        mapCtx.fillStyle = "#ff746f";
+        mapCtx.beginPath(); mapCtx.arc(size - 54, 25, 7, 0, Math.PI * 2); mapCtx.fill();
+      });
+      const point = asciiPath[turn - 1];
+      if (point && point[1] !== null) {
+        const px = pad + (point[1] + .5) * cell;
+        const py = pad + (point[2] + .5) * cell;
+        mapCtx.fillStyle = "#bff45a";
+        mapCtx.shadowColor = "#bff45a"; mapCtx.shadowBlur = 18;
+        mapCtx.beginPath(); mapCtx.arc(px, py, 11, 0, Math.PI * 2); mapCtx.fill();
+        mapCtx.shadowBlur = 0;
+      }
+    }
+
+    slider.addEventListener("input", () => selectTrace(Number(slider.value)));
+    selectTrace(0);
+
+    const chart = document.getElementById("explorationChart");
+    const chartCtx = chart.getContext("2d");
+    let chartMode = "both";
+
+    function drawChart() {
+      const w = chart.width, h = chart.height;
+      const pad = {l:70, r:30, t:48, b:58};
+      chartCtx.clearRect(0, 0, w, h);
+      chartCtx.fillStyle = "#0b120f"; chartCtx.fillRect(0, 0, w, h);
+      const x = t => pad.l + (t / 256) * (w - pad.l - pad.r);
+      const y = v => h - pad.b - (v / 100) * (h - pad.t - pad.b);
+
+      chartCtx.font = "18px JetBrains Mono";
+      chartCtx.textAlign = "right";
+      chartCtx.fillStyle = "#71857a";
+      chartCtx.strokeStyle = "#1c2b23";
+      chartCtx.lineWidth = 1;
+      [0,25,50,75,100].forEach(v => {
+        chartCtx.beginPath(); chartCtx.moveTo(pad.l, y(v)); chartCtx.lineTo(w-pad.r, y(v)); chartCtx.stroke();
+        chartCtx.fillText(v, pad.l-15, y(v)+6);
+      });
+      chartCtx.textAlign = "center";
+      [0,64,128,192,256].forEach(v => chartCtx.fillText(v, x(v), h-20));
+
+      compactions.forEach(t => {
+        chartCtx.strokeStyle = "#3f564a";
+        chartCtx.beginPath(); chartCtx.moveTo(x(t), pad.t-5); chartCtx.lineTo(x(t), pad.t+9); chartCtx.stroke();
+      });
+
+      chartCtx.strokeStyle = "#bff45a";
+      chartCtx.setLineDash([8,8]);
+      chartCtx.beginPath(); chartCtx.moveTo(x(67), pad.t); chartCtx.lineTo(x(67), h-pad.b); chartCtx.stroke();
+      chartCtx.setLineDash([]);
+      chartCtx.fillStyle = "#bff45a"; chartCtx.textAlign = "left"; chartCtx.font = "16px JetBrains Mono";
+      chartCtx.fillText("NEW ROOM · ACTION 67", x(67)+10, pad.t+22);
+
+      function line(data, color, label, offset) {
+        chartCtx.strokeStyle = color; chartCtx.lineWidth = 5; chartCtx.lineJoin = "round";
+        chartCtx.beginPath(); data.forEach((p,i) => i ? chartCtx.lineTo(x(p[0]),y(p[1])) : chartCtx.moveTo(x(p[0]),y(p[1]))); chartCtx.stroke();
+        const last = data[data.length-1];
+        chartCtx.fillStyle = color; chartCtx.textAlign = "right"; chartCtx.font = "18px JetBrains Mono";
+        chartCtx.fillText(label, w-pad.r, y(last[1])+offset);
+      }
+      if (chartMode !== "json") line(asciiSamples, "#ffad62", "ASCII · 55", -10);
+      if (chartMode !== "ascii") line(jsonSamples, "#68ddd5", "JSON · 92", -10);
+    }
+
+    document.querySelectorAll(".mode-button").forEach(button => {
+      button.addEventListener("click", () => {
+        chartMode = button.dataset.series;
+        document.querySelectorAll(".mode-button").forEach(b => b.classList.toggle("active", b === button));
+        drawChart();
+      });
+    });
+    drawChart();
+  </script>
+  <script src="toc.js" defer></script>
+</body>
+</html>
