@@ -6,7 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <title>You Could Have Invented Dr.GRPO Yourself</title>
+  <title>From REINFORCE to Dr.GRPO</title>
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <style>
     body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
@@ -79,8 +79,8 @@
 <body>
 
   <header class="main-header">
-    <h1>You Could Have Invented Dr.GRPO Yourself</h1>
-    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">From REINFORCE to Reasoning Models, One Problem at a Time</p>
+    <h1>From REINFORCE to Dr.GRPO</h1>
+    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">How policy-gradient methods became practical for reasoning models</p>
     <p style="font-size: 0.9em; color: #aaa; text-align: center; margin: 0;">May 2026 &nbsp;·&nbsp; Cédric Caruzzo</p>
   </header>
 
@@ -93,23 +93,11 @@
   <section id="introduction">
 
     <div style="background:#fffbeb; border:1px solid #f59e0b; border-left:5px solid #f59e0b; border-radius:6px; padding:1em 1.4em; margin:0 0 2.4em 0; font-size:0.97em;">
-      <p style="margin:0;"><strong style="color:#92400e;">TL;DR.</strong> A full derivation of modern RL training for language models, walked as a single chain: <code style="background:transparent; font-family:inherit; font-weight:600;">REINFORCE &rarr; Actor-Critic &rarr; GAE &rarr; TRPO &rarr; PPO &rarr; RLHF &rarr; GRPO &rarr; Dr.GRPO</code>. Each algorithm exists because the previous one had a concrete defect. By the end, you understand <em>why</em> every term in a Dr.GRPO loss function is there, and you can read the next paper in this space and predict what kind of move it will make.</p>
+      <p style="margin:0;"><strong style="color:#92400e;">TL;DR.</strong> This post derives the main line of policy-gradient methods used to train language models: <code style="background:transparent; font-family:inherit; font-weight:600;">REINFORCE &rarr; Actor-Critic &rarr; GAE &rarr; TRPO &rarr; PPO &rarr; RLHF &rarr; GRPO &rarr; Dr.GRPO</code>. Each section introduces a limitation and the method that addresses it.</p>
     </div>
 
     <p>
-      In this post, we will see how modern labs train the reasoning capabilities of LLMs and Agents that let them tackle coding, logic puzzles, and math.
-    </p>
-
-    <p>
-      We will build the foundations from the ground up, all the way to Dr.GRPO, with each transition hopefully smooth and intuitive enough to make you think "Ah, yes, obviously."
-    </p>
-
-    <p>
-      Every algorithm here is just the previous one with one broken thing fixed.
-    </p>
-
-    <p>
-      The chain we will walk is REINFORCE (1992) &rarr; Actor-Critic &rarr; GAE &rarr; TRPO &rarr; PPO &rarr; RLHF &rarr; GRPO &rarr; Dr.GRPO (2025). Eight algorithms over three decades, each one introduced as the natural fix to a defect in the previous. You should be comfortable with basic gradients and probability. Everything else is built up as we go.
+      The chain runs from REINFORCE (1992) to Dr.GRPO (2025). Basic gradients and probability are the only prerequisites.
     </p>
 
   </section>
@@ -124,7 +112,7 @@
     <h3>The Problem Setup</h3>
 
     <p>
-      Let's start by laying out the setup and its mathematical formulation.
+      Start with the mathematical setup.
     </p>
 
     <!-- FIGURE: Autoregressive loop -->
@@ -233,10 +221,10 @@
     <div class="math-block">
       $$\tau = (s_0, u_0, \; s_1, u_1, \; \ldots, \; s_{H-1}, u_{H-1})$$
       <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 24px;margin-top:1.2em;font-size:0.92em;color:#555;line-height:1.7;">
-        <span>$s_i$</span>   <span><strong>state</strong> — the prompt plus all tokens generated so far</span>
-        <span>$u_i$</span>   <span><strong>action</strong> — the token sampled at step $i$</span>
-        <span>$\pi_\theta$</span> <span><strong>policy</strong> — the model, with parameters $\theta$</span>
-        <span>$H$</span>    <span><strong>horizon</strong> — the sequence length, ends when the model generates &lt;EOS&gt;</span>
+        <span>$s_i$</span>   <span><strong>state</strong>: the prompt plus all tokens generated so far</span>
+        <span>$u_i$</span>   <span><strong>action</strong>: the token sampled at step $i$</span>
+        <span>$\pi_\theta$</span> <span><strong>policy</strong>: the model, with parameters $\theta$</span>
+        <span>$H$</span>    <span><strong>horizon</strong>: the sequence length, ends when the model generates &lt;EOS&gt;</span>
       </div>
     </div>
 
@@ -257,11 +245,11 @@
     </p>
 
     <p>
-      Now that the setup is formalized, the goal becomes clear: we want a model that takes the best action $u_t$ given a state $s_t$, so it maximizes the reward.
+      The goal is to choose actions $u_t$ from states $s_t$ that maximize expected reward.
     </p>
 
     <p>
-      Let's write that out:
+      Written out:
     </p>
 
     <div class="math-block">
@@ -428,7 +416,7 @@
     })();
     </script>
 
-    <p>Let's compute this gradient step by step.</p>
+    <p>Compute the gradient step by step:</p>
 
     <div class="derivation-block">
       <p><strong>Step 1.</strong> Linearity of differentiation: push the gradient inside the sum. $R(\tau)$ doesn't depend on $\theta$, so it just tags along:</p>
@@ -457,15 +445,15 @@
     </p>
 
     <p>
-      Two things happened in that four-step derivation, and both matter.
+      The derivation gives us two useful properties.
     </p>
 
     <p>
-      <strong>First, we got the expectation back.</strong> That's the whole reason we can train at all: instead of summing over all possible trajectories (intractable), we can now <em>sample</em> from $\pi_\theta$ and average. We'll come back to this in a second.
+      <strong>First, the result is an expectation.</strong> Instead of summing over every possible trajectory, we can sample from $\pi_\theta$ and average.
     </p>
 
     <p>
-      <strong>Second, we replaced $P(\tau;\theta)$ with $\log P(\tau;\theta)$.</strong> This is a huge win for numerical stability. Remember that $P(\tau;\theta)$ is a product of token-level probabilities over the full trajectory:
+      <strong>Second, it replaces $P(\tau;\theta)$ with $\log P(\tau;\theta)$.</strong> This improves numerical stability because trajectory probability is a product of token-level probabilities:
     </p>
 
     <div class="math-block">
@@ -506,7 +494,7 @@
           <div style="font-family:monospace; font-size:0.82em; color:#555; margin-bottom:14px;">P(&tau;) = (0.1)<sup>H</sup></div>
           <div id="prod-val" style="font-size:1.5em; font-weight:700; font-family:monospace; word-break:break-all; transition:color 0.2s; color:#555;"></div>
           <div id="badge-f32" style="display:none; margin-top:10px; background:#fffbeb; border:1px solid #f59e0b; color:#b45309; font-size:0.72em; padding:3px 8px; border-radius:4px; line-height:1.6;">&#9888; Too small for float32</div>
-          <div id="badge-f64" style="display:none; margin-top:10px; background:#fff1f2; border:1px solid #e74c3c; color:#e74c3c; font-size:0.72em; padding:3px 8px; border-radius:4px; line-height:1.6;">&#10007; Underflow &mdash; gradient is exactly zero</div>
+          <div id="badge-f64" style="display:none; margin-top:10px; background:#fff1f2; border:1px solid #e74c3c; color:#e74c3c; font-size:0.72em; padding:3px 8px; border-radius:4px; line-height:1.6;">&#10007; Underflow: gradient is exactly zero</div>
         </div>
 
         <div style="background:#fff; border-radius:8px; padding:18px; border:1px solid #e2e8f0;">
@@ -519,7 +507,7 @@
       </div>
 
       <div style="color:#999; font-size:0.78em; text-align:center; margin-top:14px;">
-        assumes each token probability &asymp; 0.1 &mdash; realistic for large-vocabulary models
+        assumes each token probability &asymp; 0.1, which is realistic for large-vocabulary models
       </div>
 
     </div>
@@ -662,11 +650,11 @@
     <h3>The REINFORCE Estimator</h3>
 
     <p>
-      Now, our model takes the state as input, and predicts the probability over the possible actions. If we dive deeper by decomposing the path as a sequence of state-action pairs:
+      The model maps a state to a distribution over actions. Decompose the trajectory into state-action pairs:
     </p>
 
     <div class="math-block">
-      $$\nabla_\theta \log P(\tau^{(i)};\theta) = \nabla_\theta \log \left[\prod_{t=0}^{H-1} \left(\underbrace{P(s_{t+1}^{(i)} \mid s_t^{(i)}, u_t^{(i)})}_{\text{Bucket 1 — environment}} \cdot \underbrace{\pi_\theta(u_t^{(i)} \mid s_t^{(i)})}_{\text{Bucket 2 — policy}}\right)\right]$$
+      $$\nabla_\theta \log P(\tau^{(i)};\theta) = \nabla_\theta \log \left[\prod_{t=0}^{H-1} \left(\underbrace{P(s_{t+1}^{(i)} \mid s_t^{(i)}, u_t^{(i)})}_{\text{Bucket 1: environment}} \cdot \underbrace{\pi_\theta(u_t^{(i)} \mid s_t^{(i)})}_{\text{Bucket 2: policy}}\right)\right]$$
     </div>
 
     <p>
@@ -677,11 +665,11 @@
       <p>Distribute the log (product becomes a sum):</p>
       $$= \nabla_\theta \left[\,\sum_{t=0}^{H-1} \log P(s_{t+1}^{(i)} \mid s_t^{(i)}, u_t^{(i)}) \;+\; \sum_{t=0}^{H-1} \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)})\right]$$
       <p>Distribute the gradient inside the sum:</p>
-      $$= \underbrace{\sum_{t=0}^{H-1} \nabla_\theta \log P(s_{t+1}^{(i)} \mid s_t^{(i)}, u_t^{(i)})}_{\text{Bucket 1 — environment}} \;+\; \underbrace{\sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)})}_{\text{Bucket 2 — policy}}$$
+      $$= \underbrace{\sum_{t=0}^{H-1} \nabla_\theta \log P(s_{t+1}^{(i)} \mid s_t^{(i)}, u_t^{(i)})}_{\text{Bucket 1: environment}} \;+\; \underbrace{\sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)})}_{\text{Bucket 2: policy}}$$
     </div>
 
     <p>
-      Now, because the first bucket is the probability of transition from the environment, it is independent of $\theta$, which means $\nabla_\theta$ of a constant equals zero. We can then simplify:
+      The environment transition probability is independent of $\theta$, so its gradient is zero:
     </p>
 
     <div class="derivation-block">
@@ -692,7 +680,7 @@
       $$\nabla_\theta \log P(\tau^{(i)};\theta) = \sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)})$$
     </div>
 
-    <p>And rewriting our equation by substitution, transitioning to the $\hat{g}$ estimator notation:</p>
+    <p>Substituting this into the estimator gives:</p>
 
     <div class="math-block">
       $$\boxed{\nabla_\theta U(\theta) \approx \hat{g} \;=\; \frac{1}{N} \sum_{i=1}^{N} \sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)}) \cdot R(\tau^{(i)})}$$
@@ -701,7 +689,7 @@
     <h3>Reward-to-Go</h3>
 
     <p>
-      One might recognise a lurking issue with the reward definition. Look at what $R(\tau^{(i)})$ actually is:
+      The trajectory reward is:
     </p>
 
     <div class="math-block">
@@ -713,7 +701,7 @@
     </p>
 
     <p>
-      So for a given step $t$, we can split the trajectory reward into two parts:
+      For step $t$, split the trajectory reward into past and future terms:
     </p>
 
     <div class="math-block">
@@ -747,9 +735,9 @@
   <section id="baseline">
     <h2>Actor-Critic</h2>
 
-    <p>Imagine an agent playing a game where the goal is to stay alive as long as possible. If the agent learns to run into a corner at the start of the episode (no strategy, no reasoning) it will survive for a while and collect positive reward. Now imagine another agent trying diverse, brilliant strategies that are not yet refined and sometimes get it killed early. Which one should we reward?</p>
+    <p>Suppose one game-playing agent hides in a corner and collects a modest positive reward, while another tries promising but unfinished strategies and sometimes dies early. Raw return rewards the first agent even if its behavior has little long-term value.</p>
 
-    <p>With our current estimator, the corner-runner gets reinforced because it collected reward. The brilliant-but-imprecise agent gets penalised. We have no referential to tell if an outcome is expected or actually brilliant.</p>
+    <p>The estimator needs a reference point that distinguishes an expected outcome from one that is unusually good for the current state.</p>
 
     <p>The fix is to subtract a <strong>baseline</strong> $b(s_t)$ from the reward-to-go. The mathematical key: as long as the baseline only depends on the state and not the specific action taken, subtracting it does not introduce any bias into the gradient in expectation. So we can safely center our estimator:</p>
 
@@ -765,9 +753,9 @@
       $$b(s_t^{(i)}) \;=\; \mathbb{E}\!\left[r_t + r_{t+1} + \cdots + r_{H-1}\right] \;=\; V^\pi(s_t^{(i)})$$
     </div>
 
-    <p>There is a huge computational constraint on this definition: to compute the expected value, we would need to consider every possible trajectory from each state $s_t^{(i)}$, at every timestep. Even with Monte Carlo approximation, this becomes an exponential branching problem, infeasible at scale.</p>
+    <p>Computing this expectation exactly would require considering every future trajectory from every state. The branching cost is infeasible at scale.</p>
 
-    <p>The way to tackle this is to use a model to <strong>approximate</strong> this expectation: a value function parametrized by $\phi$, that directly predicts the expected reward-to-go:</p>
+    <p>Instead, a value function parameterized by $\phi$ approximates the expected reward-to-go:</p>
 
     <div class="math-block">
       $$\underbrace{V_\phi^\pi(s_t^{(i)})}_{\text{value function}} \;\approx\; \mathbb{E}\!\left[r_t + r_{t+1} + \cdots + r_{H-1}\right]$$
@@ -836,19 +824,19 @@
 
     <h3>The Critic as the Average</h3>
 
-    <p>You might be curious if there is any issue with the Critic trying to approximate the Reward-to-Go. What if the Critic becomes a perfect oracle and predicts the exact value every time, completely canceling out the reward?</p>
+    <p>The critic predicts an expectation, not the exact return of each stochastic rollout.</p>
 
-    <p>Well, the great point is that we are working with single stochastic samples at a time, which means very high variance. Given the Critic's objective function is to minimize the MSE against the actual Reward-to-Go, the best way it has to minimize its loss across thousands of random samples is to learn the exact average of the distribution.</p>
+    <p>Training it with mean squared error over many sampled returns makes the optimal prediction their conditional mean.</p>
 
-    <p>Everything locks into place now. By design, we want the Critic to provide a baseline. Because of the random variance of the environment, the Critic cannot do better than predicting the average, which is exactly the baseline we need. Furthermore, this high variance makes it unstable for the Actor to learn without a baseline. But now, we can subtract the Critic's average from the actual Reward-to-Go, allowing the Actor to learn directly from the deviation.</p>
+    <p>That conditional mean is the baseline we need. Subtracting it lets the actor learn from how a sampled return differs from the expected return for that state.</p>
 
     <h3>The Untrained Critic</h3>
 
-    <p>You might point out that the Critic needs to be trained, because at initialization its predictions will just be random noise. And you would be perfectly right.</p>
+    <p>At initialization, the critic's predictions are noisy.</p>
 
-    <p>However, the great twist is that the baseline is strictly state-dependent. Because of this, subtracting the Critic's guess mathematically cannot introduce any bias into the expected learning direction of the Actor. It only affects the variance.</p>
+    <p>As long as the baseline depends on state and not on the sampled action, subtracting it does not bias the actor's expected gradient. It changes the variance.</p>
 
-    <p>At worst, an untrained Critic simply injects extra variance, causing the gradients to be noisy and unstable. This is fairly similar to not using a baseline at all. But as the Critic quickly learns and becomes accurate, it dramatically shrinks that variance and provides a perfectly smooth, centered signal. In other words, a bad Critic cannot teach the Actor the wrong thing, but a good Critic guarantees stable and rapid convergence.</p>
+    <p>An inaccurate critic can add variance, while a better one usually reduces it and centers the learning signal. This does not guarantee smooth or rapid convergence, but it can make updates much less noisy.</p>
 
     <div class="analysis-block">
       <p>There is an interesting circularity here: the Critic is trained to predict its own future value (bootstrapping). The only thing keeping it grounded is the real reward $r_t$ anchoring each update step. Without it, the network would collapse to predicting 0 everywhere, which is always consistent with itself.</p>
@@ -864,16 +852,16 @@
 
 
   <!-- ====================================================== -->
-  <!--  SECTION 5: GAE — SMOOTHING THE ADVANTAGE              -->
+  <!--  SECTION 5: GAE: SMOOTHING THE ADVANTAGE              -->
   <!-- ====================================================== -->
   <section id="gae">
     <h2>GAE</h2>
 
     <h3>The Bias-Variance Problem</h3>
 
-    <p>Something worth pausing on: $\sum_{k=t}^{H-1} r(s_k^{(i)}, u_k^{(i)})$ is the reward-to-go computed on a single sampled trajectory. This is an unbiased estimator of the true expected return, but it comes with very high variance. Every rollout takes a different random path through the environment, so the signal is extremely noisy.</p>
+    <p>The reward-to-go $\sum_{k=t}^{H-1} r(s_k^{(i)}, u_k^{(i)})$ comes from one sampled trajectory. It is unbiased but has high variance because each rollout follows a different path.</p>
 
-    <p>You are surely aware of the bias-variance tradeoff, and you would agree that neither extreme is the answer. Using the raw single-sample return gives us zero bias but high variance. Using the Critic alone gives us low variance but introduces bias, since the Critic is an imperfect approximation that carries its own errors into every update. We need to find a way to balance these.</p>
+    <p>A raw single-sample return has low bias and high variance. Relying on the critic lowers variance but introduces bias from its approximation errors. GAE balances the two.</p>
 
     <p>To set up that balance properly, we first need to introduce one more function.</p>
 
@@ -897,7 +885,7 @@
       $$Q^{\pi,\gamma}(s, u) \;=\; \mathbb{E}\!\left[r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \cdots \;\middle|\; s_t = s,\; u_t = u\right]$$
     </div>
 
-    <p>Now we can plug this back into our gradient estimator. The raw reward-to-go becomes $Q^{\pi,\gamma}$, the Critic baseline becomes $V_\phi^{\pi,\gamma}$, and the difference collapses into a single named quantity: the <strong>Advantage</strong>.</p>
+    <p>Substitute $Q^{\pi,\gamma}$ for reward-to-go and $V_\phi^{\pi,\gamma}$ for the critic baseline. Their difference is the <strong>advantage</strong>.</p>
 
     <div class="math-block">
       $$\hat{g} \;=\; \frac{1}{m} \sum_{i=1}^{m} \sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(i)} \mid s_t^{(i)}) \left(\sum_{k=t}^{H-1} r(s_k^{(i)}, u_k^{(i)}) \;-\; V_\phi^\pi(s_t^{(i)})\right)$$
@@ -984,7 +972,7 @@
 
 
   <!-- ====================================================== -->
-  <!--  SECTION 6: TRPO — THE MATHEMATICAL IDEAL              -->
+  <!--  SECTION 6: TRPO: THE MATHEMATICAL IDEAL              -->
   <!-- ====================================================== -->
   <section id="trpo">
     <h2>TRPO</h2>
@@ -993,7 +981,7 @@
 
     <p>The deeper issue is that policy updates are completely unbounded. The gradient step has no ceiling. If a single rollout happens to return an unusually high or low reward (one lucky or unlucky Monte Carlo draw), the resulting gradient can be enormous, and the update will trash the policy in a single step. There is nothing in the algorithm preventing this.</p>
 
-    <p>On top of that, the framework is extremely inefficient. We collect a full episode, make a single gradient update, then throw the data away and collect again. The reason is subtle but important. Let us look at what our gradient estimator is actually computing.</p>
+    <p>The framework is also inefficient: collect an episode, make one update, discard the data, and repeat. The gradient estimator explains why.</p>
 
     <div class="math-block">
       $$\frac{1}{m}\sum_{k=1}^{m}\sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta(u_t^{(k)} \mid s_t^{(k)}) \left(\hat{Q}^{\pi,\gamma}(s_t^{(k)}, u_t^{(k)}) - V_\phi^{\pi,\gamma}(s_t^{(k)})\right)$$
@@ -1071,10 +1059,10 @@
       var TRUE_E = P_MU;
 
       // Blog palette
-      var C_P    = '#3498db';   // P(x) — blue
-      var C_Q    = '#27ae60';   // Q(x) — green
-      var C_F    = '#e74c3c';   // f(x) — red
-      var C_DOT  = '#27ae60';   // sample dots — green
+      var C_P    = '#3498db';   // P(x): blue
+      var C_Q    = '#27ae60';   // Q(x): green
+      var C_F    = '#e74c3c';   // f(x): red
+      var C_DOT  = '#27ae60';   // sample dots: green
       var C_AXIS = 'rgba(44,62,80,0.2)';
       var C_TEXT = '#2c3e50';
 
@@ -1204,7 +1192,7 @@
           ctx.fillText('IS Estimate:  ' + est.toFixed(3) + '   (n = ' + samples.length + ')', 14, 42);
         } else {
           ctx.fillStyle = '#7f8c8d';
-          ctx.fillText('IS Estimate:  —', 14, 42);
+          ctx.fillText('IS Estimate:  n/a', 14, 42);
         }
       }
 
@@ -1274,7 +1262,7 @@
 
     <p>We just proved something important. We can use this surrogate objective to run gradient-based optimisation on our policy model using data collected from an older version of that same model. The rollout cost is paid once; $\theta$ can then be updated many times against that fixed batch before collecting new data. The on-policy bottleneck is broken.</p>
 
-    <p>However, this rests entirely on the assumption that the old and new policy do not drift too much, that is, the ratio $\frac{\pi_\theta}{\pi_{\theta_\text{old}}}$ stays close to 1. As we saw directly in the Importance-Sampling visualisation, when $P$ and $Q$ diverge, two distinct failure modes appear.</p>
+    <p>This requires the old and new policies to stay close, so $\frac{\pi_\theta}{\pi_{\theta_\text{old}}}$ remains near 1. When they diverge, two failure modes appear.</p>
 
     <h4>Two Failure Modes When the Policy Drifts Too Far</h4>
     <p><strong>1. Importance-Sampling variance explosion.</strong> When the new and old policies differ substantially, the ratio $\frac{\pi_\theta}{\pi_{\theta_\text{old}}}$ can be very large for some state-action pairs and near zero for others. Exactly as we saw with $P$ and $Q$ in the visualisation: a few samples dominate the sum, the gradient estimate becomes extremely noisy, and training destabilises.</p>
@@ -1283,7 +1271,7 @@
 
     <h3>The Constrained Objective</h3>
 
-    <p>The fix is 'simple' in theory. We can turn the "don't drift too far" into a constraint. We still maximize the surrogate objective $U(\theta)$, but we are not allowed to move to a new policy that is "too different" from the old one.</p>
+    <p>TRPO turns “do not drift too far” into a constraint. It maximizes the surrogate objective $U(\theta)$ while limiting the difference from the old policy.</p>
 
     <p>The measure of difference between two policies is the KL divergence, averaged over the states the old policy visits:</p>
 
@@ -1298,7 +1286,7 @@
       $$\text{subject to}\quad \mathbb{E}_{\pi_\text{old}}\!\left[\mathrm{KL}\!\left(\pi_\theta(u_t \!\mid\! s_t)\;\big\|\;\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)\right)\right] \leq \varepsilon$$
     </div>
 
-    <p>We can imagine the policy parameters as a point in a high-dimensional space. The KL constraint draws a bubble around the current policy $\pi_{\theta_\text{old}}$: you are free to move anywhere inside that bubble, but not outside it. TRPO finds the point inside the bubble that maximizes the surrogate objective.</p>
+    <p>In parameter space, the KL constraint defines a trust region around $\pi_{\theta_\text{old}}$. TRPO finds the point inside that region that maximizes the surrogate objective.</p>
 
     <figure style="text-align:center; margin:2em 0;">
       <svg width="520" height="290" viewBox="0 0 520 290" style="max-width:100%; font-family:inherit;">
@@ -1350,38 +1338,38 @@
 
     <h3>Solving the Constraint</h3>
 
-    <p>Solving this exactly requires knowing the <em>curvature</em> of the KL around the current policy. Not just which way is uphill, but how steeply the terrain curves in every direction. That curvature is captured by the Fisher Information Matrix.</p>
+    <p>Solving this exactly requires the local curvature of the KL around the current policy, captured by the Fisher Information Matrix.</p>
 
     <p>For a network with $N$ parameters, that matrix is $N \times N$. For a 7B-parameter LLM, that is roughly $5 \times 10^{19}$ entries, about the number of grains of sand on Earth. There are clever ways around it (Schulman's original paper avoids ever building the matrix explicitly by using conjugate gradient on Fisher-vector products), but even with the tricks, TRPO is slow, fragile, and never really made the jump to large networks.</p>
 
-    <p>So that is where we are stuck. TRPO is mathematically beautiful. It gives a guaranteed monotonic improvement under the trust region constraint. In theory, it is exactly what we want. In practice, the second-order machinery is just too heavy. We need something cheaper that keeps the spirit of the constraint but throws out the matrix algebra.</p>
+    <p>TRPO provides a monotonic-improvement guarantee under its assumptions, but its second-order machinery is too expensive for large models. PPO keeps the trust-region idea with a cheaper first-order objective.</p>
 
     <p style="margin-top: 1.5em; font-size: 0.92em; color: #666;"><em>If you are curious about the gory details (the full FIM memory table, the conjugate gradient trick, why TRPO never scales), see the <a href="#appendix-trpo">appendix</a> at the end of the post.</em></p>
   </section>
 
 
   <!-- ====================================================== -->
-  <!--  SECTION 7: PPO — THE ENGINEERING BREAKTHROUGH         -->
+  <!--  SECTION 7: PPO: THE ENGINEERING BREAKTHROUGH         -->
   <!-- ====================================================== -->
   <section id="ppo">
     <h2>PPO</h2>
 
-    <p>TRPO's problem is clear: second-order optimization. The Fisher Information Matrix makes the exact constrained solution intractable. But what if we simply got rid of the constraint altogether?</p>
+    <p>TRPO's exact constrained solution relies on expensive second-order optimization. PPO replaces the hard constraint with a first-order objective.</p>
 
     <p>The standard trick in constrained optimization is the <strong>Lagrangian relaxation</strong>: instead of enforcing a hard constraint, fold it into the objective as a penalty weighted by a coefficient $\beta$. A constraint violation now costs you objective value rather than being forbidden outright. The optimization problem becomes unconstrained, and you can solve it with plain gradient descent.</p>
 
     <div class="math-block" style="text-align:center;">
-      <p style="margin:0 0 1em; font-weight:600; color:#555;">TRPO &nbsp;—&nbsp; constrained</p>
+      <p style="margin:0 0 1em; font-weight:600; color:#555;">TRPO: constrained</p>
       $$\max_{\theta}\; \mathbb{E}_{\pi_\text{old}}\!\left[\frac{\pi_\theta(u_t \!\mid\! s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)}\, \hat{A}_t^{\pi_\text{old}}\right]$$
       $$\text{subject to}\quad \mathbb{E}_{\pi_\text{old}}\!\left[\mathrm{KL}\!\left(\pi_\theta \;\big\|\; \pi_{\theta_\text{old}}\right)\right] \leq \varepsilon$$
       $$\Downarrow \quad \text{Lagrangian relaxation} \quad \times\; \beta$$
-      <p style="margin:0 0 1em; font-weight:600; color:#555;">PPO-penalty &nbsp;—&nbsp; unconstrained</p>
+      <p style="margin:0 0 1em; font-weight:600; color:#555;">PPO-penalty: unconstrained</p>
       $$\max_{\theta}\; \mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\frac{\pi_\theta(u_t \!\mid\! s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)}\, \hat{A}_t^{\pi_\text{old}}(s_t, u_t)\right] - \beta\left(\mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\mathrm{KL}\!\left(\pi_\theta(u_t \!\mid\! s_t) \;\big\|\; \pi_{\theta_\text{old}}(u_t \!\mid\! s_t)\right)\right]\right)$$
     </div>
 
     <p>This is Proximal Policy Optimization, or PPO, also known as PPO-penalty. The hard constraint is gone. The second-order solver is gone. The conjugate gradient loop is gone. What remains is a single objective you can differentiate and optimize with Adam in one line. The parameter $\beta$ controls how heavily you penalise KL divergence from the old policy: large $\beta$ keeps the update cautious, small $\beta$ lets it move more freely.</p>
 
-    <p>If you are paying attention, an alarm should be going off. We escaped second-order optimization, but we just introduced a hyperparameter. And $\beta$ is not an easy one to set. Too large: the KL penalty dominates and the policy barely moves, learning grinds to a halt. Too small: the penalty is too weak to prevent drift, the Importance-Sampling ratios explode, and we are right back to the original failure mode.</p>
+    <p>This introduces a sensitive hyperparameter. If $\beta$ is too large, the policy barely moves. If it is too small, the policy drifts and importance-sampling ratios become unstable.</p>
 
     <p>One proposed fix is to make $\beta$ adaptive: measure the actual KL divergence after each update, and adjust $\beta$ accordingly.</p>
 
@@ -1391,11 +1379,11 @@
       $$\text{If}\;\; \mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\mathrm{KL}\!\left(\pi_\theta \;\|\; \pi_{\theta_\text{old}}\right)\right] < \mathrm{KL}_\text{min}, \quad \text{then}\;\; \beta \leftarrow \beta \,/\, 2$$
     </div>
 
-    <p>Drifting too far? Tighten the leash. Staying too close? Loosen it. The idea is sound, but it still feels brittle in practice. Now you have traded one hyperparameter for three: $\beta$, $\mathrm{KL}_\text{max}$, and $\mathrm{KL}_\text{min}$. And the controller is reactive by design: it can only correct a KL violation <em>after</em> the update has already happened, not before.</p>
+    <p>The adaptive version introduces three settings: $\beta$, $\mathrm{KL}_\text{max}$, and $\mathrm{KL}_\text{min}$. It is also reactive, correcting a KL violation only after an update.</p>
 
-    <p>Let's zoom out. What are we actually trying to do? Increase the probability of advantageous actions, decrease it for bad ones, and keep the updated policy close to the old one. The KL divergence was our attempt at enforcing that third goal. But KL is a rubber band. It pulls $\theta$ back toward $\theta_\text{old}$ with increasing force as the policy drifts, and the adaptive version makes it tighter or looser based on recent history. But a rubber band can always be stretched. If we get a lucky or unlucky Monte Carlo sample, nothing stops the policy from being fully trashed in that single update.</p>
+    <p>The objective should raise the probability of advantageous actions, lower it for bad ones, and keep the new policy close to the old one. A KL penalty discourages drift but does not impose a hard limit on a single update.</p>
 
-    <p>We do not want a rubber band. We want a wall. To build the intuition for that wall, let's first rewrite the surrogate objective in terms of the probability ratio $r_t(\theta)$:</p>
+    <p>PPO-clip adds that limit directly to the probability ratio $r_t(\theta)$:</p>
 
     <div class="math-block">
       $$\mathbb{E}_{(s_t,\, u_t) \sim \pi_\text{old}}\!\left[\, r_t(\theta)\, \hat{A}_t^{\pi_\text{old}}(s_t, u_t)\right] \qquad\qquad r_t(\theta) \;=\; \frac{\pi_\theta(u_t \!\mid\! s_t)}{\pi_{\theta_\text{old}}(u_t \!\mid\! s_t)}$$
@@ -1545,7 +1533,7 @@
         <polyline points="55,150 127,150 163,116 250,116" fill="none" stroke="#27ae60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
         <!-- blue: unclipped (background reference) -->
         <line x1="55" y1="218" x2="253" y2="30" stroke="#3498db" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-        <!-- yellow: min — rises from origin, then flat at 1+ε -->
+        <!-- yellow: min: rises from origin, then flat at 1+ε -->
         <polyline points="55,218 163,116 250,116" fill="none" stroke="#f39c12" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
         <!-- yellow dashed reference at r=1 -->
         <line x1="55" y1="133" x2="145" y2="133" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.6"/>
@@ -1566,7 +1554,7 @@
         <polyline points="325,123 397,123 433,157 525,157" fill="none" stroke="#27ae60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
         <!-- blue: unclipped (background reference) -->
         <line x1="325" y1="55" x2="522" y2="242" stroke="#3498db" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-        <!-- yellow: min — flat at 1−ε, then follows unclipped slope -->
+        <!-- yellow: min: flat at 1−ε, then follows unclipped slope -->
         <polyline points="325,123 397,123 522,242" fill="none" stroke="#f39c12" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
         <!-- yellow dashed reference at r=1 -->
         <line x1="325" y1="140" x2="415" y2="140" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.6"/>
@@ -1587,7 +1575,7 @@
 
     <h3>The Full Pipeline</h3>
 
-    <p>Let's put the full picture together. A prompt $s_0$ goes into the old policy $\pi_{\theta_\text{old}}$, which generates a trajectory $\tau$. A frozen reward model scores each step. A value network $V_\phi^\pi$ estimates the expected return from each state. GAE combines the two into per-step advantages. The PPO-clip objective then updates the policy using all of that:</p>
+    <p>The full pipeline starts with a prompt $s_0$. The old policy $\pi_{\theta_\text{old}}$ generates a trajectory $\tau$, a frozen reward model scores it, and a value network $V_\phi^\pi$ estimates the return from each state. GAE produces per-step advantages, which feed the PPO-clip update:</p>
 
     <div class="math-block">
       $$\mathbb{E}_{\tau \sim \pi_\text{old}}\!\left[\frac{1}{H}\sum_{t=0}^{H-1}\min\!\left(\, r_t(\theta)\,\hat{A}_t^{\pi_\text{old}}(s_t, u_t),\;\; \mathrm{clip}\!\left(r_t(\theta), 1-\varepsilon, 1+\varepsilon\right)\hat{A}_t^{\pi_\text{old}}(s_t, u_t)\,\right)\right]$$
@@ -1679,22 +1667,22 @@
 
 
   <!-- ====================================================== -->
-  <!--  SECTION 8: RLHF — PPO FOR LANGUAGE MODELS             -->
+  <!--  SECTION 8: RLHF: PPO FOR LANGUAGE MODELS             -->
   <!-- ====================================================== -->
   <section id="rlhf">
     <h2>RLHF</h2>
 
     <p>In PPO, you might have noticed a potential issue. We have created a hard wall, such that a single update cannot completely trash the model. But have you considered what happens after enough training steps? Each update stays within the wall, but those small allowed steps accumulate. The policy ends up drifting far from where it started.</p>
 
-    <p>The min-clip is an absolute defense, but it is only local, completely blind to the full dynamic of training. We need something to handle the long term. This is where the KL divergence comes back in. You might point out that KL divergence is exactly what we wanted to avoid in PPO, both because of the second-order optimization in TRPO and because of the brittle $\beta$ tuning in the unconstrained form. Fair. The difference here is that we are not using KL to constrain the update step. We are using it to anchor the policy to a fixed reference.</p>
+    <p>Clipping limits each local update but does not control drift over the full training run. RLHF therefore adds a KL penalty against a fixed reference policy. Here KL is an anchor, not a hard per-step constraint.</p>
 
     <p>Historically, PPO was designed for agents trained to play video games, where we actually wanted the agent to explore freely. Drifting far from the original policy was sometimes the whole point. Language modeling is different. If our model drifts too far from where it started, it can quite literally forget how to speak.</p>
 
     <div class="algorithm-box">
       <h4>The RLHF Pipeline</h4>
-      <p><strong>Step 1 — Supervised Fine-Tuning (SFT):</strong> Train a base language model on high-quality demonstration data to produce a capable assistant baseline &pi;<sup>SFT</sup>.</p>
-      <p><strong>Step 2 — Reward Model Training:</strong> Collect human rankings of different model outputs. Train a separate network r<sub>&theta;</sub>(x, y) to score how much a human would prefer response y to prompt x.</p>
-      <p><strong>Step 3 — RL Optimization:</strong> Use PPO to optimize &pi;<sup>SFT</sup> to maximize r<sub>&theta;</sub>(x, y), with a KL penalty to stop it from drifting. This is where everything from the previous sections applies.</p>
+      <p><strong>Step 1: Supervised Fine-Tuning (SFT):</strong> Train a base language model on high-quality demonstration data to produce a capable assistant baseline &pi;<sup>SFT</sup>.</p>
+      <p><strong>Step 2: Reward Model Training:</strong> Collect human rankings of different model outputs. Train a separate network r<sub>&theta;</sub>(x, y) to score how much a human would prefer response y to prompt x.</p>
+      <p><strong>Step 3: RL Optimization:</strong> Use PPO to optimize &pi;<sup>SFT</sup> against r<sub>&theta;</sub>(x, y), with a KL penalty to limit drift.</p>
     </div>
 
     <p>The fix is to add a KL term directly to the PPO objective, anchored not to the previous checkpoint (as in PPO-KL) but to the <em>frozen original policy</em> &pi;<sub>ref</sub>, the SFT model from Step 1.</p>
@@ -1723,13 +1711,13 @@
       </p>
     </div>
 
-    <p>We now have two defenses with two different jobs. The min-clip is our absolute wall: it protects us from trashing the policy on a single bad update. It is the local, per-step defense. The KL divergence is our rubber band: it keeps the policy close to the original frozen reference, and pulls harder the further it drifts. That is the global, long-term defense.</p>
+    <p>The two mechanisms have different jobs. Clipping limits a single update, while KL limits cumulative drift from the frozen reference.</p>
 
   </section>
 
 
   <!-- ====================================================== -->
-  <!--  SECTION 9: GRPO — KILLING THE CRITIC                  -->
+  <!--  SECTION 9: GRPO: KILLING THE CRITIC                  -->
   <!-- ====================================================== -->
   <section id="grpo">
     <h2>GRPO</h2>
@@ -1740,7 +1728,7 @@
 
     <p>In fairness, the biggest bottleneck in PPO is the Critic. In total, PPO keeps four copies of full model weights in memory at once: the Actor being trained, the Critic providing baselines, the frozen Reward model, and the frozen Reference model for the KL anchor. For large language models, that is not a trivial resource budget.</p>
 
-    <p>It is hard to imagine a mathematically sound way to patch PPO into something leaner without breaking its guarantees. So instead of patching, GRPO starts from a different angle. Since the leap is large, let's lay out the full design first and then interpret it piece by piece.</p>
+    <p>GRPO takes a different route to reduce PPO's memory cost. Start with the full objective, then examine each term.</p>
 
     <div class="math-block">
       $$\mathbb{E}_{\tau^{(i)} \sim \pi_\text{old}}\!\left[\frac{1}{G}\sum_{i=1}^{G}\frac{1}{H^{(i)}}\sum_{t=0}^{H^{(i)}-1}\min\!\left(\, r_t(\theta)\,\hat{A}_t^{(i)},\;\; \mathrm{clip}\!\left(r_t(\theta), 1-\varepsilon, 1+\varepsilon\right)\hat{A}_t^{(i)}\,\right) - \beta\, D_\text{KL}\!\left(\pi_\theta \,\big\|\, \pi_\text{ref}\right)\right]$$
@@ -1887,31 +1875,31 @@
     <div class="algorithm-box">
       <h4>GAE vs GRPO: Credit Assignment</h4>
 
-      <p><strong>GAE — temporal and local.</strong> GAE computes a separate advantage $\hat{A}_t$ for every single token at every step $t$. It knows that token 5 might have been a brilliant word choice while token 90 was a poor one, and it assigns credit accordingly. The Critic's value estimates provide a per-step baseline, and the exponential weighting over n-step returns gives a fine-grained, local signal all the way down the trajectory.</p>
+      <p><strong>GAE: temporal and local.</strong> GAE computes a separate advantage $\hat{A}_t$ for every single token at every step $t$. It knows that token 5 might have been a brilliant word choice while token 90 was a poor one, and it assigns credit accordingly. The Critic's value estimates provide a per-step baseline, and the exponential weighting over n-step returns gives a fine-grained, local signal all the way down the trajectory.</p>
 
-      <p><strong>GRPO — global and sparse.</strong> GRPO produces a single scalar $\hat{A}^{(i)}$ for the entire trajectory. Every token in the response, from the first word to the last, receives that same number as its advantage. There is no temporal signal, no local credit, no distinction between a token that was pivotal and one that was filler. The only information available is: did this response score above or below the group average?</p>
+      <p><strong>GRPO: global and sparse.</strong> GRPO produces a single scalar $\hat{A}^{(i)}$ for the entire trajectory. Every token in the response, from the first word to the last, receives that same number as its advantage. There is no temporal signal, no local credit, no distinction between a token that was pivotal and one that was filler. The only information available is: did this response score above or below the group average?</p>
 
       <p>This is a significant assumption. GRPO implicitly relies on the policy model being capable of distributing a global scalar signal across its attention: reinforcing the specific tokens that actually deserved credit and suppressing those that did not, all without being told which is which. For large, well-pretrained language models this often works in practice. But it is a real loss of precision compared to GAE, and worth keeping in mind clearly before reading what comes next.</p>
     </div>
 
     <div class="analysis-block">
-      <p><strong>The bigger picture.</strong> Something subtle has happened over the last two sections. TRPO had a real guarantee: monotonic improvement under the trust region. PPO inherited the spirit of that guarantee, the clip was a principled approximation of the constraint. GRPO has none of it. The group mean as a baseline is a reasonable Monte Carlo estimate, not the consequence of any theorem. The uniform per-trajectory advantage is not justified by a credit assignment principle, it is justified by "the model is large enough to figure out which tokens deserved it." Std normalization and length normalization are not derived from optimization theory, they are just statistical hygiene applied because the numbers looked too big or too small.</p>
+      <p><strong>What changes.</strong> TRPO provides a monotonic-improvement guarantee under its trust-region assumptions, and PPO approximates that constraint. GRPO has no comparable guarantee. Its group mean is a Monte Carlo baseline, and one trajectory-level advantage is applied to every token. Standard-deviation and length normalization are engineering choices rather than consequences of the optimization theory.</p>
 
-      <p>This is the moment we leave rigor behind and enter engineering territory. GRPO works because the models are big enough and the rewards are clean enough that the noise washes out. The same approach on a small network with sparse, noisy rewards would not. We have traded mathematical guarantees for a system simple enough to scale to billions of parameters. That is the deal modern reasoning training is built on, and it is worth being honest about, because everything we are about to do in Dr.GRPO follows the same logic: small, intuitive fixes to statistical hygiene that happen to make training work better.</p>
+      <p>GRPO trades formal guarantees and fine-grained credit assignment for a system that scales to large models. Its success depends on the model, reward quality, and training regime; the same trade may fail with small networks or sparse, noisy rewards.</p>
     </div>
 
-    <p>The group normalization looks statistically clean. Two familiar-looking terms, the division by standard deviation and the per-token averaging over $H^{(i)}$, seem like reasonable practices borrowed from statistics. But in the specific context of training reasoning models, each one introduces a concrete bias that actively works against learning. That is where Dr.GRPO comes in.</p>
+    <p>Dr.GRPO targets two terms in this objective: standard-deviation normalization and per-token averaging over $H^{(i)}$. In reasoning-model training, they introduce difficulty and length biases.</p>
 
   </section>
 
 
   <!-- ====================================================== -->
-  <!--  SECTION 10: DR.GRPO — THE FINAL FIX                   -->
+  <!--  SECTION 10: DR.GRPO: THE FINAL FIX                   -->
   <!-- ====================================================== -->
   <section id="dr-grpo">
     <h2>Dr.GRPO</h2>
 
-    <p>As mentioned above, GRPO carries two subtle flaws hiding in plain sight. Both look like reasonable statistical housekeeping. Both create concrete, harmful biases when training reasoning models.</p>
+    <p>GRPO's two normalization terms create length and difficulty biases.</p>
 
     <h3>Bias 1: Length Normalization</h3>
 
@@ -1932,7 +1920,7 @@
       </div>
     </div>
 
-    <p>The fix is almost insultingly simple: remove both normalization terms.</p>
+    <p>Dr.GRPO removes both normalization terms.</p>
 
     <div class="math-block">
       <p style="margin: 0 0 0.5em 0; font-size: 0.9em; font-weight: 600; color: #333;">Dr.GRPO</p>
@@ -1942,7 +1930,7 @@
 
     <h3>A worked example</h3>
 
-    <p>It is one thing to see two biases written as terms in an equation. It is another to watch them actually warp the gradient signal a model receives. Let's run a tiny example.</p>
+    <p>A four-rollout example shows how the terms change each token's gradient signal.</p>
 
     <p>Take a prompt with $G = 4$ rollouts. Rewards are binary: 1 for the right final answer, 0 otherwise.</p>
 
@@ -1959,22 +1947,22 @@
         </thead>
         <tbody style="font-family:monospace;">
           <tr style="border-bottom:1px solid #eee;">
-            <td style="padding:0.6em 0.8em;">A &mdash; &ldquo;12 &times; 13 = 156&rdquo; <span style="color:#16a34a; font-family:inherit;">&#10003; short correct</span></td>
+            <td style="padding:0.6em 0.8em;">A: &ldquo;12 &times; 13 = 156&rdquo; <span style="color:#16a34a; font-family:inherit;">&#10003; short correct</span></td>
             <td style="text-align:center;">7</td>
             <td style="text-align:center; color:#16a34a; font-weight:700;">1</td>
           </tr>
           <tr style="border-bottom:1px solid #eee;">
-            <td style="padding:0.6em 0.8em;">B &mdash; &ldquo;Let me compute. 12&times;13 = 12&times;10 + 12&times;3 = 120 + 36 = 156&rdquo; <span style="color:#16a34a; font-family:inherit;">&#10003; long correct</span></td>
+            <td style="padding:0.6em 0.8em;">B: &ldquo;Let me compute. 12&times;13 = 12&times;10 + 12&times;3 = 120 + 36 = 156&rdquo; <span style="color:#16a34a; font-family:inherit;">&#10003; long correct</span></td>
             <td style="text-align:center;">22</td>
             <td style="text-align:center; color:#16a34a; font-weight:700;">1</td>
           </tr>
           <tr style="border-bottom:1px solid #eee;">
-            <td style="padding:0.6em 0.8em;">C &mdash; &ldquo;12 &times; 13 = 144&rdquo; <span style="color:#e74c3c; font-family:inherit;">&#10007; short wrong</span></td>
+            <td style="padding:0.6em 0.8em;">C: &ldquo;12 &times; 13 = 144&rdquo; <span style="color:#e74c3c; font-family:inherit;">&#10007; short wrong</span></td>
             <td style="text-align:center;">7</td>
             <td style="text-align:center; color:#e74c3c; font-weight:700;">0</td>
           </tr>
           <tr>
-            <td style="padding:0.6em 0.8em;">D &mdash; &ldquo;Hmm... 12 &times; 13... 12&times;10 is 120, plus 12&times;3 which is... 30? So 150? Actually let me try... 144.&rdquo; <span style="color:#e74c3c; font-family:inherit;">&#10007; long wrong</span></td>
+            <td style="padding:0.6em 0.8em;">D: &ldquo;Hmm... 12 &times; 13... 12&times;10 is 120, plus 12&times;3 which is... 30? So 150? Actually let me try... 144.&rdquo; <span style="color:#e74c3c; font-family:inherit;">&#10007; long wrong</span></td>
             <td style="text-align:center;">35</td>
             <td style="text-align:center; color:#e74c3c; font-weight:700;">0</td>
           </tr>
@@ -2028,9 +2016,9 @@
 
     </div>
 
-    <p>Look at the GRPO column. Rollout A (short correct) gets $+0.143$ per token. Rollout B (long correct) gets only $+0.045$. The model receives a <strong>three times weaker reward signal per token</strong> for the longer correct answer, even though it got the same final result. The lesson the model takes: when right, be brief.</p>
+    <p>Under GRPO, rollout A (short and correct) gets $+0.143$ per token, while rollout B (long and correct) gets $+0.045$. The longer correct answer receives a <strong>three times weaker signal per token</strong> despite the same final reward.</p>
 
-    <p>Now compare the wrongs. Rollout C (short wrong) gets $-0.143$ per token. Rollout D (long wrong) gets only $-0.029$. The longer wrong rollout, the one that genuinely rambles, gets a <strong>five times weaker punishment per token</strong> than the short wrong one. The lesson: when uncertain, ramble. The penalty per token shrinks as you stretch.</p>
+    <p>For incorrect answers, rollout C gets $-0.143$ per token and the longer rollout D gets only $-0.029$. Length normalization gives the longer wrong answer a <strong>five times weaker penalty per token</strong>.</p>
 
     <p>Under Dr.GRPO, every token in every rollout gets the same magnitude of signal regardless of length. Short correct and long correct are reinforced equally per token. Short wrong and long wrong are punished equally per token. The model is judged on whether it got the answer right, not on how many tokens it spent doing so. That is the entire fix.</p>
 
@@ -2043,33 +2031,31 @@
   <section id="conclusion">
 
     <div class="algorithm-box">
-      <h4>The Chain of Forced Inventions</h4>
-      <p><strong>REINFORCE</strong> — all rewards positive, no baseline → noisy, slow convergence</p>
+      <h4>How the Methods Connect</h4>
+      <p><strong>REINFORCE</strong>: all rewards positive, no baseline → noisy, slow convergence</p>
       <p>↓ <em>Fix: subtract a baseline</em></p>
-      <p><strong>Baseline + Monte Carlo</strong> — can't estimate $V(s_t)$ cheaply per state → need a second network</p>
+      <p><strong>Baseline + Monte Carlo</strong>: can't estimate $V(s_t)$ cheaply per state → need a second network</p>
       <p>↓ <em>Fix: train a Critic</em></p>
-      <p><strong>Actor-Critic</strong> — full rollout noisy, pure bootstrapping biased → need a blend</p>
+      <p><strong>Actor-Critic</strong>: full rollout noisy, pure bootstrapping biased → need a blend</p>
       <p>↓ <em>Fix: interpolate with GAE ($\lambda$)</em></p>
-      <p><strong>Actor-Critic + GAE</strong> — policy can still take a catastrophic step → need a constraint</p>
+      <p><strong>Actor-Critic + GAE</strong>: policy can still take a catastrophic step → need a constraint</p>
       <p>↓ <em>Fix: hard KL constraint (TRPO)</em></p>
-      <p><strong>TRPO</strong> — KL constraint requires $O(N^2)$ Fisher Matrix → computationally impossible</p>
+      <p><strong>TRPO</strong>: KL constraint requires $O(N^2)$ Fisher Matrix → computationally impossible</p>
       <p>↓ <em>Fix: approximate constraint with a clip (PPO)</em></p>
-      <p><strong>PPO</strong> — clip is a local wall; across thousands of steps the policy drifts, and a language model forgets how to speak</p>
+      <p><strong>PPO</strong>: clip is a local wall; across thousands of steps the policy drifts, and a language model forgets how to speak</p>
       <p>↓ <em>Fix: add a global KL anchor against a frozen reference model (RLHF)</em></p>
-      <p><strong>RLHF</strong> — requires a Critic, a Reward Model, and a frozen reference all in memory; unstable online RL loop</p>
+      <p><strong>RLHF</strong>: requires a Critic, a Reward Model, and a frozen reference all in memory; unstable online RL loop</p>
       <p>↓ <em>Fix: replace Critic with group statistics (GRPO)</em></p>
-      <p><strong>GRPO</strong> — standard deviation normalisation penalises hard prompts, length normalisation penalises long reasoning</p>
+      <p><strong>GRPO</strong>: standard deviation normalisation penalises hard prompts, length normalisation penalises long reasoning</p>
       <p>↓ <em>Fix: remove both (Dr.GRPO)</em></p>
-      <p><strong>Dr.GRPO</strong> — reasoning models that actually think.</p>
+      <p><strong>Dr.GRPO</strong>: removes both normalization terms</p>
     </div>
 
-    <p>You could have invented Dr.GRPO.</p>
+    <p>Starting from expected reward, each method addresses a specific source of variance, instability, cost, or bias. Dr.GRPO ends this particular chain by removing the two normalization terms from GRPO.</p>
 
-    <p>Look back at what we built. We started with one line, "maximize expected reward," and peeled off one assumption at a time. Each defect forced the next algorithm into existence. By the end, we have a training procedure that turns a pretrained model into something that can actually reason through a math problem.</p>
+    <p>TRPO uses a principled but expensive trust-region update. PPO replaces it with a practical first-order approximation but keeps a critic. GRPO removes the critic for large-model training, accepting coarser credit assignment in return.</p>
 
-    <p>There is a pattern worth noticing. Each algorithm was the right answer for its decade. TRPO worked when networks were small enough to do matrix algebra on. PPO scaled the trust region idea to larger networks but kept a full Critic in memory. GRPO is what you get when you push past that assumption. The mathematical purity has progressively given way to engineering pragmatism, because the systems we train have become large enough that even crude approximations work.</p>
-
-    <p>None of this is the end of the story. New methods keep appearing: GRPO has been refined into GRPO-v2 and DAPO, and there are alternative tracks like DPO that skip the RL loop entirely and treat alignment as a supervised learning problem. The chain we walked through is alive and producing new links every few months. But if you understood why each step was forced by the previous one's flaws, you now have what you need to read the next paper as it appears, and to predict the kind of move it will make. The math evolves, the structure of the argument does not.</p>
+    <p>Later methods such as GRPO-v2 and DAPO continue this line, while approaches such as DPO avoid the online RL loop. The useful reading strategy is the same: identify the limitation a new objective targets and the trade it makes.</p>
 
   </section>
 
@@ -2080,15 +2066,15 @@
   <section id="references">
     <h2>References</h2>
     <ol class="references">
-      <li>Williams, R. J. (1992). <em>Simple statistical gradient-following algorithms for connectionist reinforcement learning.</em> Machine Learning. — <strong>REINFORCE</strong></li>
-      <li>Mnih, V. et al. (2016). <em>Asynchronous Methods for Deep Reinforcement Learning.</em> ICML. — <strong>Actor-Critic (A3C)</strong></li>
-      <li>Schulman, J. et al. (2016). <em>High-Dimensional Continuous Control Using Generalized Advantage Estimation.</em> ICLR. — <strong>GAE</strong></li>
-      <li>Schulman, J. et al. (2015). <em>Trust Region Policy Optimization.</em> ICML. — <strong>TRPO</strong></li>
-      <li>Schulman, J. et al. (2017). <em>Proximal Policy Optimization Algorithms.</em> arXiv:1707.06347. — <strong>PPO</strong></li>
-      <li>Ouyang, L. et al. (2022). <em>Training language models to follow instructions with human feedback.</em> NeurIPS 2022. arXiv:2203.02155. — <strong>RLHF / InstructGPT</strong></li>
-      <li>Shao, Z. et al. (2024). <em>DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models.</em> arXiv:2402.03300. — <strong>GRPO</strong></li>
+      <li>Williams, R. J. (1992). <em>Simple statistical gradient-following algorithms for connectionist reinforcement learning.</em> Machine Learning.: <strong>REINFORCE</strong></li>
+      <li>Mnih, V. et al. (2016). <em>Asynchronous Methods for Deep Reinforcement Learning.</em> ICML.: <strong>Actor-Critic (A3C)</strong></li>
+      <li>Schulman, J. et al. (2016). <em>High-Dimensional Continuous Control Using Generalized Advantage Estimation.</em> ICLR.: <strong>GAE</strong></li>
+      <li>Schulman, J. et al. (2015). <em>Trust Region Policy Optimization.</em> ICML.: <strong>TRPO</strong></li>
+      <li>Schulman, J. et al. (2017). <em>Proximal Policy Optimization Algorithms.</em> arXiv:1707.06347.: <strong>PPO</strong></li>
+      <li>Ouyang, L. et al. (2022). <em>Training language models to follow instructions with human feedback.</em> NeurIPS 2022. arXiv:2203.02155.: <strong>RLHF / InstructGPT</strong></li>
+      <li>Shao, Z. et al. (2024). <em>DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models.</em> arXiv:2402.03300.: <strong>GRPO</strong></li>
       <li>DeepSeek-AI (2025). <em>DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning.</em> arXiv:2501.12948.</li>
-      <li>Liu, Z. et al. (2025). <em>Understanding R1-Zero-Like Training: A Critical Perspective.</em> arXiv:2503.20783. — <strong>Dr.GRPO</strong> ("GRPO Done Right")</li>
+      <li>Liu, Z. et al. (2025). <em>Understanding R1-Zero-Like Training: A Critical Perspective.</em> arXiv:2503.20783.: <strong>Dr.GRPO</strong> ("GRPO Done Right")</li>
     </ol>
   </section>
 
@@ -2099,7 +2085,7 @@
   <section id="appendix-trpo">
     <h2>Appendix: Why TRPO Doesn't Scale</h2>
 
-    <p>This is the detour the main post skips. If you were curious why exactly the second-order machinery of TRPO never made the jump to large networks, here it is.</p>
+    <p>This appendix explains why TRPO's second-order machinery does not scale to large networks.</p>
 
     <p>Recall the setup. TRPO wants to maximize the surrogate objective subject to a KL constraint of size $\varepsilon$. Solving the constrained optimization exactly requires knowing the local curvature of the KL around the current policy. That curvature is the Fisher Information Matrix, defined as the Hessian of the KL divergence evaluated at $\theta_\text{old}$:</p>
 
@@ -2109,7 +2095,7 @@
 
     <h3>The size problem</h3>
 
-    <p>For a policy network with $N$ parameters, the FIM is an $N \times N$ matrix. The numbers get out of hand fast.</p>
+    <p>For a policy network with $N$ parameters, the FIM is an $N \times N$ matrix.</p>
 
     <table style="width:100%; border-collapse:collapse; margin:1.4em 0; font-size:0.93em;">
       <thead>
@@ -2142,13 +2128,13 @@
       </tbody>
     </table>
 
-    <p>You cannot store this matrix. You cannot invert it. Even computing it is out of the question.</p>
+    <p>At language-model scale, the full matrix cannot be stored, inverted, or computed directly.</p>
 
     <h3>Schulman's conjugate gradient trick</h3>
 
-    <p>The key insight in the original TRPO paper is that you never need to build the full FIM. Think about what TRPO actually needs: it needs to solve the linear system $F^{-1} g$, where $g$ is the gradient of the surrogate objective. You can solve a linear system without ever materialising the matrix, using the conjugate gradient method, as long as you can compute the product $F \cdot v$ for any vector $v$.</p>
+    <p>The original TRPO paper avoids building the full FIM. TRPO needs to solve the linear system $F^{-1}g$, where $g$ is the surrogate-objective gradient. Conjugate gradient can solve it without materializing $F$, provided it can compute $F \cdot v$ for any vector $v$.</p>
 
-    <p>And here is the clever part. A Fisher-vector product $F \cdot v$ can be computed in $O(N)$ time using just two backward passes through the network. No quintillion-entry matrix, just two extra backprop calls per CG iteration. Beautiful.</p>
+    <p>A Fisher-vector product $F \cdot v$ can be computed in $O(N)$ time with two backward passes. Each conjugate-gradient iteration therefore avoids the full matrix but still adds two backpropagations.</p>
 
     <h3>So why doesn't it scale?</h3>
 
@@ -2160,9 +2146,9 @@
       <li>Careful numerical-stability tricks for the Fisher-vector products to avoid ill-conditioning, especially as the network gets deeper.</li>
     </ol>
 
-    <p>For a small network in a clean simulation environment, all of this is fine. For a multi-billion-parameter language model with noisy reward signals and limited compute, this becomes a nightmare. Every step is 20&times; slower, every step can fail the line search, and every step risks numerical issues. The wall-clock cost to train anything serious becomes prohibitive.</p>
+    <p>This is manageable for small networks. For a multi-billion-parameter language model, the repeated backpropagations, line search, and numerical-stability work make each update too expensive.</p>
 
-    <p>TRPO is mathematically beautiful. It has a guaranteed monotonic improvement property under the trust region constraint. The constrained-optimization framing it introduced is genuinely the right way to think about safe policy updates. But the second-order optimization machinery it requires never made the jump to the scale where modern language models live. PPO is what happens when you ask: what is the cheapest first-order approximation that keeps the same intuition?</p>
+    <p>TRPO's trust-region framing provides a useful way to control policy updates, but its second-order optimizer does not fit modern language-model training. PPO keeps the same intuition in a cheaper first-order objective.</p>
 
     <p><a href="#trpo">&larr; Back to the TRPO section</a></p>
 

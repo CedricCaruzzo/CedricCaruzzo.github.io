@@ -6,11 +6,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <title>A Maze as a Microscope: Watching a Local Agent Stop Learning</title>
+  <title>What a Local Model Does in MazeBench</title>
   <meta name="description" content="What 1,021 MazeBench decisions taught me about belief inertia, representation, memory, and long-horizon language-model agents.">
   <link rel="canonical" href="https://cedriccaruzzo.github.io/blog/mazebench-agent-behavior.html">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="A Maze as a Microscope: Watching a Local Agent Stop Learning">
+  <meta property="og:title" content="What a Local Model Does in MazeBench">
   <meta property="og:description" content="What 1,021 MazeBench decisions taught me about belief inertia, representation, memory, and long-horizon language-model agents.">
   <meta property="og:image" content="https://cedriccaruzzo.github.io/img/mazebench/control-center-qwen.png">
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
@@ -167,8 +167,7 @@
   <main>
     <header class="hero">
       <div class="eyebrow">Research notebook · local agents · August 2026</div>
-      <h1>A maze as a microscope</h1>
-      <p class="dek">I watched a local 27B model take 1,021 actions in MazeBench. It did not simply get lost. It formed theories, contradicted them, recovered, forgot, and sometimes preserved the wrong idea through compaction. That was much more interesting.</p>
+      <h1>What a Local Model Does in MazeBench</h1>
       <div class="meta">
         <span>Cédric Caruzzo</span>
         <span><code>Qwen3.8-27B · UD-IQ4_XS</code></span>
@@ -177,9 +176,9 @@
     </header>
 
     <article>
-      <p>I started this project because I wanted to run <a href="https://mazebench.com/">MazeBench</a> locally. Very quickly, running it was no longer enough. I wanted to see what the agent saw, what it believed, why it chose an action, and what changed after the environment answered.</p>
+      <p>I started by trying to run <a href="https://mazebench.com/">MazeBench</a> locally. Then I wanted to inspect the whole loop: what the agent saw, why it chose an action, and how the environment's response changed its next decision.</p>
 
-      <p>So I built a local Control Center around the benchmark. It launches trials, archives every interaction, replays movement in the official 3D engine, tracks exploration, and places model reasoning beside the action it produced. I also added explicit context compaction because a long run can outgrow an 81,920-token window long before it finishes.</p>
+      <p>I built a local Control Center that launches trials, archives interactions, replays movement in the official 3D engine, tracks exploration, and shows reasoning beside each action. Explicit context compaction keeps long runs within an 81,920-token window.</p>
 
       <figure class="wide">
         <img src="../img/mazebench/control-center-qwen.png" alt="MazeBench Control Center showing a completed Qwen run, exploration charts, room coverage, and the combined reasoning and action stream">
@@ -195,15 +194,15 @@
 
       <div class="note"><p><strong>A necessary caveat:</strong> this is an exploratory research notebook, not a leaderboard result. I changed representation, temperature, reasoning budget, prompts, and memory while building the harness. Comparisons below are descriptive. They tell me what to test next, not what has already been proven.</p></div>
 
-      <h2>The first surprising failure was not navigation</h2>
+      <h2>The First Failure Was Belief Revision</h2>
 
       <p>In the hidden-symbol ASCII condition, the model had to infer the meaning of random characters from interaction. Early in one run, it saw a block of <code>?</code> symbols and made a plausible guess: perhaps those were gems.</p>
 
-      <p>There is nothing strange about the initial hypothesis. The strange part is what happened after repeated evidence against it.</p>
+      <p>The initial hypothesis was reasonable. The problem was how long it survived contradictory evidence.</p>
 
       <div class="quote">“Maybe the ? tiles are not gems at all. Maybe they’re just a visual element. The actual gems might be in other rooms or levels.” <small>Model reasoning, turn 88</small></div>
 
-      <p>That sounds like belief revision. Behaviorally, it was much weaker. The agent repeatedly rediscovered the same doubt, announced a “completely different approach,” and then returned to a narrow movement pattern. By turns 120 to 132, large parts of its reasoning were nearly repeated while its action remained <code>left</code>.</p>
+      <p>The agent repeatedly expressed the same doubt, announced a “completely different approach,” and returned to the same narrow movement pattern. From turns 120 to 132, much of its reasoning repeated while the action remained <code>left</code>.</p>
 
       <section class="lab wide" aria-labelledby="trace-title">
         <div class="lab-header">
@@ -234,7 +233,7 @@
         </div>
       </section>
 
-      <p>The gap matters. A model can generate the sentence “my hypothesis may be wrong” without reorganizing the policy that follows from that hypothesis. Linguistic self-correction is not necessarily operational self-correction.</p>
+      <p>Saying “my hypothesis may be wrong” did not reliably change the policy. Verbal self-correction and behavioral correction were separate.</p>
 
       <div class="loop">
         <div class="loop-step"><b>HYPOTHESIS</b><span>The <code>?</code> block may contain gems.</span></div>
@@ -243,13 +242,13 @@
         <div class="loop-step"><b>NARRATION</b><span>Question the idea, then behave as if it still organizes the world.</span></div>
       </div>
 
-      <h2>Representation changed the character of the run</h2>
+      <h2>Representation Changed the Run</h2>
 
-      <p>The ASCII map is exact, but it is visually dense and its symbols must be grounded. MazeBench also provides an official JSON observation mode that exposes typed objects and coordinates. I made that existing mode selectable and auditable in the Control Center. It is still the same game and action interface, but the representational burden is different.</p>
+      <p>The ASCII map is exact but dense, and the agent must infer its symbols. MazeBench also provides a JSON observation mode with typed objects and coordinates. I added that mode to the Control Center so both representations could be audited through the same action interface.</p>
 
       <p>On the first full corrected JSON run, Qwen crossed from room <code>HxI</code> into <code>HxH</code> at action 67. This was the first time one of my local runs discovered a new room without intervention. The new room immediately exposed an explicitly typed gem at coordinate <code>[1,3,1]</code>.</p>
 
-      <p>It still did not collect it. The run finished all 256 actions with zero gems, accumulated 17 deaths, and eventually plateaued around a familiar corridor. Better state encoding helped exploration, but it did not solve planning, consequence tracking, or recovery.</p>
+      <p>It did not collect the gem. The run ended after 256 actions with zero gems and 17 deaths, eventually circling a familiar corridor. Better state encoding coincided with more exploration but did not solve planning or recovery.</p>
 
       <section class="lab wide" aria-labelledby="curve-title">
         <div class="lab-header">
@@ -275,15 +274,15 @@
         </tbody>
       </table>
 
-      <h2>Memory can preserve failure</h2>
+      <h2>Memory Can Preserve Mistakes</h2>
 
-      <p>My first intuition was simple: long-horizon agents need better memory. That is true, but incomplete.</p>
+      <p>Long-horizon agents need memory, but what the memory preserves matters just as much.</p>
 
       <p>A compaction system has to decide what survives. If it preserves a mistaken object interpretation, a stale coordinate map, or an unproductive plan with high confidence, it gives the mistake a longer life. The summary becomes part of the next context, and the model can treat that compacted text as established history.</p>
 
       <p>The JSON run used 31 continuation capsules, usually one every eight or nine calls. This kept a 256-action experiment alive inside the available context window. It also made a second problem visible: after action 144, the unique-position curve is almost flat for a long stretch despite continued reasoning and repeated compaction.</p>
 
-      <p>So the useful question is not just “how much can the agent remember?” It is “what does memory make easier to revise?” A good memory should preserve observations and uncertainty separately. It should record failed transitions as evidence, not quietly turn hypotheses into facts.</p>
+      <p>The useful question is not only how much the agent remembers, but what the memory makes easier to revise. Observations and uncertainty should remain separate, and failed transitions should stay evidence rather than become facts.</p>
 
       <h2>What I think is happening</h2>
 
@@ -295,7 +294,7 @@
         <li><strong>Memory amplification.</strong> Compaction extends the run, but whatever it selects, correct or incorrect, gains persistence.</li>
       </ul>
 
-      <p>I originally thought this project might become mostly about long-term memory architecture. The traces changed my mind. The more basic bottleneck may be <em>updating from consequences</em>. If an action predicts movement and the player does not move, that should sharply change the next hypothesis. In these traces, it often changes the prose more than the policy.</p>
+      <p>I expected long-term memory to be the main problem. These traces point to a more basic one: <em>updating from consequences</em>. When an action predicts movement and the player does not move, the prose changes more readily than the policy.</p>
 
       <div class="quote">Long-horizon failure may begin well before the context window fills. It begins when the agent stops treating the environment’s answer as evidence.</div>
 
@@ -305,9 +304,9 @@
 
       <p>The harness is also a hosted, one-command adapter around the official MazeBench environment. It is not the benchmark’s native coding-agent route with shell and tools. I prefer making that boundary explicit because “same maze” does not mean “same agent condition.”</p>
 
-      <h2>The next experiment is much smaller</h2>
+      <h2>The Next Experiment</h2>
 
-      <p>Instead of immediately running another million-token trajectory, I want a controlled diagnostic suite around one question:</p>
+      <p>The next step is a controlled diagnostic built around one question:</p>
 
       <div class="quote"><strong>How do language-model agents detect and recover from failed state transitions, and how do representation and memory affect that belief revision?</strong></div>
 

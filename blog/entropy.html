@@ -6,7 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <title>You Could Have Invented Entropy Yourself</title>
+  <title>Entropy from First Principles</title>
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <style>
     body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
@@ -67,8 +67,8 @@
 <body>
 
   <header class="main-header">
-    <h1>You Could Have Invented Entropy Yourself</h1>
-    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">From a Guessing Game to the Loss of a Language Model, One Question at a Time</p>
+    <h1>Entropy from First Principles</h1>
+    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">From a guessing game to language-model loss</p>
     <p style="font-size: 0.9em; color: #aaa; text-align: center; margin: 0;">June 2026 &nbsp;·&nbsp; Cédric Caruzzo</p>
   </header>
 
@@ -81,15 +81,15 @@
   <section id="introduction">
 
     <div style="background:#fffbeb; border:1px solid #f59e0b; border-left:5px solid #f59e0b; border-radius:6px; padding:1em 1.4em; margin:0 0 2.4em 0; font-size:0.97em;">
-      <p style="margin:0;"><strong style="color:#92400e;">TL;DR.</strong> Entropy, and everything stacked on top of it, derived as one chain that begins with a number-guessing game and ends at the loss function of a language model: <code style="background:transparent; font-family:inherit; font-weight:600;">guess a number &rarr; halve the space &rarr; log&#8322;N questions &rarr; the bit &rarr; questions are a code &rarr; &minus;log&#8322;p per outcome &rarr; entropy &rarr; conditional entropy &rarr; cross-entropy &amp; perplexity &rarr; KL divergence &rarr; forward vs reverse KL</code>. Each link is the obvious next move once the last one clicks, and by the end an LLM's training loss is just bits per token, every piece of it something you could have invented yourself.</p>
+      <p style="margin:0;"><strong style="color:#92400e;">TL;DR.</strong> A number-guessing game leads directly to the main quantities used in information theory and language-model training: <code style="background:transparent; font-family:inherit; font-weight:600;">halve the space &rarr; log&#8322;N questions &rarr; the bit &rarr; questions as codes &rarr; &minus;log&#8322;p per outcome &rarr; entropy &rarr; conditional entropy &rarr; cross-entropy and perplexity &rarr; KL divergence &rarr; forward and reverse KL</code>.</p>
     </div>
 
     <p>
-      Before any math, let's play a game.
+      Start with a game.
     </p>
 
     <p>
-      I chose a number between 1 and 100. Can you guess it? Try to ask the fewest questions you can. Each guess, I will only tell you whether my number is higher or lower.
+      I chose a number between 1 and 100. Try to find it with as few guesses as possible. After each guess, I will only say whether the number is higher or lower.
     </p>
 
     <!-- ============================================================ -->
@@ -214,11 +214,11 @@
     </script>
 
     <p>
-      If you find the strategy to solve this game intuitive, then you understand one of the most important principles of AI!
+      The best strategy for this game is also the starting point of information theory.
     </p>
 
     <blockquote style="margin:1.5em 0; padding:0.6em 1.4em; border-left:4px solid #e2e8f0; color:#64748b; font-style:italic;">
-      In all fairness, this is actually the cornerstone of information theory, rather than only AI.
+      The same idea later appears in coding, compression, and machine-learning loss functions.
     </blockquote>
 
   </section>
@@ -231,7 +231,7 @@
     <h2>What is the optimal strategy?</h2>
 
     <p>
-      Let's ask ourselves: what is the probability of picking the right number, given it was picked uniformly at random?
+      If the number is uniform, the chance of guessing it immediately is:
     </p>
 
     <div class="math-block">
@@ -239,7 +239,7 @@
     </div>
 
     <p>
-      These are very low odds. You might also notice that a guess is not just a bid to be right; even a wrong one is <em>informative</em>, because it <em>narrows</em> what is left, and that narrowing is the thing we should really be measuring. Suppose you guess 71: what are the probabilities that my number is exactly 71, less than 71, or more than 71?
+      A wrong guess can still narrow the search. Suppose the guess is 71. The three possible outcomes are:
     </p>
 
     <div class="math-block">
@@ -276,7 +276,7 @@
     </figure>
 
     <p>
-      So how much does this guess actually buy us? Let's weight each outcome by how likely it is, and compute the expected number of numbers we still have to search through afterwards:
+      Weighting each outcome by its probability gives the expected number of candidates left:
     </p>
 
     <div class="math-block">
@@ -297,7 +297,7 @@
     </p>
 
     <p>
-      From this, we understand that what we want is a strategy that minimises the expected number left. And the equation we just wrote becomes handy. Instead of locking in 71, let's keep the guess as a variable $x$ and solve for the best one:
+      To minimize the expected number left, keep the guess as a variable $x$ and solve for its optimum:
     </p>
 
     <div class="derivation-block">
@@ -312,7 +312,7 @@
     </div>
 
     <p>
-      Now let's solve. This is a parabola in $x$, so its minimum is wherever the derivative is zero:
+      This is a parabola in $x$, so its minimum occurs where the derivative is zero:
     </p>
 
     <div class="derivation-block">
@@ -358,14 +358,14 @@
   <!--  SECTION 3: COUNTING THE QUESTIONS (BITS, log2)        -->
   <!-- ====================================================== -->
   <section id="counting-questions">
-    <h2>So what is the fewest questions we need?</h2>
+    <h2>How Many Questions Are Necessary?</h2>
 
     <p>
-      Look at what one guess in this game really is. You are never told the number. You are told one thing, higher or lower, and that is the most basic signal there is: a single yes or no. So every guess is a yes-or-no question. And we already know which one is best: the guess that splits what is left straight down the middle, because its answer is a coin flip that rules out half the remaining numbers no matter which way it falls.
+      Each answer is binary: higher or lower. The best question splits the remaining candidates in half, so either answer removes half of them.
     </p>
 
     <p>
-      The whole game is a chain of these yes-or-no splits, each one halving the numbers still in play. So the fewest questions we need is simply how many times we can halve 100 before a single number is left. And "how many times can I halve a quantity" is the exact definition of the base-2 logarithm:
+      The minimum number of questions is therefore the number of times 100 can be halved before one candidate remains. That is the base-2 logarithm:
     </p>
 
     <div class="math-block">
@@ -373,11 +373,11 @@
     </div>
 
     <p>
-      So the answer is 6.64. But 6.64 what? 6.64 perfect, cut-it-in-half questions. And that should nag at you, because you cannot ask 0.64 of a question. A question is either asked or it is not, so the count has to be a whole number. In practice you round up and ask 7, which is always <strong>enough</strong> to corner the number. Yet the 6.64 is clearly telling us something real. It is not an arbitrary fraction either: six questions can only tell apart $2^6 = 64$ possibilities, which is not enough for 100, while seven can tell apart $2^7 = 128$, which is more than enough. The honest cost lives somewhere between 6 and 7.
+      This means 6.64 ideal halving questions. A single game still needs a whole number, so seven questions are enough in the worst case. Six questions distinguish only $2^6 = 64$ outcomes, while seven distinguish $2^7 = 128$. The average cost can still lie between six and seven.
     </p>
 
     <p>
-      So what does a fractional number of questions even look like? It is easiest to see on a smaller game, one we can draw in full. Below is the exact same halving strategy laid out as a tree. Each split sends the lower half left and the higher half right; follow any number down from the top and you read off the questions it costs. Slide the size of the game and watch the bottom edge.
+      A smaller game makes the fractional average easier to see. The tree below sends the lower half left and the upper half right at each split. The depth of a number is its question count.
     </p>
 
     <!-- ============================================================ -->
@@ -490,7 +490,7 @@
     </p>
 
     <p>
-      We worked all of that out on paper. Now let's watch it hold up. We will pit the optimal halving strategy against a lazy baseline that splits the remaining range at a random point, run thousands of games of each, and watch the averages settle: halving just above the floor, around the 6.72 we predicted, the random baseline far above it.
+      The simulation below compares halving with a baseline that splits the remaining range at a random point. Over thousands of games, halving settles near the predicted 6.72 questions while the random baseline stays higher.
     </p>
 
     <!-- ============================================================ -->
@@ -676,11 +676,11 @@
     </div>
 
     <p>
-      That line is the real lesson. $\log_2(100)$ is not just what the best strategy happens to score, it is a floor that no strategy can beat. The best one presses right up against it from above, landing on the 6.72 we predicted, while the random baseline never comes close. The 0.08 between 6.72 and the floor is the same waste we already named: the toll for whole questions.
+      $\log_2(100)$ is a lower bound, not just the score of one strategy. Halving reaches 6.72 questions on average. The 0.08-bit gap above the bound comes from using whole questions.
     </p>
 
     <p>
-      So we have our answer, and we have a unit for it. The cost of finding one outcome among 100 equally likely ones is about 6.64 bits. But we have been calling halving "optimal" on something close to faith. Before we ask what happens when the game is not fair, we should make sure we have really found the best possible strategy, and understand why nothing can beat it.
+      Finding one of 100 equally likely outcomes costs at least 6.64 bits. The next section shows why no strategy can beat that bound.
     </p>
 
   </section>
@@ -856,7 +856,7 @@
     <h3>Why nothing can beat it</h3>
 
     <p>
-      Think about what a code's output stream looks like. If there is any <em>pattern</em> in it, any way to guess the next bit better than a coin flip, then that pattern is redundancy: you could write a shorter code that spends nothing on the part you could already predict. A stream you can compress is a stream from a code that was not yet optimal.
+      Any predictable pattern in a code's output is redundancy. If the next bit can be guessed better than chance, a shorter code can avoid spending bits on what was already predictable.
     </p>
 
     <p>
@@ -927,7 +927,7 @@
     <p>Structure is exactly what compression feeds on. A message you can shorten still has predictability left in it. When nothing can shorten it any further, what remains looks completely random, which is why a perfectly encoded message and pure noise are impossible to tell apart.</p>
 
     <p>
-      And halving is precisely the strategy that produces this. Every question splits the live numbers in half, so every answer is a genuine 50/50, a fair coin, carrying a full bit and revealing nothing you could have guessed in advance. A lazy question (is it in the bottom quarter?) has a lopsided answer you can half-predict, and a predictable answer is a half-wasted one. That is the whole reason halving wins: it is the only strategy that never spends a fraction of a question on an answer you already saw coming.
+      Halving produces this kind of stream. Every answer is 50/50 and carries a full bit. A lopsided question, such as asking whether the number lies in the bottom quarter, produces a partly predictable answer and wastes part of the question.
     </p>
 
     <p>
@@ -941,7 +941,7 @@
     <h3>The fingerprint of a perfect code</h3>
 
     <p>
-      Let's test it. Take a strategy, play it thousands of times on the game from 1 to 16, and string all the yes-or-no answers into one long ribbon of bits. Then count: how often is each bit 0 versus 1? How often does each pair (<code>00</code>, <code>01</code>, <code>10</code>, <code>11</code>) appear? Each triple? If the code is optimal, every pattern should show up equally often, because the stream is meant to look like fair coins. If the strategy wastes questions, the counts will lean.
+      We can test this by playing thousands of games from 1 to 16 and joining the answers into one bit stream. For an optimal code, individual bits, pairs, and triples should appear at equal rates. A wasteful strategy produces uneven counts.
     </p>
 
     <!-- ============================================================ -->
@@ -1055,7 +1055,7 @@
     </p>
 
     <p>
-      Mathematicians have a name for the flat case. A sequence in which every block of length $k$ appears with frequency $1/2^k$ is called <em>normal</em> (the idea is Borel's, 1909), and the output of a perfect code is normal in exactly this sense. One honest wrinkle ties it back to where we began: run optimal halving on 100 rather than a clean power of 2, and the bars come out <em>almost</em> flat, with a faint lean that will not go away. That faint lean is the 0.08 of a wasted bit, the very same residue, now wearing the disguise of a pattern you could still compress. A non-round number of bits and a not-quite-normal output are one fact seen from two sides.
+      A sequence in which every block of length $k$ appears with frequency $1/2^k$ is called <em>normal</em>, following Borel (1909). A perfect code produces a normal stream in this sense. With 100 outcomes rather than a power of two, optimal halving is only almost flat. The remaining bias corresponds to the same 0.08-bit overhead caused by whole questions.
     </p>
 
     <h3>The price of a single outcome</h3>
@@ -1290,7 +1290,7 @@
     <h2>How many extra bits?</h2>
 
     <p>
-      A question follows naturally: how many extra bits am I paying, on average, for using $q$ instead of the true $p$? That is exactly what the <em>KL divergence</em>, $D_{\mathrm{KL}}(p \,\|\, q)$, answers.
+      The average number of extra bits paid for using $q$ instead of the true $p$ is the <em>KL divergence</em>, $D_{\mathrm{KL}}(p \,\|\, q)$.
     </p>
 
     <p>
@@ -1375,7 +1375,7 @@
     </p>
 
     <p>
-      Picture a target $p$ with two separated modes, and a model $q$ that can only be a single bump, one Gaussian. It cannot be in two places at once, so it has to choose, and the two divergences make it choose differently.
+      Consider a target $p$ with two separated modes and a model $q$ restricted to one Gaussian. The two KL directions produce different fits.
     </p>
 
     <p>
@@ -1557,7 +1557,7 @@
   <!--  CONCLUSION                                             -->
   <!-- ====================================================== -->
   <section id="conclusion">
-    <h2>Looking back</h2>
+    <h2>Summary</h2>
 
     <div style="display:flex; flex-wrap:wrap; gap:7px; align-items:center; justify-content:center; margin:2em 0 2.4em;">
       <span style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:6px; padding:4px 10px; font-size:0.85em; color:#475569; white-space:nowrap;">a guessing game</span>
@@ -1584,11 +1584,7 @@
     </div>
 
     <p>
-      We started with a number between 1 and 100, and we have ended at the loss function of a language model. Look back at the path, and notice that nothing in it was a leap. The game taught us to halve the search space, and "how many times can I halve" is exactly $\log_2 N$. The yes-or-no question worth a full bit is the unit of that count, and a bit, it turned out, is information. Those questions were secretly a code, and a code charges $-\log_2 p$ bits for an outcome of probability $p$. Average that price over a source and you have entropy. Let the next symbol lean on the ones before it and you have conditional entropy. Measure it through an imperfect model $q$ and you have cross-entropy, the training loss itself, with perplexity as its human-readable face. The bits you waste because $q$ is not $p$ are the KL divergence, and which way you point that divergence is the whole difference between covering every mode and committing to one.
-    </p>
-
-    <p>
-      None of it was handed down. Entropy was never a formula to memorize; it was the answer to a single question, how few questions do I need, and every concept after it was the answer to the next obvious one. The whole tower, information, entropy, cross-entropy, perplexity, KL, the objective every language model is trained to minimize, is built from a guessing game and a willingness to keep asking "and then what?". You could have invented all of it yourself. Now you have.
+      Halving a search space gives $\log_2 N$, measured in binary questions or bits. A code assigns an outcome of probability $p$ a cost of $-\log_2 p$. Averaging that cost gives entropy; conditioning on previous symbols gives conditional entropy. Measuring the cost under an imperfect model $q$ gives cross-entropy and perplexity. The extra cost from using $q$ instead of $p$ is KL divergence, and its direction determines whether the fit covers all modes or concentrates on one.
     </p>
 
   </section>
@@ -1601,11 +1597,11 @@
     <h2>Bonus: is a language model just a compressor?</h2>
 
     <p>
-      This last part is a bonus, more speculation than result, and it is the question that pulled me into writing all of this in the first place. So read it as thinking out loud.
+      This section is speculative rather than a result.
     </p>
 
     <p>
-      You have seen the take a hundred times: an LLM is just a fancy next-token predictor. True, and we just spent a whole post showing that next-token prediction <em>is</em> cross-entropy <em>is</em> compression. What I almost never see said is the consequence. An LLM is a compression <em>and decompression</em> machine, and the autoregressive loop is the decompression: it unrolls the compressed knowledge one token at a time. And the compression is genuinely staggering, something close to the written knowledge of humanity folded into a few terabytes of weights for the largest models.
+      An LLM is a next-token predictor, and next-token prediction minimizes cross-entropy. From that angle, the model compresses patterns from its training data and the autoregressive loop unfolds them one token at a time.
     </p>
 
     <p>
@@ -1641,7 +1637,7 @@
     </p>
 
     <p>
-      And this is where reasoning sneaks in. Cross-entropy minimization rewards <em>any</em> internal computation that improves prediction. If discovering an invariant helps predict the next line of a proof, gradient descent is pushed to learn that invariant. If a little search helps, it is pushed toward search; if a theorem-proving heuristic helps, the same. Reasoning is not bolted on afterwards, it emerges because reasoning is itself a compression mechanism. A proof that replaces a thousand special cases with one general principle is, literally, a shorter description. Science is doing MDL, and so, in its own way, is the model.
+      Cross-entropy minimization rewards any internal computation that improves prediction. If an invariant, search procedure, or proof heuristic helps predict the next line, training can favor it. Reasoning can therefore act as compression: one general principle replaces many special cases with a shorter description.
     </p>
 
     <figure style="margin:2.6em 0;">
@@ -1683,10 +1679,10 @@
       This loops straight back to where we have been. Entropy, $H(X) = \mathbb{E}[-\log_2 p(X)]$, is uncertainty, and the most powerful way to cut uncertainty across a whole domain is not to memorize its facts but to find the few variables that explain all of them at once. A scientific law is an enormous entropy reducer. It even predicts something we actually observe: models look smartest exactly where the surface data is huge but the generating principles are small and clean, mathematics, physics, code, logic, and shakiest where the knowledge is a pile of arbitrary facts with no compressing structure underneath.
     </p>
 
-    <h3>So, more than a next-token predictor</h3>
+    <h3>More Than the Objective</h3>
 
     <p>
-      I will take the cliche and bend it. "An LLM is just a next-token predictor" is true in the same way that "a mathematician is just a neuron-firing predictor" is true. It names the mechanism and hides everything interesting. The next-token objective is the mechanism. The compression of the world's regularities is where the capability comes from. And the part still genuinely open, the part I would love an answer to, is how far that compression, unrolled with enough inference-time computation, can reach toward knowledge that nobody has written down yet.
+      “An LLM is a next-token predictor” names the training objective, not the capabilities that can emerge from modeling regularities in data. The open question is how far those learned regularities, combined with inference-time computation, can reach beyond knowledge written in the training set.
     </p>
 
   </section>
@@ -1699,7 +1695,7 @@
     <h2>Appendix: why random splitting costs $2(\mathcal{H}_n - 1)$</h2>
 
     <p>
-      In the main text we watched the random-split baseline settle at about 8.4 questions per game, while the optimal halving strategy hugged the $\log_2(100) \approx 6.64$ floor. Here is where that 8.4 comes from.
+      The random-split baseline settles at about 8.4 questions per game, while optimal halving stays near the $\log_2(100) \approx 6.64$ floor. This appendix derives the 8.4 result.
     </p>
 
     <p>

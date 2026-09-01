@@ -36,8 +36,8 @@
 <body>
 
   <header class="main-header">
-    <h1>A Deep Dive into Neural Style Transfer</h1>
-    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">Recreating the Seminal Algorithm of Gatys et al.</p>
+    <h1>Neural Style Transfer from Scratch</h1>
+    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">Recreating the algorithm from Gatys et al.</p>
     <div class="project-meta">
       <a href="https://github.com/CedricCaruzzo/Neural-Style-Transfer/" target="_blank">[GitHub Repository]</a>
     </div>
@@ -51,12 +51,12 @@
   </figure>
 
   <section id="introduction">
-    <h2>The Core Idea: Separating Style from Content</h2>
+    <h2>Separating Style from Content</h2>
     <p>
-      Neural Style Transfer (NST), introduced by Gatys et al. in 2015, is a fascinating technique that merges the content of one image with the style of another. The "style" refers to textures, colors, and visual patterns, while the "content" is the higher-level structure of the image. The key insight was realizing that a pre-trained Convolutional Neural Network (CNN) could be used to mathematically define and separate these two properties.
+      Neural Style Transfer (NST), introduced by Gatys et al. in 2015, combines the structure of one image with the textures, colors, and patterns of another. A pretrained convolutional neural network (CNN) gives us a way to represent these properties separately.
     </p>
     <p>
-      At its heart, the algorithm works by optimizing a generated image to minimize a two-part loss function: a <strong>content loss</strong> that ensures the image looks like the content source, and a <strong>style loss</strong> that ensures it has the textures and patterns of the style source.
+      The generated image minimizes two losses: <strong>content loss</strong> keeps its structure close to the content image, while <strong>style loss</strong> matches the style image's textures and patterns.
     </p>
     $$
     \mathcal{L}_{\text{total}} = \alpha \cdot \mathcal{L}_{\text{content}} + \beta \cdot \mathcal{L}_{\text{style}}
@@ -66,10 +66,10 @@
   <section id="content-loss">
     <h2>Defining Content Loss</h2>
     <p>
-      As an image passes through a CNN, early layers capture fine-grained details (like edges), while deeper layers capture more abstract, high-level features that define the image's content. We can therefore measure the difference in content between two images by comparing their feature maps from a deep layer in the network.
+      Early CNN layers capture details such as edges, while deeper layers capture higher-level structure. We measure content difference by comparing feature maps from one of those deeper layers.
     </p>
     <p>
-      Let $F^l$ be the feature map of our generated image at a deep layer $l$, and $P^l$ be the feature map of the original content image at the same layer. The content loss is simply the squared-error loss between these two feature maps.
+      Let $F^l$ be the generated image's feature map at layer $l$, and $P^l$ the content image's feature map at the same layer. Content loss is their squared error.
     </p>
     $$
     \mathcal{L}_{\text{content}} = \frac{1}{2} \sum_{i,j} \left( F_{ij}^l - P_{ij}^l \right)^2
@@ -79,16 +79,16 @@
   <section id="style-loss">
     <h2>Defining Style Loss</h2>
     <p>
-      Style is a more complex property, captured across multiple layers of the network. To represent style, we use the <strong>Gram matrix</strong>. The Gram matrix of a layer's activations captures the correlations between different feature maps. In essence, it measures which features tend to activate together, which corresponds to the texture and patterns in that layer's receptive field.
+      Style spans several network layers. We represent it with a <strong>Gram matrix</strong>, which records correlations between feature maps. Those correlations capture which features activate together and therefore describe texture and pattern.
     </p>
     <p>
-      The style loss for a single layer is the squared-error loss between the Gram matrices of the generated image ($G^l$) and the style reference image ($A^l$).
+      For one layer, style loss is the squared error between the generated image's Gram matrix ($G^l$) and the style image's Gram matrix ($A^l$).
     </p>
     $$
     \mathcal{L}_{\text{style}}^l = \frac{1}{4 N_l^2 M_l^2} \sum_{i,j} \left( G_{ij}^l - A_{ij}^l \right)^2
     $$
     <p>
-      The total style loss is the weighted sum of these individual layer losses, allowing us to capture stylistic elements at different scales, from fine textures to broader brush strokes.
+      A weighted sum across layers captures style at several scales, from fine textures to broad brush strokes.
     </p>
     $$
     \mathcal{L}_{\text{style}} = \sum_{l} w_l \mathcal{L}_{\text{style}}^l
@@ -116,7 +116,7 @@
   <!-- FIX: Updated this section to use a button instead of code blocks -->
   <section id="code">
       <h2>Code & Resources</h2>
-      <p style="text-align: center;">The complete source code and instructions to reproduce these results are available on GitHub.</p>
+      <p style="text-align: center;">The code and reproduction instructions are on GitHub.</p>
       <p style="text-align: center; margin-top: 1.5em;">
           <a href="https://github.com/CedricCaruzzo/Neural-Style-Transfer/" target="_blank" style="background-color: #2c3e50; color: white; padding: 12px 25px; border-radius: 8px; font-weight: 600; display: inline-block;">View on GitHub</a>
       </p>

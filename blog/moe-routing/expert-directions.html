@@ -35,7 +35,7 @@
   </header>
 
   <div class="tldr">
-    <p><strong>TL;DR.</strong> Gate-space metrics tell us how much routing mass moved, not which expert-output directions received it. We define an exact conditional reference that preserves the captured expert outputs, expert union, and intact before/after gate pairs while relabeling their correspondence. Its centered ratio factors as spectral capacity times directional utilization. Most layers lie below the reference mean, but a few aligned layers dominate checkpoint averages. A preregistered geometry-based allocator then reverses across checkpoints. The geometry is a fast diagnostic, not a model-agnostic shortcut to behavioral importance.</p>
+    <p><strong>TL;DR.</strong> Gate metrics measure how much routing mass moved, not which expert-output directions received it. We define an exact conditional reference that keeps the captured expert outputs, expert union, and before/after gate pairs fixed while relabeling their correspondence. The resulting ratio factors into spectral capacity and directional utilization. A few aligned layers dominate checkpoint averages, and a preregistered geometry-based allocator reverses across checkpoints. The geometry is useful for diagnosis, not as a universal shortcut to behavioral importance.</p>
   </div>
 
   <aside class="program-banner">
@@ -52,7 +52,7 @@
   <section>
     <h2>The same gate movement can mean opposite things</h2>
     <p>
-      Suppose two experts receive equal and opposite gate changes: one gains mass <em>a</em>, the other loses <em>a</em>. A router-only metric sees the same displacement in every case. The output perturbation, however, depends on the expert vectors receiving that displacement.
+      Suppose one expert gains gate mass <em>a</em> and another loses <em>a</em>. A router-only metric sees the same displacement in every case, but the output perturbation depends on the corresponding expert vectors.
     </p>
 
     <div class="equation">A = a(f1 - f2)</div>
@@ -110,7 +110,7 @@
   <section>
     <h2>An exact reference for expert correspondence</h2>
     <p>
-      The experiment replays one generated continuation under query-only and gold-conditioned contexts. At each token and layer, it captures the student expert outputs and the teacher/student gate pairs over their observed expert union. The reference then relabels the intact gate pairs across those fixed expert-output columns.
+      We replay one generated continuation under query-only and gold-conditioned contexts. At each token and layer, we capture student expert outputs and teacher/student gate pairs over their observed expert union. The reference relabels those intact pairs across fixed expert-output columns.
     </p>
 
     <figure>
@@ -137,14 +137,14 @@
     </figure>
 
     <p>
-      The centered correspondence ratio compares the observed gate-to-expert alignment with the mean alignment over that relabeling orbit. A value below one means below the conditional mean; it does not mean rare, harmless, or behaviorally irrelevant.
+      The centered correspondence ratio compares observed gate-to-expert alignment with the mean over this relabeling orbit. A value below one means below the conditional mean, not rare, harmless, or behaviorally irrelevant.
     </p>
   </section>
 
   <section>
-    <h2>Capacity is not enough; the direction must use it</h2>
+    <h2>Capacity Only Matters When the Direction Uses It</h2>
     <p>
-      The centered ratio factors exactly into two interpretable terms. Spectral capacity describes how strongly the captured expert outputs could amplify a centered gate direction. Directional utilization measures how much of that available capacity the observed movement actually uses.
+      The centered ratio factors into two terms. Spectral capacity measures how strongly the captured expert outputs could amplify a centered gate direction. Directional utilization measures how much of that capacity the observed movement uses.
     </p>
 
     <div class="equation">R<sub>C</sub> = &Lambda; &times; U &nbsp;&nbsp; (spectral capacity &times; directional utilization)</div>
@@ -165,14 +165,14 @@
     </div>
 
     <p>
-      DeepSeek makes the sparse-tail problem vivid. Its equal-layer mean is 1.374 even though 23 of 26 layers lie below one. A few aligned layers dominate the checkpoint summary. The factorization explains why: capacity amplifies only when the realized gate direction uses it.
+      DeepSeek's equal-layer mean is 1.374 even though 23 of 26 layers fall below one. A few aligned layers dominate the checkpoint summary because capacity amplifies only when the realized gate direction uses it.
     </p>
   </section>
 
   <section>
     <h2>The preregistered allocator reverses</h2>
     <p>
-      A useful diagnostic does not automatically make a useful allocator. We froze a rule that selected the layer with maximum centered correspondence ratio and compared it with a high-capacity, low-ratio control. Selection used 200 prompts; evaluation used a disjoint 400-prompt pool and a complete 42-layer census across OLMoE and DeepSeek.
+      A useful diagnostic may still be a poor allocator. We froze a rule that selects the layer with the largest centered correspondence ratio and compared it with a high-capacity, low-ratio control. Selection used 200 prompts; evaluation used a separate 400-prompt pool and a complete 42-layer census across OLMoE and DeepSeek.
     </p>
 
     <figure>
@@ -203,7 +203,7 @@
     </figure>
 
     <p>
-      The failure mechanism replicates on a disjoint MATH census. Capacity consistently enlarges the relabeling reference and correlates negatively with held-out lift, while utilization correlates positively. Their product is checkpoint-unstable. Maximizing utilization alone also selects no oracle. The factorization diagnoses the reversal; it does not rescue zero-shot allocation.
+      The reversal repeats on a separate MATH census. Capacity enlarges the relabeling reference and correlates negatively with held-out lift, while utilization correlates positively. Their product is unstable across checkpoints, and maximizing utilization alone does not recover the oracle. The factorization explains the reversal but does not fix zero-shot allocation.
     </p>
 
     <div class="insight-box">
@@ -213,9 +213,9 @@
   </section>
 
   <section>
-    <h2>What survives is behavioral calibration</h2>
+    <h2>Behavioral Calibration Transfers Better</h2>
     <p>
-      A more promising signal appears within the same checkpoint across related tasks. Full per-layer behavioral profiles correlate across GSM8K and MATH at Spearman 0.70 for OLMoE and 0.85 for DeepSeek. Using a costed prior-task census to select a target-task layer gets close to the target-task oracle without any target-task selector forwards.
+      Within a checkpoint, behavioral profiles transfer better across related tasks. Per-layer profiles correlate across GSM8K and MATH at Spearman 0.70 for OLMoE and 0.85 for DeepSeek. A prior-task census selects a target-task layer close to the oracle without target-task selector forwards.
     </p>
 
     <div class="stat-strip">
@@ -234,12 +234,12 @@
     </div>
 
     <p>
-      This is descriptive evidence from two tasks and two anchor checkpoints, not a universal transfer theorem. It nevertheless changes the engineering hypothesis: amortize one checkpoint-level behavioral calibration across related tasks, then verify the transferred candidates.
+      This is descriptive evidence from two tasks and two checkpoints, not a general transfer result. A practical next step is to reuse one checkpoint-level calibration across related tasks, then verify the transferred candidates.
     </p>
   </section>
 
   <section>
-    <h2>A provisional measurement protocol</h2>
+    <h2>A Measurement Protocol</h2>
     <div class="fig-shell">
       <div class="flow-grid">
         <div class="flow-card">

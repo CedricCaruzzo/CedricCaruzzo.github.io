@@ -6,7 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <title>Project: The Engine of Learning</title>
+  <title>Backpropagation from First Principles</title>
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <style>
     body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 40px 20px; line-height: 1.7; color: #333; background: #fff; }
@@ -48,40 +48,37 @@
 <body>
 
   <header class="main-header">
-    <h1>The Engine of Learning</h1>
-    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">Demystifying Backpropagation Through Mathematical Rigor</p>
+    <h1>Backpropagation from First Principles</h1>
+    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">The chain rule, from one neuron to mini-batches</p>
   </header>
 
   <a href="../blog.html" class="back-link">&larr; Back to Projects & Writing Hub</a>
 
   <section id="introduction">
-    <h2>The Symphony of a Million Parameters</h2>
+    <h2>What Backpropagation Computes</h2>
     <p>
-      Picture yourself standing before an enormous pipe organ with a million stops, each one controlling the pitch and volume of a different pipe. Your task? To create a perfect symphony from chaos. After your first attempt produces nothing but cacophony, you face the fundamental challenge: which stops should you adjust, by how much, and in what direction?
+      Training a neural network means adjusting every weight and bias to reduce prediction error. For each parameter, we need to know how a small change would affect the loss.
     </p>
     <p>
-      This is precisely the predicament faced by every neural network during training. Each weight and bias is like one of those organ stops, and the network must learn to "tune" millions of parameters simultaneously to minimize prediction error. The breakthrough that made this possible wasn't just clever engineering—it was a profound mathematical insight that transformed machine learning forever.
-    </p>
-    <p>
-      Welcome to backpropagation: the algorithm that taught machines how to learn from their mistakes with mathematical precision.
+      Backpropagation computes those derivatives efficiently. It applies the chain rule from the output back through the network and reuses intermediate gradients along the way.
     </p>
   </section>
 
   <section id="intuition">
-    <h2>The Calculus of Blame</h2>
+    <h2>Credit Assignment with the Chain Rule</h2>
     <p>
-      At its mathematical core, backpropagation is an application of the chain rule from calculus, but thinking of it merely as "fancy derivatives" misses its elegant conceptual beauty. The algorithm embodies a systematic approach to credit assignment—it traces the path of influence from output error back through the network's computational graph, quantifying exactly how each parameter contributed to the final mistake.
+      Backpropagation is the chain rule applied to a computational graph. It traces the loss backward and measures how much each parameter contributed to it.
     </p>
     
     <div class="insight-box">
-      <h4>🔍 The Key Insight</h4>
+      <h4>The Key Point</h4>
       <p>
-        The gradient of the loss function with respect to any parameter tells us the instantaneous rate of change of error with respect to that parameter. In other words: "If I nudge this weight by a tiny amount, how much will my error increase or decrease?" This is the information we need to improve our model systematically.
+        The gradient of the loss with respect to a parameter answers one question: if I change this parameter slightly, how will the loss change? Gradient descent uses that answer to choose an update.
       </p>
     </div>
 
     <p>
-      The genius lies in the recursive structure: to compute how a parameter in layer $\ell$ affects the final loss, we need to know how the outputs of layer $\ell$ affect the loss. But that's exactly what we computed for layer $\ell+1$! This creates a natural backward flow of gradient information, hence "back-propagation."
+      To compute how layer $\ell$ affects the loss, we use the gradient already computed for layer $\ell+1$. This reuse is what makes the backward pass efficient.
     </p>
   </section>
 
@@ -90,7 +87,7 @@
     
     <h3>The Chain Rule</h3>
     <p>
-      Before diving into neural networks, let's establish our mathematical foundation. The multivariate chain rule states that for a composite function $f(g(x))$:
+      For a composite function $f(g(x))$, the chain rule is:
     </p>
     
     <div class="math-block">
@@ -106,17 +103,17 @@
     </div>
     
     <p>
-      This is the mathematical engine that powers backpropagation. A neural network is essentially a deeply nested composite function, and the chain rule allows us to efficiently compute gradients by decomposing the problem into manageable pieces.
+      A neural network is a nested composite function. The chain rule breaks its gradient into local derivatives that can be computed and reused one layer at a time.
     </p>
 
     <h3>Activation Functions and Their Derivatives</h3>
     <p>
-      Before we can derive backpropagation, we need to understand the building blocks. Let's rigorously derive the derivatives of common activation functions.
+      The backward pass also needs the derivatives of each activation function.
     </p>
 
     <h4>The Sigmoid Function</h4>
     <p>
-      The sigmoid function provides a smooth, differentiable way to squash any real number into the range $(0,1)$:
+      The sigmoid maps any real number to $(0,1)$:
     </p>
     
     <div class="derivation-block">
@@ -132,7 +129,7 @@
       <p>Since $\frac{du}{dz} = -e^{-z}$:</p>
       $$\frac{d\sigma}{dz} = -\frac{1}{(1 + e^{-z})^2} \cdot (-e^{-z}) = \frac{e^{-z}}{(1 + e^{-z})^2}$$
       
-      <p>Now, let's manipulate this into a more useful form:</p>
+      <p>Rearranging gives a form that can reuse the forward-pass value:</p>
       $$\frac{d\sigma}{dz} = \frac{e^{-z}}{(1 + e^{-z})^2} = \frac{1}{1 + e^{-z}} \cdot \frac{e^{-z}}{1 + e^{-z}}$$
       
       <p>Note that $\frac{e^{-z}}{1 + e^{-z}} = \frac{1 + e^{-z} - 1}{1 + e^{-z}} = 1 - \frac{1}{1 + e^{-z}}$</p>
@@ -140,7 +137,7 @@
       <p><strong>Final Result:</strong></p>
       $$\boxed{\sigma'(z) = \sigma(z)(1 - \sigma(z))}$$
       
-      <p>This elegant form means we can compute the derivative using only the forward pass value!</p>
+      <p>The derivative therefore requires only the value computed during the forward pass.</p>
     </div>
 
     <h4>Other Common Activations</h4>
@@ -157,11 +154,11 @@
   </section>
 
   <section id="single-neuron">
-    <h2>Building Blocks: The Single Neuron</h2>
+    <h2>A Single Neuron</h2>
     
-    <h3>Linear Neuron: The Foundation</h3>
+    <h3>Linear Neuron</h3>
     <p>
-      Let's start with the simplest case and build our intuition step by step. Consider a single linear neuron with one input:
+      Start with one input and a linear neuron:
     </p>
     <figure class="network-figure">
       <img src="../img/backpropagation/neurons_single_layer.png" alt="Diagram of a single linear neuron" class="neuron-diagram">
@@ -184,9 +181,9 @@
       $$\frac{\partial \mathcal{L}}{\partial b} = \frac{\partial \mathcal{L}}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial b} = (\hat{y} - y) \cdot 1$$
     </div>
 
-    <h3>Non-linear Neuron: Adding Complexity</h3>
+    <h3>Adding an Activation</h3>
     <p>
-      Real learning requires non-linearity. Let's add a sigmoid activation:
+      Adding a sigmoid makes the neuron nonlinear:
     </p>
 
     <figure class="network-figure">
@@ -201,7 +198,7 @@
       <p><span class="step-counter">Step 3:</span> Loss: $\mathcal{L} = \frac{1}{2}(y - \hat{y})^2$</p>
       
       <h4>Backward Pass</h4>
-      <p>Now our chain is longer. To find $\frac{\partial \mathcal{L}}{\partial w}$:</p>
+      <p>The gradient with respect to $w$ now has three factors:</p>
       
       <div class="math-block">
         $$\frac{\partial \mathcal{L}}{\partial w} = \frac{\partial \mathcal{L}}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial z} \cdot \frac{\partial z}{\partial w}$$
@@ -219,10 +216,10 @@
   </section>
 
   <section id="multi-layer">
-    <h2>Scaling Up: Multi-Layer Networks</h2>
+    <h2>A Two-Layer Network</h2>
     
     <p>
-      The real power of backpropagation emerges when we stack multiple layers. Let's consider a two-layer network and see how gradients flow backward through the computational graph.
+      With two layers, the same chain rule continues through the hidden layer.
     </p>
 
     <figure class="network-figure">
@@ -231,7 +228,7 @@
     </figure>
 
     <div class="analysis-block">
-      <p><strong>Note on Notation:</strong> As we generalize from a single neuron to a full layer of neurons, our parameters also generalize. We'll now use an uppercase $W$ to represent the <strong>weight matrix</strong> for a layer. Lowercase variables like $x$, $h$, and $b$ will represent <strong>vectors</strong> (or scalars in the case of a single bias).</p>
+      <p><strong>Notation:</strong> For a full layer, uppercase $W$ denotes the <strong>weight matrix</strong>. Lowercase $x$, $h$, and $b$ denote <strong>vectors</strong>, or a scalar for a single bias.</p>
     </div>
 
     <h3>Network Architecture</h3>
@@ -266,28 +263,28 @@
       </ul>
       
       <h4>Hidden Layer Gradients</h4>
-      <p>Here's where it gets interesting. The hidden layer affects the loss through the output layer:</p>
+      <p>The hidden layer affects the loss through the output layer:</p>
       
       <div class="math-block">
         $$\frac{\partial \mathcal{L}}{\partial W^{(1)}} = \frac{\partial \mathcal{L}}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial z^{(2)}} \cdot \frac{\partial z^{(2)}}{\partial h} \cdot \frac{\partial h}{\partial z^{(1)}} \cdot \frac{\partial z^{(1)}}{\partial W^{(1)}}$$
       </div>
       
-      <p>The key insight: $\frac{\partial z^{(2)}}{\partial h} = W^{(2)}$ represents how the hidden layer influences the output layer.</p>
+      <p>The term $\frac{\partial z^{(2)}}{\partial h} = W^{(2)}$ captures the hidden layer's effect on the output layer.</p>
     </div>
 
     <div class="insight-box">
-      <h4>🌟 The Recursive Pattern</h4>
+      <h4>The Recursive Pattern</h4>
       <p>
-        Notice the elegant structure: to compute gradients for layer $\ell$, we need the gradients from layer $\ell+1$. This creates a natural recursive algorithm that processes layers in reverse order—the essence of backpropagation.
+        Computing gradients for layer $\ell$ uses gradients from layer $\ell+1$, so the algorithm processes layers in reverse order.
       </p>
     </div>
   </section>
 
   <section id="multi-neuron">
-    <h2>Multiple Neurons: Vectorization Emerges</h2>
+    <h2>Vectorizing Multiple Neurons</h2>
     
     <p>
-      When we have multiple neurons per layer, something beautiful happens: the individual gradient computations combine into elegant matrix operations. This is where the computational efficiency of backpropagation truly shines.
+      With several neurons per layer, the individual gradient calculations become matrix operations.
     </p>
 
     <h3>Matrix Formulation</h3>
@@ -338,15 +335,15 @@
     </div>
 
     <p>
-      This vectorized form reveals the computational elegance: what could be hundreds of individual derivative calculations becomes just a few matrix multiplications!
+      Vectorization replaces hundreds of scalar derivative calculations with a few matrix multiplications.
     </p>
   </section>
 
   <section id="batch-processing">
-    <h2>Batch Processing: The Final Optimization</h2>
+    <h2>Mini-Batches</h2>
     
     <p>
-      In practice, we rarely train on single examples. Instead, we process mini-batches of data simultaneously, which provides both computational efficiency and better gradient estimates.
+      Training usually processes a mini-batch rather than one example at a time. This uses vectorized hardware well and averages the gradient over several examples.
     </p>
 
     <h3>Batch Dimensions</h3>
@@ -388,9 +385,9 @@
     </div>
 
     <div class="insight-box">
-      <h4>🚀 Why Batching Works</h4>
+      <h4>Why Batching Helps</h4>
       <p>
-        Batch processing provides three key advantages: (1) <strong>Computational efficiency</strong> through vectorized operations, (2) <strong>Better gradient estimates</strong> by averaging over multiple examples, and (3) <strong>Memory efficiency</strong> by amortizing the cost of loading data and computing activations.
+        Batching improves throughput through vectorized operations and reduces gradient noise by averaging several examples. The batch size still has to fit in memory.
       </p>
     </div>
   </section>
@@ -399,7 +396,7 @@
     <h2>The General Backpropagation Algorithm</h2>
     
     <p>
-      Now we can state the general backpropagation algorithm for an $L$-layer neural network processing mini-batches:
+      For an $L$-layer network processing mini-batches, the full algorithm is:
     </p>
 
     <div class="algorithm-box">
@@ -435,10 +432,10 @@
   </section>
 
   <section id="exercises">
-    <h2>Worked Examples and Exercises</h2>
+    <h2>Worked Example and Exercise</h2>
     
-    <h3>Detailed Example: Two-Layer Network</h3>
-    <p>Let's work through a complete example with specific numbers to solidify our understanding.</p>
+    <h3>Two-Layer Network</h3>
+    <p>Here is the same calculation with concrete values.</p>
     
     <div class="math-block">
       <p><strong>Network Setup:</strong></p>
@@ -540,7 +537,7 @@
 
   <section id="code">
     <h2>Code & Resources</h2>
-    <p style="text-align: center;">A complete, pedagogical implementation of the concepts discussed here—from single neurons to full networks with batch processing—is available on GitHub. The code includes detailed comments explaining each step of the forward and backward passes.</p>
+    <p style="text-align: center;">The GitHub implementation covers single neurons, full networks, and mini-batches, with comments for each forward and backward step.</p>
     <p style="text-align: center; margin-top: 1.5em;">
       <a href="https://github.com/CedricCaruzzo/Backpropagation-from-scratch" target="_blank" style="background-color: #2c3e50; color: white; padding: 12px 25px; border-radius: 8px; font-weight: 600; display: inline-block;">View Implementation on GitHub</a>
     </p>

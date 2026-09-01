@@ -78,7 +78,7 @@
   <div style="background:#fffbeb; border:1px solid #f59e0b; border-left:5px solid #f59e0b; border-radius:6px; padding:1em 1.4em; margin:0 0 2.4em 0; font-size:0.98em;">
     <p style="margin:0;">
       <strong style="color:#92400e;">TL;DR.</strong>
-      We found a failure mode in clinical retrieval-augmented generation (RAG) that is invisible to every standard check. The model answers a question about drug <em>X</em>, but the documents it retrieved are about a different drug <em>Y</em>. It relays <em>Y</em>'s real evidence, a real trial, a real outcome, and quietly staples it onto <em>X</em>. No hallucination fires. Faithfulness scores it clean. The citation is genuine. We call this <strong>deceptive grounding</strong>, and in a live deployment it shows up in 7.8% of answers, rising to 13.6% for recently approved drugs. Fine-tuning a model on medicine makes it <em>worse</em>.
+      A clinical retrieval-augmented generation (RAG) system can answer a question about drug <em>X</em> with real evidence about drug <em>Y</em>. The facts and citation are genuine, so standard hallucination and faithfulness checks pass. We call this <strong>deceptive grounding</strong>. It appeared in 7.8% of answers from a live deployment and 13.6% for recently approved drugs. Medical fine-tuning made some models more susceptible.
     </p>
   </div>
 
@@ -87,18 +87,18 @@
   <!--  SECTION 1: THE CONSULTATION                           -->
   <!-- ====================================================== -->
   <section>
-    <h2>A question, an answer, and a problem you cannot see</h2>
+    <h2>A Convincing but Wrong Answer</h2>
 
     <p>
-      Put yourself in a clinician's chair. You have a patient with a rare, brutal disease: fibrodysplasia ossificans progressiva, or FOP, where soft tissue slowly turns to bone. You are wondering about an old, well-understood antibody, rituximab, and whether anyone has tried it here. So you ask your decision-support tool the obvious question.
+      Suppose a clinician asks whether rituximab has been used to treat fibrodysplasia ossificans progressiva (FOP), a rare disease in which soft tissue turns to bone.
     </p>
 
     <p>
-      It answers in seconds. It is specific, it is confident, and it cites a real trial by its registry number. It looks exactly like the good answer you were hoping for.
+      The system gives a specific, confident answer and cites a real trial by registry number.
     </p>
 
     <p>
-      Read it first. Then click the button underneath and let the system check its own work.
+      Read the answer, then use the button to verify it.
     </p>
 
     <!-- FIGURE 1: interactive reveal -->
@@ -187,11 +187,11 @@
     </script>
 
     <p>
-      Nothing here is a hallucination. The model did not make up a trial or a number. It read a document that really was in front of it and told you, accurately, what that document said. The only thing it got wrong is <em>who the document was about</em>. And that single mistake, the one thing none of our tools inspect, is enough to turn a correct-sounding answer into a clinically dangerous one.
+      The model did not invent the trial, registry number, or outcome. It accurately summarized a retrieved document but assigned that evidence to the wrong drug. Standard checks do not inspect that attribution.
     </p>
 
     <p>
-      We call this <strong>deceptive grounding</strong>. The response is grounded in retrieved evidence, faithfully so. The deception is in the attribution.
+      We call this <strong>deceptive grounding</strong>: the response is faithful to its source but attributes the source to the wrong entity.
     </p>
   </section>
 
@@ -200,10 +200,10 @@
   <!--  SECTION 2: WHY NOTHING CAUGHT IT                      -->
   <!-- ====================================================== -->
   <section>
-    <h2>Why every safety check missed it</h2>
+    <h2>Why Standard Checks Miss It</h2>
 
     <p>
-      When we evaluate a RAG system for safety, we mostly ask three questions. Did it make things up? Is it faithful to its sources? Are its citations real? Those three checks are the backbone of RAG evaluation, and they are good checks. The problem is what they have in common: every one of them is satisfied when the model accurately relays a real document, which is exactly what deceptive grounding does. So all three pass, and they pass for the right reasons.
+      RAG evaluations usually ask whether the model invented a claim, whether the answer follows its sources, and whether its citations are real. Deceptive grounding passes all three because it accurately relays a real document. The missing check is whether that document concerns the entity in the query.
     </p>
 
     <!-- FIGURE 2: three checks pass -->
@@ -248,10 +248,10 @@
     </figure>
 
     <p>
-      It helps to line deceptive grounding up next to the failures we already know how to catch. A <strong>hallucination</strong> invents a fact, so a faithfulness or accuracy check can catch it. A <strong>knowledge conflict</strong> is when the retrieved document contradicts what the model believes, and that contradiction is a signal you can detect. Deceptive grounding has neither. It invents nothing, and it contradicts nothing. The retrieved evidence about <em>Y</em> lines up perfectly with what the model expected about <em>X</em>, because they are similar drugs for the same disease. It sits precisely in the blind spot: the case where the context and the model agree, and both are pointed at the wrong entity.
+      A <strong>hallucination</strong> invents a fact. A <strong>knowledge conflict</strong> occurs when retrieved evidence contradicts the model's prior. Deceptive grounding does neither. Evidence about <em>Y</em> can match what the model expects about <em>X</em> because the drugs are similar and target the same disease. Context and prior agree, but both point to the wrong entity.
     </p>
 
-    <p>A RAG response can be simultaneously accurate, grounded, and clinically wrong. Accuracy and grounding are exactly the properties our safety checks measure, which is why they cannot see this.</p>
+    <p>A RAG response can be accurate about its source and still be clinically wrong about the queried drug.</p>
   </section>
 
 
@@ -262,11 +262,11 @@
     <h2>The more expert the model, the worse it gets</h2>
 
     <p>
-      We ran the same controlled stress test across 13 models, from small general-purpose models up to large ones fine-tuned specifically on medicine and biomedical text. If domain expertise were protective, the medical models should have been the safest; instead, they were the most dangerous.
+      We ran the same controlled stress test across 13 general and medically fine-tuned models. The medical models were not consistently safer. Two had the highest peak failure rates.
     </p>
 
     <p>
-      The chart below is the peak deceptive-grounding rate for each model under the worst retrieval conditions we could construct. The two models fine-tuned on biomedical and medical corpora sit right at the top. A biomedical model misattributes in nearly nine out of ten answers at the peak.
+      The chart reports each model's peak rate under adversarial retrieval conditions. OpenBioLLM-70B misattributed evidence in 86.7% of answers at its peak.
     </p>
 
     <!-- FIGURE 3: cross-model bar chart -->
@@ -326,12 +326,12 @@
     </script>
 
     <p>
-      Why would expertise hurt? Fine-tuning a model on medicine packs its weights with a cleaner, tighter map of <em>pharmacological classes</em>: which drugs belong together, share a mechanism, target the same pathway. That map is useful knowledge. But it is also exactly the structure that says "these two drugs are the same kind of thing," and once the model believes that, it becomes more willing to treat one drug's evidence as if it applies to its cousin. The stronger the class knowledge, the wider the door opens. This is not a knowledge gap. It is a knowledge strength, aimed at the wrong target.
+      One explanation is that medical fine-tuning strengthens knowledge of pharmacological classes: which drugs share a mechanism or pathway. That knowledge is useful, but it can also make evidence for one drug seem applicable to a related drug. The failure may come from overgeneralizing domain knowledge rather than lacking it.
     </p>
 
     <div class="quiet-note">
       <p>
-        <strong>An honest caveat:</strong> Those peak numbers come from a deliberately adversarial benchmark, engineered to trigger the failure as hard as possible. They measure <em>susceptibility</em>, not everyday prevalence. In a real deployment the rate is far lower. We will get to the real number at the end, and it is still high enough to matter.
+        <strong>Caveat:</strong> These peaks come from an adversarial benchmark designed to trigger the failure. They measure <em>susceptibility</em>, not normal prevalence. Deployment rates appear below.
       </p>
     </div>
   </section>
@@ -341,10 +341,10 @@
   <!--  SECTION 4: CONTENT NOT NAME                           -->
   <!-- ====================================================== -->
   <section>
-    <h2>It is not fooled by the name. It is seduced by the evidence.</h2>
+    <h2>The Evidence Matters More Than the Name</h2>
 
     <p>
-      Take the alternate drug <em>Y</em> and replace its real name with a completely made-up one, a drug that does not exist, while keeping the exact same clinical evidence attached to it. If the model were being tricked by a familiar name, a fake name should make things better; instead, it made things worse.
+      We replaced drug <em>Y</em>'s name with a fictional one while keeping its clinical evidence unchanged. If name familiarity caused the error, this should have reduced it. Instead, misattribution increased.
     </p>
 
     <div class="stat-strip">
@@ -363,14 +363,14 @@
     </div>
 
     <p>
-      A drug that does not exist gets its evidence handed off <em>more</em> often than a real one. And when we replace a real name with an anonymous code like "XC-9941," misattribution climbs by 30 to 65 percentage points depending on the model. What drives the failure is the <em>evidence</em>: a trial, a number, an outcome that snaps neatly into the slot the model was already expecting for your drug. Content, not label.
+      Replacing a real name with a code such as “XC-9941” raised misattribution by 30 to 65 percentage points, depending on the model. The trial details and outcomes drive the failure more than the drug label.
     </p>
 
     <p>
-      If you are still holding onto the idea that this is a perception failure, that the model does not notice the two drugs are different, we tested that too. We labeled the alternate drug with a nonsense tag so obviously anomalous that the model would have to notice it.
+      We also tested whether the model simply failed to notice the mismatch by giving the alternate drug an obvious nonsense label.
     </p>
 
-    <p>The model flagged the mismatched entity in 80% of responses. Of the responses where it explicitly noticed, 73% still committed deceptive grounding. The misattribution happens downstream of perception, in the act of writing the answer.</p>
+    <p>Models flagged the mismatch in 80% of responses. Among those responses, 73% still attributed the evidence incorrectly. Detection alone did not prevent the error during answer synthesis.</p>
 
   </section>
 
@@ -379,14 +379,14 @@
   <!--  SECTION 5: THE MECHANISM                              -->
   <!-- ====================================================== -->
   <section>
-    <h2>One trigger, two exits</h2>
+    <h2>Borrowing or Confabulating</h2>
 
     <p>
-      Underneath all of this is a simple two-step structure, and you can watch it switch. Step one: shared disease context primes the model to treat <em>Y</em>'s evidence as relevant to <em>X</em>, opening the door. Step two decides what walks through. If the retrieved document carries what we call completing information, the concrete specifics like trial names, registry numbers, and outcome figures, the model borrows those specifics and commits deceptive grounding. If that completing information is absent, the model has nothing to borrow, so it generates from memory instead, and you get plain confabulation.
+      Shared disease context first makes evidence about <em>Y</em> seem relevant to <em>X</em>. What happens next depends on whether the document contains <em>completing information</em>, such as trial names, registry numbers, and outcomes. With those details, the model borrows them and misattributes the evidence. Without them, it generates from memory and confabulates.
     </p>
 
     <p>
-      The clean way to prove this is to change one thing and watch the outcome flip. Toggle the completing information below.
+      The control below shows the effect of removing only the completing information.
     </p>
 
     <!-- FIGURE 4: the gate toggle -->
@@ -465,7 +465,7 @@
     </script>
 
     <p>
-      When we strip the specifics out, deceptive grounding goes to zero, and it looks like a win, until you notice the total error rate went <em>up</em>, to 98%. The model did not become correct. It stopped borrowing and started generating from memory.
+      Removing the specifics reduced deceptive grounding to zero, but raised the total error rate to 98%. The model stopped borrowing and started generating unsupported claims from memory.
     </p>
   </section>
 
@@ -477,21 +477,21 @@
     <h2>What actually helps</h2>
 
     <p>
-      For each claim in the answer, ask one more question that no standard framework asks: <em>does the evidence supporting this claim actually belong to the drug I asked about, or to a different drug?</em> We call it entity-attribution verification. It runs per claim, it needs no custom-trained model, and it bolts onto an existing evaluation pipeline.
+      We add one check per claim: does the supporting evidence concern the drug in the query? This <em>entity-attribution verification</em> requires no custom-trained model and can be added to an existing evaluation pipeline.
     </p>
 
-    <p>Find the document behind each claim, read off which drug that document is really about, and flag the claim if that drug is not the one in the query. In our tests this catches deceptive grounding at 97% precision and 98.7% recall, and it fires on 0% of correctly-attributed answers.</p>
+    <p>The verifier identifies the entity in each supporting document and compares it with the query. In our tests, it reached 97% precision and 98.7% recall, with no flags on correctly attributed answers.</p>
 
     <p>
-      Detection is necessary, but it is not where the biggest win is. If you can only do one thing, fix your <strong>retrieval</strong>. Every result in this paper points back to a single lever: the failure is triggered by the absence of the right document. When the system actually retrieves the queried drug's own evidence, deceptive grounding drops to at most 6.4%, from peaks in the 70s and 80s. Retrieving the right document is the highest-leverage intervention we found, by a wide margin.
-    </p>
-
-    <p>
-      And the tempting shortcut, just telling the model to be careful, only half works. An explicit instruction to verify the drug's identity before answering cut misattribution from 36% to 6% on the models driven by a strong internal prior. On other models it moved the number by four points and no more. Prompting is not a general fix, because, remember, the model already notices. The identity check has to be enforced before the model synthesizes its answer, not requested politely and ignored.
+      Better <strong>retrieval</strong> had the largest effect. When the system retrieved evidence about the queried drug, deceptive grounding fell from peaks in the 70s and 80s to at most 6.4%.
     </p>
 
     <p>
-      So the levers, in order of leverage: get retrieval right so the correct evidence is actually present; add entity-attribution verification to your evaluation so you can see the failure at all; and treat entity identity as a hard constraint in the model, not a suggestion.
+      Prompting was inconsistent. An instruction to verify drug identity reduced misattribution from 36% to 6% for models driven by a strong prior, but improved other models by no more than four points. The system needs to enforce identity before answer synthesis rather than rely on a reminder.
+    </p>
+
+    <p>
+      In practice: retrieve entity-specific evidence, add entity-attribution verification, and enforce entity identity as a constraint during synthesis.
     </p>
   </section>
 
@@ -500,18 +500,18 @@
   <!--  SECTION 7: WHY IT MATTERS                             -->
   <!-- ====================================================== -->
   <section>
-    <h2>Why this is not an edge case</h2>
+    <h2>Deployment Prevalence</h2>
 
     <p>
-      We measured deceptive grounding in a real, deployed clinical decision-support system across 740 pre-registered drug and disease pairs, and it showed up in <strong>7.8%</strong> of answers. For recently approved drugs, where the literature is thin and entity-specific evidence is hardest to retrieve, it rose to <strong>13.6%</strong>.
+      Across 740 preregistered drug-disease pairs in a deployed clinical decision-support system, deceptive grounding appeared in <strong>7.8%</strong> of answers. It rose to <strong>13.6%</strong> for recently approved drugs, where entity-specific literature is sparse.
     </p>
 
     <p>
-      New drugs are exactly the situation where a clinician is most likely to reach for an AI assistant, because they have the least experience to fall back on, and exactly the situation where the system is most likely to fill the gap with a similar drug's evidence dressed up under the new name. The failure concentrates precisely where the stakes are highest and the human is least equipped to catch it.
+      Clinicians are also more likely to seek help with new drugs because they have less experience with them. That makes the higher failure rate especially concerning.
     </p>
 
     <p>
-      And it hides in plain sight, because it looks right. It is fluent, it is specific, it cites a real trial. Our existing safety nets, the ones that hunt for fabrication and unfaithfulness, will keep waving it through, not by accident but by design, because the failure lives below the level they inspect. A response can be accurate, grounded, and still about the wrong drug. Catching it means evaluating the one thing surface behavior conceals: not whether the evidence is real, but whether it is about the patient's drug at all.
+      These answers look reliable because they are fluent, specific, and supported by a real citation. Catching them requires checking not only whether the evidence is real, but whether it is about the drug the clinician asked about.
     </p>
 
     <h3 style="margin-top:2.2em;">Citation</h3>

@@ -44,23 +44,23 @@
   <a href="../blog.html" class="back-link" style="margin-top: 50px;">&larr; Back to Projects & Writing Hub</a>
 
   <section id="introduction">
-    <h2>The Challenge: AI Sees a Biased World</h2>
+    <h2>The Problem</h2>
     <p>
-      Facial Age Progression (FAP)—the ability to predict what someone will look like as they age—is a fascinating frontier in computer vision. But many state-of-the-art models have a critical flaw: they are trained on datasets that don't represent the diversity of the real world. Datasets like FFHQ, while high-quality, are heavily skewed towards caucasian faces.
+      Facial age progression models predict how someone may look as they age. Many are trained on datasets that do not represent the population well. FFHQ, for example, is heavily skewed toward white faces.
     </p>
     <figure>
       <img src="../img/proj_fairness/FFHQ_bias.png" alt="Chart showing racial bias in the FFHQ dataset">
       <figcaption>The racial distribution in the popular FFHQ dataset. Truncation, a common technique in GANs, further amplifies this bias, increasing the ratio of generated white faces.</figcaption>
     </figure>
     <p>
-      This imbalance means that models trained on this data often fail to accurately capture the unique aging patterns of non-white individuals. An age progression model that changes a person's perceived race is not just inaccurate; it's a failure of fairness. This project tackles that problem head-on.
+      Models trained on this data may change the perceived race of non-white subjects as they age. We wanted to reduce that failure.
     </p>
   </section>
 
   <section id="baseline">
-    <h2>The Tool: Style-Based Age Manipulation (SAM)</h2>
+    <h2>Baseline: Style-Based Age Manipulation</h2>
     <p>
-      Our starting point was a powerful model called SAM (Style-based Age Manipulation). SAM is an image-to-image translation model built on StyleGAN, a renowned generative network. It works by encoding a person's face into a latent space—a compressed representation of facial features—and then cleverly manipulating that representation to change their age while preserving their identity.
+      We started with Style-based Age Manipulation (SAM), an image-to-image model built on StyleGAN. SAM encodes a face into a latent representation, changes its age, and tries to preserve the person's identity.
     </p>
     <figure>
       <img src="../img/proj_fairness/SAM_architecture.PNG" alt="SAM model architecture diagram">
@@ -69,12 +69,12 @@
   </section>
 
   <section id="solution">
-    <h2>Our Idea: A "Fairness" Penalty</h2>
+    <h2>Adding a Race-Preservation Loss</h2>
     <p>
-      The core of our idea was simple: what if we could penalize the model every time it generated a face whose race was different from the input? To do this, we integrated a pre-trained race classifier, <strong>DeepFace</strong>, directly into the training loop.
+      We added a penalty when the generated face's predicted race differed from the input. A pretrained <strong>DeepFace</strong> classifier supplied that signal during training.
     </p>
     <p>
-      During training, after SAM generated an aged face, DeepFace would analyze both the original and the new face. If it detected a change in racial characteristics, it would send a "race loss" signal back to the main model, nudging its parameters to correct the mistake. In essence, we taught the model to preserve racial identity as a core objective, alongside preserving personal identity and accurately portraying age.
+      DeepFace compared the original and generated faces after each SAM pass. A mismatch contributed a race-preservation loss alongside the existing identity and age objectives.
     </p>
     <figure>
       <img src="../img/proj_fairness/OURS_SAM_architecture.PNG" alt="Our modified SAM architecture with DeepFace for race loss">
@@ -83,9 +83,9 @@
   </section>
 
   <section id="results">
-    <h2>The Results: Seeing is Believing</h2>
+    <h2>Results</h2>
     <p>
-      While quantitative metrics are still a work in progress, the qualitative results, even from early training, are striking. The most powerful demonstration is a direct video comparison.
+      We did not yet have complete quantitative metrics, so these results are qualitative. The video compares the baseline and modified models directly.
     </p>
 
     <figure class="video-figure">
@@ -93,12 +93,12 @@
         <source src="../img/proj_fairness/comparison.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
-      <figcaption><strong>The key result.</strong> First Half: the base model. Second Half: OURS Fairness-Aware Model. Notice how our model consistently preserves the subject's racial identity during age progression, while the baseline model often shifts towards caucasian features.</figcaption>
+      <figcaption>First half: baseline. Second half: our model. Our model better preserves the subject's perceived race, while the baseline often shifts toward white features.</figcaption>
     </figure>
     
     <h3>Side-by-Side Image Comparisons</h3>
     <p>
-    The effect is also clear in still images. We compared generations from our model (trained from scratch with a race loss lambda of 15) against the original vanilla SAM.
+    We also compared still images from our model, trained from scratch with a race-loss weight of 15, against the original SAM.
     </p>
 
     <figure>
@@ -122,23 +122,20 @@
   </section>
 
   <section id="conclusion">
-    <h2>What We Learned & Future Directions</h2>
+    <h2>What We Learned</h2>
     <p>
-      This project, while challenging due to computational constraints, shows significant promise. Our key takeaway is that incorporating auxiliary information—like a race classifier—directly into the loss function can be a powerful strategy for mitigating dataset bias without needing to curate a perfectly balanced dataset.
+      Adding a classifier signal directly to the loss reduced this bias without requiring a perfectly balanced training set. Compute limits kept the evaluation preliminary, but two points stood out:
     </p>
     <ul>
-      <li><strong>Training from Scratch is Key:</strong> Fine-tuning the already-biased baseline model was ineffective. The model needed to learn the importance of racial identity from the very beginning.</li>
-      <li><strong>Potential for More:</strong> This approach could be extended to preserve other attributes like gender, expression, or emotion, leading to even more controllable and robust generative models.</li>
+      <li><strong>Training from scratch mattered:</strong> Fine-tuning the biased baseline did not work. The preservation objective had to be present from the start.</li>
+      <li><strong>The loss could cover other attributes:</strong> A similar setup could target gender, expression, or emotion, though each would need careful evaluation.</li>
     </ul>
-    <p>
-      Ultimately, this work is a step towards building AI systems that are not only technologically advanced but also socially conscious and equitable for everyone.
-    </p>
   </section>
 
   <section id="interactive-demo">
     <h2>Try It Yourself: Notebooks</h2>
     <p>
-        You can experiment with our fairness-enhanced model yourself using these Google Colab notebooks. No setup is required.
+        These Colab notebooks run the model without local setup.
     </p>
     <ul>
         <li>

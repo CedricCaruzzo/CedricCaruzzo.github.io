@@ -332,9 +332,9 @@
 <body>
 
   <header class="main-header">
-    <h1>attogpt: A Neural Network on Punch Cards 📇</h1>
+    <h1>attogpt: A GPT on Punch Cards</h1>
     <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">
-      A Complete GPT in 31 Lines of Python, Encoded in Vintage IBM Format
+      A working GPT in 31 lines of Python
     </p>
 
     <div class="project-meta">
@@ -346,13 +346,13 @@
   <a href="../blog.html" class="back-link">&larr; Back to Projects & Writing Hub</a>
 
   <section id="introduction">
-    <h2>The Challenge: How Small Can a GPT Go?</h2>
+    <h2>How Small Can a GPT Get?</h2>
     <p>
-      In 2024, Andrej Karpathy released <strong>microgpt</strong>—a 240-line implementation of GPT that captured the essence of transformer-based language models. It sparked a competition: how much could you compress a working neural network while keeping it functional?
+      In 2024, Andrej Karpathy released <strong>microgpt</strong>, a 240-line GPT implementation. Other versions kept shrinking it while preserving a working model.
     </p>
     
     <div class="timeline">
-      <h3 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">The Compression Journey</h3>
+      <h3 style="text-align: center; margin-bottom: 20px; color: #2c3e50;">Smaller GPT Implementations</h3>
       <div class="timeline-item">
         <span class="timeline-version">microgpt</span>
         <span class="timeline-lines">240 lines</span>
@@ -376,7 +376,7 @@
     </div>
 
     <p>
-      <strong>attogpt</strong> represents an <strong>87.1% reduction</strong> from the original, while maintaining full functionality: autograd, multi-head attention, training, and inference—all in 31 lines and 3,117 characters.
+      <strong>attogpt</strong> cuts the original line count by <strong>87.1%</strong>. Its 31 lines and 3,117 characters still include autograd, multi-head attention, training, and inference.
     </p>
   </section>
 
@@ -401,7 +401,7 @@
   <section id="what-it-does">
     <h2>What It Actually Does</h2>
     <p>
-      Despite its tiny size, attogpt is a fully functional GPT implementation that includes:
+      The implementation includes:
     </p>
     <ul>
       <li><strong>Autograd Engine:</strong> Automatic differentiation with backward pass</li>
@@ -429,11 +429,11 @@ sample 10: kaina</pre>
   <section id="punch-cards">
     <h2>The Punch Card Format</h2>
     <p>
-      To showcase just how compact this code is, I encoded it using the same <strong>physical format</strong> as 1960s computing: <strong>IBM-style punch cards</strong>—80 columns × 12 rows of binary information, just like the cards that helped send humans to the moon.
+      I also encoded the program as <strong>IBM-style punch cards</strong>, using the physical 80-column by 12-row format common in early computing.
     </p>
     
     <p>
-      The encoding uses <strong>Base64 with 12-bit binary patterns</strong>, mapping each character to a unique punch combination. While this approach is modern (not authentic 1960s Hollerith encoding, which only supported uppercase), it preserves the aesthetic and demonstrates that the entire neural network fits on 52 cards—less than a single drawer in a 1960s data center.
+      Each Base64 character maps to a 12-bit punch pattern. This is a modern encoding, not period-correct Hollerith code, but it is reversible and fits the network on 52 cards.
     </p>
 
     <div class="card-controls">
@@ -456,7 +456,7 @@ sample 10: kaina</pre>
     <h2>Technical Details</h2>
     <h3>Encoding Approach</h3>
     <p>
-      The encoding process is fully reversible and uses modern techniques while preserving the aesthetic of 1960s punch cards:
+      The encoding is fully reversible:
     </p>
     <ol>
       <li><strong>Base64 Conversion:</strong> Python code → UTF-8 bytes → Base64 string</li>
@@ -467,15 +467,15 @@ sample 10: kaina</pre>
 
     <h3>Historical Note</h3>
     <p>
-      While this encoding uses the physical 80×12 format of IBM punch cards, it employs <strong>modern binary encoding</strong> rather than authentic 1960s Hollerith code. This was necessary because:
+      The cards use modern binary encoding rather than 1960s Hollerith code because:
     </p>
     <ul>
       <li>Original IBM 026/029 keypunch machines only supported UPPERCASE characters</li>
       <li>Python requires mixed-case (keywords, variables, etc.)</li>
-      <li>Modern encoding allows full reversibility with all characters</li>
+      <li>The modern encoding can represent every character and decode without loss</li>
     </ul>
     <p>
-      The goal is to demonstrate <strong>scale and historical perspective</strong>, not to recreate period-accurate equipment constraints.
+      The cards are a size comparison, not a period-accurate implementation.
     </p>
 
     <h3>Key Compression Techniques</h3>
@@ -487,20 +487,17 @@ sample 10: kaina</pre>
     </ul>
 
     <p>
-      Despite the compression, the code maintains <strong>identical functionality</strong> to the original microgpt, producing the same quality of results.
+      The compressed version keeps the same functionality as microgpt and produces comparable samples.
     </p>
   </section>
 
   <section id="why-punch-cards">
     <h2>Why Punch Cards?</h2>
     <p>
-      Beyond the technical novelty, there's something profound about encoding a modern neural network in a format from the 1960s. It's a tangible reminder of how far we've come—and how the fundamental principles of computing remain unchanged.
+      Punch cards make the program's size tangible. A single card held 80 characters, and a drawer of roughly 2,000 cards held about 156 KB.
     </p>
     <p>
-      IBM punch cards were the primary medium for data storage and program input for decades. A single card could hold 80 bytes. A full drawer? About 2,000 cards, or roughly 156KB. <strong>attogpt would barely make a dent.</strong>
-    </p>
-    <p>
-      The engineers who wrote software on punch cards would likely be amazed that a complete neural network—capable of learning and generating text—could fit on a stack of cards you could hold in one hand.
+      At 52 cards, <strong>attogpt</strong> takes up a small part of that drawer. The whole training and generation program fits in one hand.
     </p>
   </section>
 

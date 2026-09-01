@@ -30,41 +30,41 @@
 
   <header class="main-header">
     <h1>The Geometry of Words</h1>
-    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">A "From-Scratch" Word2Vec Playground in PyTorch</p>
+    <p style="font-size: 1.15em; color: #555; margin: 0.5em 0 1.5em 0; text-align: center;">A Word2Vec playground built from scratch in PyTorch</p>
   </header>
 
   <a href="../blog.html" class="back-link">&larr; Back to Projects & Writing Hub</a>
 
   <figure>
     <img src="../img/word2vec/word2vec.jpeg" alt="A conceptual figure showing what we expect from word2vec manifold">
-    <figcaption>A conceptual visualization of the learned word embeddings. Semantically similar words cluster together, revealing the geometric structure of language.</figcaption>
+    <figcaption>A conceptual view of learned embeddings, where related words cluster together.</figcaption>
   </figure>
 
   <section id="introduction">
-    <h2>How Many Ideas Can You Fit into 300 Numbers?</h2>
+    <h2>How Much Fits in 300 Numbers?</h2>
     <p>
-      Word embeddings are dense vector representations of words, but have you ever considered their limits? If a 300-dimensional vector represents a word's "concept," how many truly unique concepts can it hold? If "unique" means perfectly orthogonal, the answer is just 300. Yet vocabularies contain tens of thousands of words. How can so few dimensions capture so much meaning?
+      A word embedding represents a word as a dense vector. If “unique” meant perfectly orthogonal, a 300-dimensional space could hold only 300 unique directions. A real vocabulary has tens of thousands of words, so useful embeddings cannot depend on strict orthogonality.
     </p>
     <p>
-      The magic lies in high-dimensional geometry. In a high-dimensional space, you can pack an astronomical number of vectors that are *almost* orthogonal. This project demystifies the process by building Word2Vec (specifically, the Skip-Gram with Negative Sampling model) from the ground up, revealing how an algorithm can learn to navigate this vast "meaning space."
+      High-dimensional space can fit a huge number of nearly orthogonal vectors. This project explores that geometry by implementing Word2Vec's Skip-Gram with Negative Sampling model from scratch.
     </p>
   </section>
 
   <section id="concepts">
-    <h2>The Core Idea: Learning from Context</h2>
+    <h2>Learning from Context</h2>
     <p>
-      The Skip-Gram model works on a simple predictive task: **given a target word, predict its surrounding context words.** For example, given the word `fox`, the model learns a vector representation that is good at predicting nearby words like `quick`, `brown`, `jumps`, and `over`.
+      Skip-Gram learns to predict surrounding words from a target word. Given <code>fox</code>, for example, it learns a vector that helps predict nearby words such as <code>quick</code>, <code>brown</code>, <code>jumps</code>, and <code>over</code>.
     </p>
-    <h3>The Efficiency Problem & The Solution: Negative Sampling</h3>
+    <h3>Negative Sampling</h3>
     <p>
-      A naive approach would require a final softmax layer over the entire vocabulary—a massive computational bottleneck. The key optimization is **Negative Sampling**, which reframes the task into a simple binary classification problem. Instead of predicting context words, the model learns to distinguish between true `(target, context)` pairs (positive examples) and randomly generated fake pairs (negative examples). This is vastly more efficient.
+      A softmax over the full vocabulary is expensive. Negative sampling turns the task into binary classification: distinguish real <code>(target, context)</code> pairs from randomly generated ones. This requires far less computation.
     </p>
   </section>
   
   <section id="results">
-    <h2>Analyzing the Results: Successes and "Correct" Errors</h2>
+    <h2>Results</h2>
     <p>
-      The true test of the model is to inspect the nearest neighbors of various words. The results show both clear successes in capturing semantic meaning and fascinating "errors" that reveal biases in the training data.
+      Nearest neighbors show what the model learned, including artifacts from its training corpus.
     </p>
     <h3>Clear Successes</h3>
     <pre><code>Words closest to 'king':
@@ -80,10 +80,10 @@ Words closest to 'computer':
   - machines   (similarity: 0.6085)
   - software   (similarity: 0.5428)</code></pre>
     <div class="analysis-block">
-        <p><strong>Analysis:</strong> The model successfully learned the semantic concepts, grouping words related to royalty for `king` and technology for `computer`.</p>
+        <p><strong>Analysis:</strong> The neighbors of <code>king</code> concern royalty, while those of <code>computer</code> concern technology.</p>
     </div>
 
-    <h3>Fascinating Artifacts: When "Wrong" is Right</h3>
+    <h3>Corpus Artifacts</h3>
     <pre><code>Words closest to 'history':
   - references (similarity: 0.5308)
   - links      (similarity: 0.5181)
@@ -95,23 +95,23 @@ Words closest to 'france':
   - partements (similarity: 0.5381)
   - partement  (similarity: 0.5164)</code></pre>
     <div class="analysis-block">
-        <p><strong>Analysis:</strong> These "errors" are actually correct learnings of corpus artifacts. The model didn't learn the abstract concept of `history`; it learned the structural context of a Wikipedia article, where "history" sections are followed by "references" and "links." Similarly, it correctly associated `france` with `partements`, a tokenization artifact from the French phrase "départements d'outre-mer" in the pre-cleaned training data.</p>
+        <p><strong>Analysis:</strong> These results reflect the corpus rather than general semantics. Wikipedia history sections often sit near references and links. The association between <code>france</code> and <code>partements</code> comes from a tokenization error in the French phrase “départements d'outre-mer.”</p>
     </div>
   </section>
 
   <section id="conclusion">
-    <h2>The Limits of Static and the Leap to Dynamic</h2>
+    <h2>The Limit of Static Embeddings</h2>
     <p>
-        This project highlights both the power and the limitations of static embeddings. A word like "bank" will always have a single vector, regardless of whether it refers to a river bank or a financial institution. This is the trade-off. What if an embedding wasn't static? What if "bank" could move closer to "money" or "river" depending on the sentence it's in?
+        A static embedding gives <code>bank</code> one vector whether it means a river bank or a financial institution. It cannot move closer to <code>river</code> or <code>money</code> based on the sentence.
     </p>
     <p>
-        That leap—from a frozen dictionary to a living, context-aware language model—is exactly what architectures like the Transformer make possible, paving the way for the next generation of natural language understanding.
+        Contextual models such as Transformers solve this by computing a new representation for each occurrence of a word.
     </p>
   </section>
 
   <section id="code">
       <h2>Code & Resources</h2>
-      <p style="text-align: center;">This project is an open-source playground. The code is heavily commented and modularized to encourage exploration into the geometry of language.</p>
+      <p style="text-align: center;">The commented, modular code is available on GitHub.</p>
       <p style="text-align: center; margin-top: 1.5em;">
           <a href="https://github.com/CedricCaruzzo/minimal-word-embeddings" target="_blank" style="background-color: #2c3e50; color: white; padding: 12px 25px; border-radius: 8px; font-weight: 600; display: inline-block;">View on GitHub</a>
       </p>

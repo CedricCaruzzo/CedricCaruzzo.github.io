@@ -36,7 +36,7 @@
   </header>
 
   <div class="tldr">
-    <p><strong>TL;DR.</strong> Two forward passes can share every MoE weight yet route the same token through different experts. We separate the resulting change into a pure routing term and a dense-like content term, then follow the routing term from block output to residual stream to behavior. Across seven checkpoints and two domains, raw routing magnitude varies much less than residual exposure; exposure is ordered by the routed block's share of the residual. Causal patches show that the routing term is real but bounded and largely reproduced by matched-norm noise. Router movement locates change. It does not establish behavioral influence.</p>
+    <p><strong>TL;DR.</strong> Two forward passes can share every MoE weight but route the same token through different experts. We split the difference into routing and content terms, then follow the routing term from block output to residual stream to behavior. Across seven checkpoints and two domains, residual exposure varies much more than raw routing magnitude and follows the routed block's share of the residual. Causal patches find a bounded effect that matched-norm noise largely reproduces. Router movement locates change but does not prove behavioral influence.</p>
   </div>
 
   <aside class="program-banner">
@@ -53,7 +53,7 @@
   <section>
     <h2>Same weights can still mean different computation</h2>
     <p>
-      Same-weight self-distillation creates an unusual comparison. A demonstration-conditioned teacher and a query-only student use the same parameters, but the added context changes hidden states and gates. The same token can therefore activate a different sparse computation in the two passes. A gate-overlap score can tell us that the route moved; it cannot tell us how much of the induced perturbation survives the rest of the network.
+      A demonstration-conditioned teacher and a query-only student use the same parameters, but context changes their hidden states and gates. The same token can therefore activate different experts. Gate overlap tells us that the route moved, not how much of the perturbation survives the rest of the network.
     </p>
 
     <figure>
@@ -83,7 +83,7 @@
   <section>
     <h2>Separate routing from content before measuring either</h2>
     <p>
-      The routed-output change admits an exact add-and-subtract decomposition. The first term changes gates while evaluating expert outputs at the student's hidden state. The second holds teacher gates fixed while changing expert content. This prevents a common attribution mistake: calling every teacher-student block difference a routing effect.
+      An exact add-and-subtract decomposition separates the routed-output change. The first term changes gates while evaluating experts at the student's hidden state. The second holds teacher gates fixed while changing expert content. Without this split, every teacher-student block difference can be mistaken for a routing effect.
     </p>
 
     <div class="equation">routed difference = A (gate change at fixed content) + B (content change at fixed gates)</div>
@@ -135,7 +135,7 @@
   <section>
     <h2>Routing magnitude is not residual exposure</h2>
     <p>
-      We measured seven open-weight MoE checkpoints on PubMedQA and GSM8K, with 200 matched prompts per domain. The architectures span top-2-of-8 to top-8-of-128 routing, shared and shared-free blocks, and multiple gate conventions. The normalized routing term occupies a relatively narrow observed range, but its exposure to the residual stream varies twice as widely in multiplicative terms.
+      We measured seven open-weight MoE checkpoints on PubMedQA and GSM8K using 200 matched prompts per domain. The models span top-2-of-8 to top-8-of-128 routing, with and without shared experts, and several gate conventions. The normalized routing term stays in a fairly narrow range, while residual exposure varies twice as widely in multiplicative terms.
     </p>
 
     <div class="stat-strip">
@@ -161,14 +161,14 @@
     </figure>
 
     <p>
-      The inversion is easiest to see at the extremes. Qwen3-30B uses the most fine-grained router and has one of the largest routing factors, yet the smallest residual exposure. OLMoE has a similar routing factor but the highest exposure. What differs is how much routed-block output contributes relative to the always-on residual backbone.
+      Qwen3-30B has one of the largest routing factors but the smallest residual exposure. OLMoE has a similar routing factor and the highest exposure. The difference is the routed block's contribution relative to the always-on residual backbone.
     </p>
   </section>
 
   <section>
     <h2>The backbone contains mismatch through routing coherence</h2>
     <p>
-      Correlation is not mechanism, so we scaled the always-on shared output in DeepSeek-V2-Lite and Gravity while leaving the router untouched. Reducing this backbone increased post-block exposure monotonically: from 0.0245 to 0.0395 in DeepSeek and from 0.0403 to 0.0769 in Gravity. A frozen-numerator dilution control stayed nearly flat.
+      To test the mechanism, we scaled the always-on shared output in DeepSeek-V2-Lite and Gravity without changing the router. Reducing the backbone increased post-block exposure monotonically, from 0.0245 to 0.0395 in DeepSeek and from 0.0403 to 0.0769 in Gravity. A frozen-numerator dilution control stayed nearly flat.
     </p>
 
     <figure>
@@ -180,14 +180,14 @@
 
     <div class="insight-box">
       <h3>Mechanistic result</h3>
-      <p>The always-on path does more than enlarge the denominator after a perturbation forms. Preserved common-mode mass helps keep the teacher and student routes coherent, containing the mismatch before it propagates.</p>
+      <p>The always-on path does more than enlarge the denominator. Preserved common-mode mass helps keep teacher and student routes coherent, reducing the mismatch before it propagates.</p>
     </div>
   </section>
 
   <section>
     <h2>Behavioral influence requires a behavioral test</h2>
     <p>
-      The decomposition and exposure screen still do not prove that the recorded routing term changes model behavior. In a preregistered three-model test, we patched the captured routing term into every MoE block and compared it with the natural context effect and matched-norm random directions.
+      Decomposition and exposure do not prove a behavioral effect. In a preregistered three-model test, we patched the captured routing term into every MoE block and compared it with the natural context effect and matched-norm random directions.
     </p>
 
     <div class="stat-strip">
@@ -206,7 +206,7 @@
     </div>
 
     <p>
-      The routing term has a real effect, but much of it is generic to perturbation magnitude. The content term tells a different story: its premium over a random direction is 5.6-80&times;, compared with 1.54-2.05&times; for the routing term on the same checkpoints and domain. Changed conditioning influences output primarily through direction-specific content, not through router movement alone.
+      The routing term has an effect, but much of it follows from perturbation magnitude. The content term's premium over a random direction is 5.6-80&times;, versus 1.54-2.05&times; for routing on the same checkpoints and domain. Changed conditioning affects output mainly through direction-specific content rather than router movement alone.
     </p>
   </section>
 
@@ -233,7 +233,7 @@
     </div>
 
     <div class="solution-box">
-      <h3>Durable lesson</h3>
+      <h3>Practical Rule</h3>
       <p>Use router divergence to locate change, residual exposure to quantify propagation, and behavioral intervention to establish consequence.</p>
     </div>
   </section>
@@ -241,7 +241,7 @@
   <section>
     <h2>Scope and limitations</h2>
     <p>
-      The seven primary checkpoints are an opportunistic, family-correlated sample rather than a factorial architecture sweep. Backbone rescaling is confirmatory for two models, and behavioral patches cover three models and next-token effects rather than task-level generation quality. Scale probes and a merged-expert checkpoint show that the narrow block-level range is not universal. Most importantly, the claims concern one same-weight conditioning mismatch; they do not cover accumulated optimization, separately parameterized teachers, reinforcement-learning trajectories, or forgetting.
+      The seven checkpoints are an opportunistic, family-correlated sample rather than a factorial architecture sweep. Backbone rescaling covers two models, while behavioral patches cover three models and next-token effects rather than task-level generation. Scale probes and a merged-expert checkpoint show that the narrow block-level range is not universal. The claims concern one same-weight conditioning mismatch, not accumulated optimization, separate teachers, reinforcement-learning trajectories, or forgetting.
     </p>
     <div class="quiet-note">
       <p><strong>Interpretation boundary.</strong> Containment is not harmlessness. Exposure within the observed range is evidence about propagation in this regime, not a safety guarantee or a universal behavioral threshold.</p>
