@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>When the Right Answer Does Not Control the Next Action</title>
+  <meta name="description" content="Qwen3.8 could identify the rewarded object and still walk toward the wrong one. What its MazeBench behavior suggests about observations, reasoning, and agent training.">
+  <link rel="canonical" href="https://cedriccaruzzo.github.io/blog/mazebench-right-answer-wrong-action.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="When the Right Answer Does Not Control the Next Action">
+  <meta property="og:description" content="Qwen3.8 could identify the rewarded object and still walk toward the wrong one. What its MazeBench behavior suggests about observations, reasoning, and agent training.">
+  <meta property="og:image" content="https://cedriccaruzzo.github.io/img/mazebench/qwen-evidence-to-action-poster.png">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <style>
+    :root {
+      --ink: #17201c;
+      --muted: #66736c;
+      --paper: #fbfcfa;
+      --panel: #0b120f;
+      --panel-2: #111b16;
+      --line: #dfe7e1;
+      --lime: #bff45a;
+      --cyan: #68ddd5;
+      --orange: #ffad62;
+      --red: #ff746f;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--paper); }
+    body {
+      max-width: 980px;
+      margin: 0 auto;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.72;
+    }
+    main, .site-nav { width: min(100% - 36px, 980px); margin-inline: auto; }
+    .site-nav { padding: 28px 0 10px; font-size: .92rem; }
+    .site-nav a { color: #386554; text-decoration: none; font-weight: 600; }
+    .site-nav a:hover { text-decoration: underline; }
+
+    .hero { padding: 64px 0 42px; max-width: 930px; }
+    .eyebrow, .figure-label {
+      font: 600 .74rem/1.2 "JetBrains Mono", monospace;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: #54826c;
+    }
+    h1 { font-size: clamp(2.55rem, 7vw, 5.45rem); line-height: .98; letter-spacing: -.057em; margin: 18px 0 26px; }
+    .dek { font-size: clamp(1.12rem, 2.4vw, 1.42rem); line-height: 1.55; color: #455149; max-width: 800px; margin: 0; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 28px; color: var(--muted); font-size: .9rem; }
+    .meta code { color: #385a4b; font-family: "JetBrains Mono", monospace; }
+
+    article { max-width: 760px; margin: 0 auto; }
+    article > p, article > ul { font-size: 1.08rem; }
+    article h2 { font-size: clamp(1.72rem, 4vw, 2.35rem); line-height: 1.15; letter-spacing: -.035em; margin: 3.1em 0 .8em; }
+    article h3 { font-size: 1.25rem; line-height: 1.3; margin: 2.2em 0 .55em; }
+    article a { color: #18785a; font-weight: 600; text-underline-offset: 3px; }
+    article code { font-family: "JetBrains Mono", monospace; font-size: .9em; background: #edf2ee; padding: .12em .35em; border-radius: 4px; }
+    article li { margin-bottom: .55em; }
+    .wide { width: min(1120px, calc(100vw - 28px)); margin-left: 50%; transform: translateX(-50%); }
+    figure { margin-top: 42px; margin-bottom: 42px; }
+    figure img { display: block; width: 100%; border-radius: 14px; border: 1px solid #1d2c24; box-shadow: 0 24px 70px rgba(15, 31, 23, .17); }
+    figcaption { color: var(--muted); font-size: .88rem; line-height: 1.5; margin-top: 12px; }
+
+    .note { border-left: 4px solid var(--lime); background: #f1f7ea; padding: 18px 22px; margin: 30px 0; border-radius: 0 9px 9px 0; }
+    .note p { margin: 0; font-size: .98rem; }
+    .quote { font-size: 1.34rem; line-height: 1.48; letter-spacing: -.015em; border-left: 3px solid #90a49a; margin: 34px 0; padding: 6px 0 6px 24px; color: #36473f; }
+
+    .engine-story { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid #26382e; border-radius: 18px; background: #020403; box-shadow: 0 24px 70px rgba(15, 31, 23, .2); }
+    .engine-story video { display: block; width: 100%; height: 100%; object-fit: contain; background: #000; }
+    .story-hud { position: absolute; inset: 0; pointer-events: none; }
+    .story-badge { position: absolute; top: 18px; left: 18px; padding: 7px 10px; border: 1px solid rgba(191,244,90,.35); border-radius: 99px; color: var(--lime); background: rgba(7,15,11,.86); font: 600 .66rem "JetBrains Mono", monospace; letter-spacing: .08em; }
+    .story-bubble { position: absolute; left: 4%; bottom: 5%; width: min(520px, 68%); min-height: 112px; padding: 17px 20px; border: 1px solid rgba(118,151,134,.58); border-radius: 14px; color: #ecf2ee; background: rgba(8,17,12,.92); box-shadow: 0 15px 45px rgba(0,0,0,.38); transition: opacity .16s ease; }
+    .story-bubble::after { content: ""; position: absolute; left: 42%; top: -14px; border: 7px solid transparent; border-bottom-color: rgba(118,151,134,.8); }
+    .story-kicker { color: #8ea69a; font: 600 .65rem "JetBrains Mono", monospace; letter-spacing: .12em; text-transform: uppercase; }
+    .story-line { margin-top: 7px; font-size: clamp(.92rem, 2.1vw, 1.2rem); font-weight: 650; line-height: 1.35; }
+    .story-detail { margin-top: 6px; color: #adbbb3; font-size: clamp(.72rem, 1.5vw, .9rem); line-height: 1.4; }
+    .story-bubble code { color: var(--lime); background: transparent; padding: 0; }
+
+    .belief-story, .polarity-story { overflow: hidden; border: 1px solid #26382e; border-radius: 18px; background: var(--panel); color: #e9f0eb; box-shadow: 0 24px 70px rgba(15, 31, 23, .2); }
+    .visual-header { display: flex; justify-content: space-between; gap: 20px; padding: 20px 23px; border-bottom: 1px solid #223129; }
+    .visual-header h3 { margin: 5px 0 0; color: #fff; font-size: 1.15rem; }
+    .visual-header span { align-self: center; color: #82968b; font: 500 .68rem "JetBrains Mono", monospace; }
+    .belief-stage { display: grid; grid-template-columns: 1fr 1fr; }
+    .ascii-pane, .route-pane { min-width: 0; padding: 22px; }
+    .ascii-pane { border-right: 1px solid #223129; }
+    .pane-label { margin-bottom: 13px; color: #789084; font: 600 .65rem "JetBrains Mono", monospace; letter-spacing: .11em; text-transform: uppercase; }
+    .ascii-window { overflow: hidden; min-height: 270px; margin: 0; padding: 18px; border: 1px solid #1b2a22; border-radius: 10px; background: #030705; color: #65756d; font: 500 clamp(.35rem, .7vw, .48rem)/1.45 "JetBrains Mono", monospace; white-space: pre; }
+    .ascii-window.changed { animation: observation-change .42s ease-out; }
+    .ascii-window .question-cell { color: var(--orange); text-shadow: 0 0 10px rgba(255,173,98,.35); }
+    .ascii-window .player-cell { color: var(--lime); text-shadow: 0 0 10px rgba(191,244,90,.4); }
+    @keyframes observation-change {
+      0% { border-color: var(--lime); box-shadow: inset 0 0 24px rgba(191,244,90,.12); }
+      100% { border-color: #1b2a22; box-shadow: none; }
+    }
+    .route-pane canvas { display: block; width: 100%; height: auto; border: 1px solid #1b2a22; border-radius: 10px; background: #07100c; }
+    .belief-readout { display: grid; grid-template-columns: 230px 1fr; border-top: 1px solid #223129; }
+    .belief-turns { display: flex; align-content: flex-start; gap: 7px; flex-wrap: wrap; padding: 20px; border-right: 1px solid #223129; }
+    .belief-turns button, .pair-replay {
+      border: 1px solid #31443a; border-radius: 7px; background: #111b16; color: #b7c4bd; cursor: pointer; padding: 8px 10px; font: 600 .68rem "JetBrains Mono", monospace;
+    }
+    .belief-turns button.active { border-color: var(--lime); background: var(--lime); color: #08100c; }
+    .belief-copy { min-height: 172px; padding: 20px 23px; }
+    .belief-meta { display: flex; justify-content: space-between; gap: 12px; color: #7d9388; font: 600 .66rem "JetBrains Mono", monospace; letter-spacing: .08em; }
+    .belief-quote { margin: 12px 0; color: #e3ebe6; font-size: 1rem; line-height: 1.55; }
+    .belief-result { color: #8da197; font: .72rem/1.5 "JetBrains Mono", monospace; }
+
+    .polarity-grid { display: grid; grid-template-columns: 1fr 1fr; }
+    .polarity-card { min-width: 0; display: flex; flex-direction: column; }
+    .polarity-card:first-child { border-right: 1px solid #223129; }
+    .polarity-copy { flex: 1; min-height: 160px; padding: 21px 22px 18px; }
+    .polarity-kind { color: var(--lime); font: 600 .66rem "JetBrains Mono", monospace; letter-spacing: .11em; text-transform: uppercase; }
+    .polarity-card.negative .polarity-kind { color: var(--orange); }
+    .polarity-question { min-height: 50px; margin: 10px 0 12px; color: #dce6e0; font-size: .92rem; line-height: 1.45; }
+    .polarity-question code { color: var(--cyan); background: #132019; }
+    .polarity-answer { color: #8da197; font: .72rem "JetBrains Mono", monospace; }
+    .polarity-answer code { color: #fff; background: #17251d; }
+    .polarity-frame { position: relative; flex: none; overflow: hidden; aspect-ratio: 4 / 3; background: #020403 url('../img/mazebench/qwen-polarity-reward-poster.png') center / cover; }
+    .negative .polarity-frame { background-image: url('../img/mazebench/qwen-polarity-obstruction-poster.png'); }
+    .polarity-frame .polarity-states { display: block; width: 300%; max-width: none; height: 100%; border: 0; border-radius: 0; box-shadow: none; }
+    .polarity-outcome { position: absolute; left: 13px; right: 13px; bottom: 13px; padding: 10px 12px; border: 1px solid rgba(111,145,127,.55); border-radius: 9px; background: rgba(6,14,10,.9); color: #eef4f0; font: 600 .7rem/1.4 "JetBrains Mono", monospace; }
+    .polarity-outcome .good { color: var(--lime); }
+    .polarity-outcome .bad { color: var(--red); }
+    .polarity-controls { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 15px 20px; border-top: 1px solid #223129; color: #82968b; font: .68rem "JetBrains Mono", monospace; }
+    .pair-playback { display: flex; align-items: center; gap: 10px; flex: 1; max-width: 270px; }
+    .pair-progress { flex: 1; min-width: 0; width: 100%; margin: 0; accent-color: var(--lime); cursor: pointer; }
+    .pair-state { min-width: 56px; color: #9bafa4; text-align: right; }
+    .pair-replay:hover { border-color: var(--lime); color: var(--lime); }
+    .pair-replay:disabled { cursor: wait; opacity: .6; }
+
+    .closing { background: #eef5ef; border-radius: 14px; padding: 26px 30px; margin: 48px 0; }
+    .closing p:last-child { margin-bottom: 0; }
+    footer { border-top: 1px solid var(--line); padding: 30px 0 50px; margin-top: 70px; color: var(--muted); font-size: .85rem; }
+
+    @media (max-width: 780px) {
+      .hero { padding-top: 38px; }
+      .belief-stage, .polarity-grid { grid-template-columns: 1fr; }
+      .ascii-pane, .polarity-card:first-child { border-right: 0; border-bottom: 1px solid #223129; }
+      .belief-readout { grid-template-columns: 1fr; }
+      .belief-turns { border-right: 0; border-bottom: 1px solid #223129; }
+    }
+    @media (max-width: 480px) {
+      main, .site-nav { width: min(100% - 24px, 980px); }
+      .story-badge { top: 9px; left: 9px; font-size: .53rem; }
+      .story-bubble { left: 3%; bottom: 3%; width: 78%; min-height: 0; padding: 11px 13px; }
+      .story-kicker { font-size: .52rem; }
+      .visual-header { display: block; }
+      .visual-header span { display: block; margin-top: 8px; }
+      .ascii-pane, .route-pane { padding: 13px; }
+      .ascii-window { min-height: 205px; font-size: .28rem; }
+      .polarity-copy { min-height: 0; }
+      .polarity-controls { align-items: stretch; flex-direction: column; }
+      .pair-playback { max-width: none; }
+      .pair-replay { align-self: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav"><a href="../blog.html">&larr; Projects &amp; Writing</a></nav>
+  <main>
+    <header class="hero">
+      <div class="eyebrow">Agent behavior · September 2026</div>
+      <h1>When the Right Answer Does Not Control the Next Action</h1>
+      <div class="meta">
+        <span>Cédric Caruzzo</span>
+        <span><code>Qwen3.8-27B · UD-IQ4_XS</code></span>
+        <span>Local inference · Mac Mini M4 Pro</span>
+      </div>
+    </header>
+
+    <article>
+      <p>Qwen could tell me which object gave it a gem. In 16 tests, it answered correctly every time. When I forked the same histories and asked it to move instead, it chose that object only nine times. In the other seven, it spent its remaining moves walking toward a block.</p>
+
+      <p>I was running Qwen3.8-27B locally in <a href="https://mazebench.com/">MazeBench</a>, using the Control Center I built to read its reasoning alongside each move. The mismatch kept showing up, including when I made Qwen answer the question immediately before acting. It made me much less willing to take a good explanation as evidence that an agent will follow it.</p>
+
+      <p>The <a href="https://github.com/CedricCaruzzo/mazebench-control-center">MazeBench Control Center is open source</a>. It lets you replay a run and branch from an earlier turn to see what changes the next decision. That's how I compared the continuations below. You can use it with your own models too.</p>
+
+      <figure class="wide">
+        <div class="engine-story">
+          <video id="evidenceReplay" autoplay muted loop playsinline controls preload="metadata" poster="../img/mazebench/qwen-evidence-to-action-poster.png">
+            <source src="../img/mazebench/qwen-evidence-to-action.mp4" type="video/mp4">
+          </video>
+          <div class="story-hud" aria-live="polite">
+            <div class="story-badge">MAZEBENCH · QWEN3.8</div>
+            <div class="story-bubble" id="storyBubble">
+              <div class="story-kicker" id="storyKicker">START</div>
+              <div class="story-line" id="storyLine">Qwen enters the first room.</div>
+              <div class="story-detail" id="storyDetail">Green is the player. Blue is <code>object_f</code>. Cyan gems are <code>object_O</code>.</div>
+            </div>
+          </div>
+        </div>
+        <figcaption>Qwen makes the opening moves, answers the reward question, then chooses its final two moves. The path in between is scripted to give each run the same evidence.</figcaption>
+      </figure>
+
+      <h2>The view changes the behavior</h2>
+
+      <p>In the <a href="mazebench-agent-behavior.html">earlier runs</a>, Qwen saw an ASCII map with unfamiliar symbols. It had to work out what they meant by moving around. A weightless block appeared as <code>?</code>. Qwen guessed it might be a gem, pushed it without collecting anything, and began to doubt the idea. Later, it came back to the same block and the same guess.</p>
+
+      <p>The reasoning sometimes said the block probably wasn't a gem. That conclusion never seemed to settle the question for long.</p>
+
+      <figure class="wide">
+        <section class="belief-story" aria-labelledby="belief-trace-title">
+          <div class="visual-header">
+            <div><div class="figure-label">ASCII run</div><h3 id="belief-trace-title">Returning to the same block</h3></div>
+            <span>ROOM HxI · TURNS 80–132</span>
+          </div>
+          <div class="belief-stage">
+            <div class="ascii-pane">
+              <div class="pane-label" id="beliefAsciiLabel">Map excerpt · before action 80</div>
+              <pre class="ascii-window" id="beliefAscii" aria-label="Cropped exact ASCII observation before action 80"></pre>
+            </div>
+            <div class="route-pane">
+              <div class="pane-label">Recorded movement after the first doubt</div>
+              <canvas id="beliefRoute" width="720" height="430" aria-label="Recorded route from turn 80 through the selected turn"></canvas>
+            </div>
+          </div>
+          <div class="belief-readout">
+            <div class="belief-turns" id="beliefTurns" aria-label="Select a recorded turn"></div>
+            <div class="belief-copy">
+              <div class="belief-meta"><span id="beliefTurn">TURN 80 · GENERATED REASONING</span><span id="beliefAction">ACTION: UP</span></div>
+              <div class="belief-quote" id="beliefQuote"></div>
+              <div class="belief-result" id="beliefResult"></div>
+            </div>
+          </div>
+        </section>
+        <figcaption>Qwen's map, route, and reasoning as it repeatedly reconsiders whether the block is a gem.</figcaption>
+      </figure>
+
+      <p>Part of the difficulty was reading the world. In a small maze shown through either a grid or JSON, nine of ten JSON runs reached the next room, compared with three of ten grid runs. With the grid, Qwen often reached an open edge and treated it as a dead end. Explicit coordinates made navigation easier.</p>
+
+      <p>Object names mattered too. When the observation called the object a box, Qwen could use that familiar meaning. With an anonymous label such as <code>object_f</code>, it had to infer the object's behavior from interactions, and the gem theory returned even after an unrewarded push. JSON helped with geometry without necessarily fixing that confusion.</p>
+
+      <p>The world hadn't changed, but the help supplied by the interface had. Calling something a box gives away information that an anonymous label doesn't. These comparisons don't isolate a single cause, but they show how much the agent's apparent understanding depends on how we describe its surroundings.</p>
+
+      <p>That seems relevant well beyond mazes. A browser agent might receive a screenshot, a DOM tree, or a list of labeled controls. A coding agent might read a raw log or a structured error report. I'd expect those choices to affect what it notices and how much reasoning it has left for the task. Here, Qwen could spend its reasoning trying to understand the room and miss evidence about the object it was approaching.</p>
+
+      <h2>Knowing what happened didn't settle the next move</h2>
+
+      <p>To get a clearer view of the decision itself, I used small rooms with JSON observations and two anonymous objects. Qwen pushed <code>object_f</code>; it moved, but the gem count stayed at zero. A scripted path then took the player through two instances of <code>object_O</code>. Each disappeared as the gem count rose.</p>
+
+      <p>The final room offered one of each, both two moves away. This is where Qwen could identify the rewarded object in all 16 question branches, yet approach it in only nine action branches. The action prompt asked for the best-supported choice and allowed exactly two moves, so going the wrong way left no time to recover.</p>
+
+      <p>Those were separate continuations from the same history. They show that Qwen could recover the relevant fact when asked, without proving it was using that fact while choosing an action. Some action traces did recall the earlier gem pickups and still chose the block. Others spent most of their reasoning on the local geometry and assumed the nearby object was a gem.</p>
+
+      <p>Recent movement had a strong influence. I varied the last part of the path while keeping the final position and board identical. Qwen repeated the last movement in 13 of 16 runs. Changing the recent path could change its choice even though the objects and the evidence about them stayed the same. The path also changed what it had just been looking at, so I can't attribute this entirely to repeating a command.</p>
+
+      <p>With a larger action budget, every run in a similar set eventually collected the gem. After a wrong turn, reaching it took seven or eight actions in total, compared with two for a direct approach. Qwen often needed another blocked move before it reconsidered. A success score alone would have hidden that difference.</p>
+
+      <h2>Even a correct reminder could go wrong</h2>
+
+      <p>Asking the reward question immediately before the move looked promising. When recent movement pointed away from the gem, Qwen chose correctly in seven of eight runs after that question, compared with four of eight after a neutral question about its current room. Keeping only its short answer, <code>object_O</code>, without the accompanying reasoning still gave six correct choices in eight runs.</p>
+
+      <p>That was enough to try a different reminder. I asked either which object had produced reward or which object had moved without reward and later blocked movement. Qwen answered both questions correctly. The first identified <code>object_O</code> as worth approaching; the second identified <code>object_f</code> as the unsuccessful option.</p>
+
+      <p>The difference in the next action was large. After naming the rewarded object, Qwen approached it in 15 of 16 runs. After naming the unrewarding block, it chose the gem in only six of 16. The other ten went toward the block it had just correctly described.</p>
+
+      <figure class="wide">
+        <section class="polarity-story" aria-labelledby="polarity-replay-title">
+          <div class="visual-header">
+            <div><div class="figure-label">Two continuations</div><h3 id="polarity-replay-title">Changing the question before the move</h3></div>
+            <span>SAME HISTORY AND BOARD</span>
+          </div>
+          <div class="polarity-grid">
+            <div class="polarity-card">
+              <div class="polarity-copy">
+                <div class="polarity-kind">Question names the reward</div>
+                <div class="polarity-question">Which currently visible object identity was present at a location immediately before a move increased <code>collected_gem_count</code>, and absent from that location immediately afterward?</div>
+                <div class="polarity-answer">QWEN'S CORRECT ANSWER: <code>object_O</code></div>
+              </div>
+              <div class="polarity-frame">
+                <img class="polarity-states" id="polarityReward" src="../img/mazebench/qwen-polarity-reward-states.jpg" width="2880" height="720" alt="Reward question: player between the gem on the left and block on the right">
+                <div class="polarity-outcome" id="rewardOutcome">Handoff: gem left · block right</div>
+              </div>
+            </div>
+            <div class="polarity-card negative">
+              <div class="polarity-copy">
+                <div class="polarity-kind">Question names the obstruction</div>
+                <div class="polarity-question">Which currently visible object identity changed location after a move that did not increase <code>collected_gem_count</code>, then occupied the destination of a later move whose result left the state unchanged?</div>
+                <div class="polarity-answer">QWEN'S CORRECT ANSWER: <code>object_f</code></div>
+              </div>
+              <div class="polarity-frame">
+                <img class="polarity-states" id="polarityObstruction" src="../img/mazebench/qwen-polarity-obstruction-states.jpg" width="2880" height="720" alt="Obstruction question: player between the gem on the left and block on the right">
+                <div class="polarity-outcome" id="obstructionOutcome">Handoff: gem left · block right</div>
+              </div>
+            </div>
+          </div>
+          <div class="polarity-controls">
+            <span>Green: player · cyan: gem (<code>object_O</code>) · blue: block (<code>object_f</code>)</span>
+            <div class="pair-playback" aria-label="Replay progress">
+              <input class="pair-progress" id="pairProgress" type="range" min="0" max="6" step="0.05" value="0" aria-label="Replay position" disabled>
+              <span class="pair-state" id="pairState">ready</span>
+            </div>
+            <button class="pair-replay" id="pairReplay" type="button" disabled>Play actions</button>
+          </div>
+        </section>
+        <figcaption>Recorded states before and after each move, with the exact questions above. Only the question and Qwen's correct one-line answer differ between the two continuations.</figcaption>
+      </figure>
+
+      <p>Some traces effectively reversed the meaning of the answer. Qwen identified <code>object_f</code> as the object that moved without reward, then called it the option best supported by the evidence and approached it. Other traces correctly described the block as unrewarding and <code>object_O</code> as the gem, but still emitted the move toward the block.</p>
+
+      <p>My suspicion is that naming an object made it more likely to become the next target, even when the question gave a reason to avoid it. Qwen might also have interpreted the preceding exchange as a hint about where to go. The obstruction question was harder: answering it took more than twice as many tokens on average, and the following action hit the reasoning limit more often. These runs don't separate those explanations.</p>
+
+      <h2>What I'd want an agent to learn</h2>
+
+      <p>I find the warning case more concerning than an ordinary wrong answer. Imagine a coding agent correctly identifying a file that must remain untouched, then making its next edit there. Or a tool-using agent explaining why a request failed, then retrying it unchanged. I haven't tested those tasks here, but they are the kinds of failure I'd now look for. Asking the agent to explain the rule wouldn't be a sufficient check.</p>
+
+      <p>For training, I'd focus on whether a conclusion changes the next action. Give the agent evidence that contradicts an earlier guess, let it explain what happened, then check its command. Include cases where the last few actions point the wrong way and where the object just mentioned is something to avoid. Rewarding a correct explanation on its own would miss the failures in these runs.</p>
+
+      <p>I'd also train and evaluate across different views of the same environment. The agent should practice inferring what an unfamiliar object does from changes in state, then using that inference later. Familiar labels can make a task much easier without showing that the model learned the underlying behavior. For a deployed agent, a clearer observation format may be a practical improvement; for training, I'd still want to know what happens when those helpful labels disappear.</p>
+
+      <p>One approach worth testing is to have the agent predict the consequence of its proposed action and compare it with the evidence it already has. If pushing this object produced no reward, what supports expecting a reward now? That check would need to be judged against the command and the actual outcome. It could otherwise become another plausible paragraph followed by the same bad move.</p>
+
+      <p>Recovery deserves attention too. Qwen often corrected course once the environment blocked it again. I'd want training to encourage using that feedback before repeating the mistake in a later room. Evaluation should count the unnecessary actions along with eventual success, and include situations where a wrong first step can't be undone. The maze makes retries cheap; a real tool call might not be.</p>
+
+      <p>Longer context and more reasoning may help, especially when interpreting the observation consumes much of the available budget. But several failures happened with the relevant evidence still present, sometimes just restated by Qwen itself. I'd measure whether extra tokens improve the resulting action before treating them as a fix.</p>
+
+      <p>These are small diagnostic runs with one locally quantized Qwen3.8-27B model, custom worlds on the MazeBench engine, and a limited reasoning budget. The later tests deliberately started from runs where Qwen had treated the block as a possible reward. They aren't an estimate of how often agents fail in general, and another model or precision could behave differently.</p>
+
+      <p>For now, I'd be cautious about trusting Qwen with a task just because it can explain what to do. In these rooms, I could ask the right question and get a convincing answer while leaving the next move unreliable. That's where I want to spend more of the training and evaluation effort.</p>
+    </article>
+  </main>
+
+  <footer class="site-nav">© 2026 Cédric Caruzzo</footer>
+  <script>
+    const replay = document.getElementById("evidenceReplay");
+    const kicker = document.getElementById("storyKicker");
+    const line = document.getElementById("storyLine");
+    const detail = document.getElementById("storyDetail");
+    const phases = [
+      { until: 3.15, kicker: "START", line: "Qwen enters the first room.", detail: "Green is the player. Blue is <code>object_f</code>. Cyan gems are <code>object_O</code>." },
+      { until: 5.58, kicker: "FIRST INTERACTION", line: "<code>object_f</code> moves.", detail: "Gem count: 0. The next push is blocked." },
+      { until: 7.83, kicker: "SCRIPTED EVIDENCE", line: "A fixed path leads to <code>object_O</code>.", detail: "Every branch receives the same moves." },
+      { until: 9.34, kicker: "SCRIPTED EVIDENCE", line: "Two <code>object_O</code> gems disappear.", detail: "Gem count: 0 → 1 → 2." },
+      { until: 12.96, kicker: "SCRIPTED EVIDENCE", line: "The path continues to the final room.", detail: "Gem count stays at 2." },
+      { until: 14.50, kicker: "SCRIPTED HANDOFF", line: "The path ends with <code>right</code>.", detail: "The gem is left. The block is right. Two moves remain." },
+      { until: 18.54, kicker: "QWEN'S ANSWER", line: "Which identity disappeared as reward increased?", detail: "<code>object_O</code>" },
+      { until: Infinity, kicker: "QWEN'S NEXT THOUGHT", line: "“The final gem is likely <code>object_f</code>.”", detail: "Action: right, right. The block moves. Gem count stays at 2." }
+    ];
+    let activePhase = -1;
+    function updateReplayCaption() {
+      const index = phases.findIndex(phase => replay.currentTime < phase.until);
+      if (index === activePhase || index < 0) return;
+      activePhase = index;
+      const phase = phases[index];
+      kicker.textContent = phase.kicker;
+      line.innerHTML = phase.line;
+      detail.innerHTML = phase.detail;
+    }
+    replay.addEventListener("timeupdate", updateReplayCaption);
+    replay.addEventListener("seeked", updateReplayCaption);
+    replay.addEventListener("loadedmetadata", updateReplayCaption);
+
+    const beliefPath = [[4,5],[4,6],[5,6],[5,5],[5,6],[6,6],[6,5],[6,6],[7,6],[8,6],[9,6],[9,6],[10,6],[10,5],[9,5],[8,5],[7,5],[6,5],[5,5],[4,5],[3,5],[3,5],[3,6],[4,6],[5,6],[6,6],[7,6],[8,6],[9,6],[9,5],[10,5],[10,5],[11,5],[11,4],[11,3],[11,3],[11,2],[12,2],[12,1],[12,2],[11,2],[11,2],[11,1],[11,1],[11,1],[11,2],[11,2],[11,3],[11,3],[11,4],[11,4],[11,5],[10,5]];
+    const beliefAscii = {
+      80: `jjjjqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqPPPPffffffffffffffffffffffffqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqppppqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqq--------jjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqq}}}}}}}}jjjj`,
+      85: `jjjjqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqffffffffffffffffffffffffffffqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqq--------jjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqq}}}}}}}}jjjj`,
+      88: `jjjjqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqffffffffffffffffffffffffffffqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqq--------jjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqq}}}}}}}}jjjj`,
+      120: `jjjjqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjjqqqqPPPPqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqppppqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqffffffffffffffffffffffffffffqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqq--------jjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqq}}}}}}}}jjjj`,
+      132: `jjjjqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjqqqqjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqffffffffffffffffffffffffffffPPPPqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqPPPPqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqPPPPqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqppppqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjj????????qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqqqqqqqqqqjjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqq--------jjjj
+jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjqqqqqqqq}}}}}}}}jjjj`
+    };
+    const beliefEvents = [
+      { turn: 80, action: "up", quote: "The ? gems are still at the left. I’ve confirmed that ? tiles are not walkable. Maybe the ? tiles are not the gems. Maybe they’re just a visual element, and the actual gems are somewhere else on the map.", result: "position (4,5) · no movement · 0 gems · room HxI" },
+      { turn: 85, action: "right", quote: "I’m going in circles. Let me take a step back and think about this problem differently. The ? tiles are not walkable. Maybe the ? tiles are not gems at all.", result: "position (6,6) · moved · 0 gems · room HxI" },
+      { turn: 88, action: "right", quote: "Maybe the ? tiles are not gems at all. Maybe they’re just a visual element. The actual gems might be in other rooms or levels. Let me try to explore the rest of the map.", result: "position (7,6) · moved · 0 gems · room HxI" },
+      { turn: 120, action: "left", quote: "I’ve been exploring this area for a while and I’m not making progress. Let me try a completely different approach. Actually, I just realized something. Maybe the ? tiles are not gems at all.", result: "position (11,2) · moved · 0 gems · room HxI" },
+      { turn: 132, action: "left", quote: "I’ve been exploring this area for a while and I’m not making progress. Let me try a completely different approach. Actually, I just realized something. Maybe the ? tiles are not gems at all.", result: "position (10,5) · moved · 0 gems · room HxI" }
+    ];
+    const beliefCanvas = document.getElementById("beliefRoute");
+    const beliefContext = beliefCanvas.getContext("2d");
+    const beliefButtons = document.getElementById("beliefTurns");
+    const beliefAsciiElement = document.getElementById("beliefAscii");
+    const beliefAsciiLabel = document.getElementById("beliefAsciiLabel");
+    let selectedBelief = 0;
+    let beliefTimer;
+
+    function drawBeliefRoute(turn) {
+      const width = beliefCanvas.width;
+      const height = beliefCanvas.height;
+      const columns = 14;
+      const rows = 9;
+      const cell = Math.min((width - 100) / columns, (height - 86) / rows);
+      const left = (width - columns * cell) / 2;
+      const top = (height - rows * cell) / 2 + 8;
+      beliefContext.clearRect(0, 0, width, height);
+      beliefContext.fillStyle = "#07100c";
+      beliefContext.fillRect(0, 0, width, height);
+      beliefContext.strokeStyle = "#18271f";
+      beliefContext.lineWidth = 1;
+      for (let x = 0; x <= columns; x += 1) {
+        beliefContext.beginPath(); beliefContext.moveTo(left + x * cell, top); beliefContext.lineTo(left + x * cell, top + rows * cell); beliefContext.stroke();
+      }
+      for (let y = 0; y <= rows; y += 1) {
+        beliefContext.beginPath(); beliefContext.moveTo(left, top + y * cell); beliefContext.lineTo(left + columns * cell, top + y * cell); beliefContext.stroke();
+      }
+      beliefContext.fillStyle = "rgba(255,173,98,.16)";
+      beliefContext.strokeStyle = "#ffad62";
+      beliefContext.lineWidth = 2;
+      beliefContext.fillRect(left + cell, top + 5 * cell, 2 * cell, 2 * cell);
+      beliefContext.strokeRect(left + cell, top + 5 * cell, 2 * cell, 2 * cell);
+      beliefContext.fillStyle = "#ffbf83";
+      beliefContext.font = `600 ${Math.round(cell * .62)}px JetBrains Mono`;
+      beliefContext.textAlign = "center";
+      beliefContext.textBaseline = "middle";
+      beliefContext.fillText("?", left + 2 * cell, top + 6 * cell);
+
+      const count = Math.max(1, Math.min(beliefPath.length, turn - 79));
+      const points = beliefPath.slice(0, count);
+      beliefContext.strokeStyle = "#68ddd5";
+      beliefContext.lineWidth = 5;
+      beliefContext.lineJoin = "round";
+      beliefContext.lineCap = "round";
+      beliefContext.beginPath();
+      points.forEach(([x, y], index) => {
+        const px = left + (x + .5) * cell;
+        const py = top + (y + .5) * cell;
+        if (index) beliefContext.lineTo(px, py); else beliefContext.moveTo(px, py);
+      });
+      beliefContext.stroke();
+      const [startX, startY] = points[0];
+      beliefContext.fillStyle = "#82968b";
+      beliefContext.beginPath(); beliefContext.arc(left + (startX + .5) * cell, top + (startY + .5) * cell, 7, 0, Math.PI * 2); beliefContext.fill();
+      const [endX, endY] = points[points.length - 1];
+      beliefContext.fillStyle = "#bff45a";
+      beliefContext.shadowColor = "#bff45a";
+      beliefContext.shadowBlur = 18;
+      beliefContext.beginPath(); beliefContext.arc(left + (endX + .5) * cell, top + (endY + .5) * cell, 11, 0, Math.PI * 2); beliefContext.fill();
+      beliefContext.shadowBlur = 0;
+      beliefContext.textAlign = "left";
+      beliefContext.fillStyle = "#74887d";
+      beliefContext.font = "500 15px JetBrains Mono";
+      beliefContext.fillText(`route from turn 80 through ${turn}`, left, 24);
+    }
+
+    function selectBelief(index, restart = false) {
+      selectedBelief = index;
+      const event = beliefEvents[index];
+      [...beliefButtons.children].forEach((button, buttonIndex) => button.classList.toggle("active", buttonIndex === index));
+      document.getElementById("beliefTurn").textContent = `TURN ${event.turn} · GENERATED REASONING`;
+      document.getElementById("beliefAction").textContent = `ACTION: ${event.action.toUpperCase()}`;
+      document.getElementById("beliefQuote").textContent = `“${event.quote}”`;
+      document.getElementById("beliefResult").textContent = `ENVIRONMENT: ${event.result}`;
+      const escapedObservation = beliefAscii[event.turn]
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+      beliefAsciiElement.innerHTML = escapedObservation
+        .replace(/\?+/g, '<span class="question-cell">$&</span>')
+        .replace(/P+/g, '<span class="player-cell">$&</span>');
+      beliefAsciiLabel.textContent = `Map excerpt · before action ${event.turn}`;
+      beliefAsciiElement.setAttribute("aria-label", `Cropped exact ASCII observation before action ${event.turn}`);
+      beliefAsciiElement.classList.remove("changed");
+      void beliefAsciiElement.offsetWidth;
+      beliefAsciiElement.classList.add("changed");
+      drawBeliefRoute(event.turn);
+      if (restart) startBeliefCycle();
+    }
+
+    function startBeliefCycle() {
+      clearInterval(beliefTimer);
+      beliefTimer = setInterval(() => selectBelief((selectedBelief + 1) % beliefEvents.length), 5200);
+    }
+
+    beliefEvents.forEach((event, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = `turn ${event.turn}`;
+      button.addEventListener("click", () => selectBelief(index, true));
+      beliefButtons.appendChild(button);
+    });
+    selectBelief(0);
+    startBeliefCycle();
+
+    const rewardReplay = document.getElementById("polarityReward");
+    const obstructionReplay = document.getElementById("polarityObstruction");
+    const rewardOutcome = document.getElementById("rewardOutcome");
+    const obstructionOutcome = document.getElementById("obstructionOutcome");
+    const pairProgress = document.getElementById("pairProgress");
+    const pairState = document.getElementById("pairState");
+    const pairReplay = document.getElementById("pairReplay");
+    const pairImages = [rewardReplay, obstructionReplay];
+    let pairReady = false;
+    let pairPlaying = false;
+    let pairTime = 0;
+    let pairStart = 0;
+    let pairAnimation;
+    let pairLoadAttempt = 0;
+    let pairVisible = false;
+    let pairPlayed = false;
+
+    function renderPair(time) {
+      pairTime = Math.max(0, Math.min(6, time));
+      const step = pairTime < 1 ? 0 : pairTime < 2.5 ? 1 : 2;
+      // Each image contains three unmodified recorded states, arranged horizontally.
+      pairImages.forEach(img => { img.style.transform = `translateX(-${step * 100 / 3}%)`; });
+      rewardOutcome.innerHTML = step === 0
+        ? "Handoff: gem left · block right"
+        : step === 1
+          ? "Qwen action: <span class=\"good\">left</span>"
+          : "Qwen action: <span class=\"good\">left, left</span> · gem +1";
+      obstructionOutcome.innerHTML = step === 0
+        ? "Handoff: gem left · block right"
+        : step === 1
+          ? "Qwen action: <span class=\"bad\">right</span>"
+          : "Qwen action: <span class=\"bad\">right, right</span> · no gem";
+      rewardReplay.alt = ["Reward question: player at the starting position", "Reward question: player moves left toward the gem", "Reward question: player collects the gem after two left moves"][step];
+      obstructionReplay.alt = ["Obstruction question: player at the starting position", "Obstruction question: player moves right toward the block", "Obstruction question: player pushes the block after two right moves, with no gem collected"][step];
+      pairProgress.value = pairTime;
+      pairProgress.setAttribute("aria-valuetext", ["Starting state", "After the first move", "After the second move"][step]);
+      pairState.textContent = step === 0 ? "start" : pairTime < 3.5 ? `move ${step}` : "outcome";
+    }
+
+    function pausePair() {
+      cancelAnimationFrame(pairAnimation);
+      pairPlaying = false;
+      pairReplay.textContent = pairTime >= 6 ? "Replay actions" : "Play actions";
+    }
+
+    function tickPair(now) {
+      renderPair((now - pairStart) / 1000);
+      if (pairTime >= 6) pausePair();
+      else pairAnimation = requestAnimationFrame(tickPair);
+    }
+
+    function playPair() {
+      if (!pairReady) return;
+      cancelAnimationFrame(pairAnimation);
+      if (pairTime >= 6) renderPair(0);
+      pairPlaying = true;
+      pairPlayed = true;
+      pairReplay.textContent = "Pause actions";
+      pairStart = performance.now() - pairTime * 1000;
+      pairAnimation = requestAnimationFrame(tickPair);
+    }
+
+    function autoPlayPair() {
+      if (pairReady && pairVisible && !pairPlayed && !document.hidden && !matchMedia("(prefers-reduced-motion: reduce)").matches) playPair();
+    }
+
+    async function loadPair() {
+      pairLoadAttempt++;
+      pairState.textContent = "loading";
+      pairReplay.disabled = true;
+      let timeout;
+      try {
+        if (pairLoadAttempt > 1) pairImages.forEach(img => {
+          const url = new URL(img.src);
+          url.searchParams.set("retry", pairLoadAttempt);
+          img.src = url.href;
+        });
+        await Promise.race([
+          Promise.all(pairImages.map(img => img.decode())),
+          new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error("Replay images timed out")), 10000); })
+        ]);
+        pairReady = true;
+        pairProgress.disabled = false;
+        renderPair(0);
+        pairReplay.textContent = "Play actions";
+        autoPlayPair();
+      } catch {
+        pairState.textContent = "unavailable";
+        pairReplay.textContent = "Retry replay";
+      } finally {
+        clearTimeout(timeout);
+        pairReplay.disabled = false;
+      }
+    }
+
+    pairReplay.addEventListener("click", () => {
+      if (!pairReady) loadPair();
+      else if (pairPlaying) pausePair();
+      else playPair();
+    });
+    pairProgress.addEventListener("input", () => {
+      pairPlayed = true;
+      renderPair(Number(pairProgress.value));
+      pausePair();
+    });
+    document.addEventListener("visibilitychange", () => { if (document.hidden) pausePair(); });
+    new IntersectionObserver(entries => {
+      pairVisible = entries[0].intersectionRatio >= .2;
+      if (pairVisible) autoPlayPair();
+      else if (pairPlaying) pausePair();
+    }, { threshold: .2 }).observe(document.querySelector(".polarity-story"));
+    loadPair();
+  </script>
+</body>
+</html>
