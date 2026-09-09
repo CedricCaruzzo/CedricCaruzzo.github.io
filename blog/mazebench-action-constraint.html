@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>A Correct Answer Is Not an Action Constraint</title>
+  <meta name="description" content="Explicit avoidance helped Qwen use its own answer. A checked decision record caught missing commands. What these MazeBench results suggest for agent training and execution.">
+  <link rel="canonical" href="https://cedriccaruzzo.github.io/blog/mazebench-action-constraint.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="A Correct Answer Is Not an Action Constraint">
+  <meta property="og:description" content="Explicit avoidance helped Qwen use its own answer. A checked decision record caught missing commands. What these MazeBench results suggest for agent training and execution.">
+  <meta property="og:image" content="https://cedriccaruzzo.github.io/img/mazebench/qwen-action-constraint-poster.jpg">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <style>
+    :root {
+      --ink: #17201c;
+      --muted: #66736c;
+      --paper: #fbfcfa;
+      --panel: #0b120f;
+      --panel-2: #111b16;
+      --panel-3: #16231c;
+      --line: #dfe7e1;
+      --dark-line: #26382e;
+      --lime: #bff45a;
+      --cyan: #68ddd5;
+      --orange: #ffad62;
+      --red: #ff746f;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--paper); }
+    body {
+      max-width: 980px;
+      margin: 0 auto;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.72;
+    }
+    main, .site-nav { width: min(100% - 36px, 980px); margin-inline: auto; }
+    .site-nav { padding: 28px 0 10px; font-size: .92rem; }
+    .site-nav a { color: #386554; text-decoration: none; font-weight: 600; }
+    .site-nav a:hover { text-decoration: underline; }
+
+    .hero { padding: 64px 0 42px; max-width: 930px; }
+    .eyebrow, .figure-label {
+      font: 600 .74rem/1.2 "JetBrains Mono", monospace;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: #54826c;
+    }
+    h1 { font-size: clamp(2.55rem, 7vw, 5.45rem); line-height: .98; letter-spacing: -.057em; margin: 18px 0 26px; }
+    .dek { font-size: clamp(1.12rem, 2.4vw, 1.42rem); line-height: 1.55; color: #455149; max-width: 790px; margin: 0; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 28px; color: var(--muted); font-size: .9rem; }
+    .meta code { color: #385a4b; font-family: "JetBrains Mono", monospace; }
+
+    article { max-width: 760px; margin: 0 auto; }
+    article > p, article > ul { font-size: 1.08rem; }
+    article h2 { font-size: clamp(1.72rem, 4vw, 2.35rem); line-height: 1.15; letter-spacing: -.035em; margin: 3.1em 0 .8em; }
+    article h3 { font-size: 1.25rem; line-height: 1.3; margin: 2.2em 0 .55em; }
+    article a { color: #18785a; font-weight: 600; text-underline-offset: 3px; }
+    article code { font-family: "JetBrains Mono", monospace; font-size: .9em; background: #edf2ee; padding: .12em .35em; border-radius: 4px; }
+    article li { margin-bottom: .55em; }
+    .decision-record { overflow-x: auto; padding: 16px 20px; background: #edf2ee; font-size: 1rem; line-height: 1.6; }
+    .decision-record code { background: none; padding: 0; }
+    .wide { width: min(1120px, calc(100vw - 28px)); margin-left: 50%; transform: translateX(-50%); }
+    figure { margin-top: 42px; margin-bottom: 42px; }
+    figcaption { color: var(--muted); font-size: .88rem; line-height: 1.5; margin-top: 12px; }
+    .quote { font-size: 1.34rem; line-height: 1.48; letter-spacing: -.015em; border-left: 3px solid #90a49a; margin: 34px 0; padding: 6px 0 6px 24px; color: #36473f; }
+
+    .visual {
+      overflow: hidden;
+      border: 1px solid var(--dark-line);
+      border-radius: 18px;
+      color: #e9f0eb;
+      background: var(--panel);
+      box-shadow: 0 24px 70px rgba(15, 31, 23, .2);
+    }
+    .visual-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: 20px 23px; border-bottom: 1px solid #223129; }
+    .visual-header h3 { margin: 5px 0 0; color: #fff; font-size: 1.15rem; }
+    .visual-header > span { align-self: center; color: #82968b; font: 500 .68rem "JetBrains Mono", monospace; text-align: right; }
+
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; }
+    .run-card { min-width: 0; display: flex; flex-direction: column; }
+    .run-card:first-child { border-right: 1px solid #223129; }
+    .run-copy { flex: 1; min-height: 198px; padding: 20px 22px; }
+    .run-kind { color: var(--orange); font: 600 .67rem "JetBrains Mono", monospace; letter-spacing: .1em; text-transform: uppercase; }
+    .run-card.explicit .run-kind { color: var(--lime); }
+    .run-question { margin: 11px 0 10px; color: #d6e1da; font-size: .9rem; line-height: 1.45; }
+    .run-answer { color: #91a69b; font: .72rem/1.5 "JetBrains Mono", monospace; }
+    .run-answer code { color: #fff; background: #17251d; }
+    .run-policy { margin-top: 12px; padding-top: 11px; border-top: 1px solid #213129; color: #9eb1a7; font: .72rem/1.5 "JetBrains Mono", monospace; }
+    .run-policy strong { color: inherit; }
+    .run-card.explicit .run-policy strong { color: var(--lime); }
+    .run-card:not(.explicit) .run-policy strong { color: var(--red); }
+    .video-frame { position: relative; flex: none; overflow: hidden; aspect-ratio: 16 / 7; background: #020403 url('../img/mazebench/qwen-implicit-negative-poster.jpg') center top / 100% auto no-repeat; }
+    .explicit .video-frame { background-image: url('../img/mazebench/qwen-explicit-avoid-poster.jpg'); }
+    .replay-states { display: block; width: 300%; max-width: none; height: auto; }
+    .outcome { position: absolute; left: 13px; right: 13px; bottom: 13px; padding: 10px 12px; border: 1px solid rgba(111,145,127,.55); border-radius: 9px; background: rgba(6,14,10,.9); color: #eef4f0; font: 600 .7rem/1.4 "JetBrains Mono", monospace; }
+    .bad { color: var(--red); }
+    .good { color: var(--lime); }
+    .replay-controls { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 14px 20px; border-top: 1px solid #223129; color: #82968b; font: .68rem "JetBrains Mono", monospace; }
+    button { border: 1px solid #31443a; border-radius: 7px; background: #111b16; color: #b7c4bd; cursor: pointer; padding: 8px 11px; font: 600 .68rem "JetBrains Mono", monospace; }
+    button:hover, button.active { border-color: var(--lime); color: var(--lime); }
+    button:disabled { cursor: wait; opacity: .6; }
+    .replay-position { width: min(240px, 100%); min-width: 0; accent-color: var(--lime); cursor: pointer; }
+
+    .swap-stage { display: grid; grid-template-columns: 1fr 1fr; }
+    .swap-card { min-width: 0; padding: 20px; }
+    .swap-card:first-child { border-right: 1px solid #223129; }
+    .swap-image { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid #1d2d25; border-radius: 11px; background: #020403; }
+    .swap-image img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+    .swap-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 12px; }
+    .identity { padding: 8px 9px; border: 1px solid #273a30; border-radius: 7px; color: #a7b8af; font: .67rem/1.4 "JetBrains Mono", monospace; }
+    .identity b { display: block; color: #fff; }
+    .identity.gem b { color: var(--cyan); }
+    .identity.box b { color: #7da2dd; }
+    .swap-result { margin-top: 12px; color: #9bad9f; font: .72rem/1.5 "JetBrains Mono", monospace; }
+
+    .binding-stage { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr); }
+    .binding-video { position: relative; overflow: hidden; align-self: start; aspect-ratio: 4 / 3; background: #020403 url('../img/mazebench/qwen-decision-binding-poster.jpg') center top / cover; border-right: 1px solid #223129; }
+    .binding-badge { position: absolute; top: 15px; left: 15px; padding: 7px 9px; border: 1px solid rgba(191,244,90,.35); border-radius: 99px; background: rgba(7,15,11,.88); color: var(--lime); font: 600 .62rem "JetBrains Mono", monospace; letter-spacing: .07em; }
+    .binding-side { display: flex; flex-direction: column; min-width: 0; }
+    .binding-step { flex: 1; padding: 19px 20px; border-bottom: 1px solid #223129; opacity: .42; transition: opacity .18s, background .18s; }
+    .binding-step:last-child { border-bottom: 0; }
+    .binding-step.active { opacity: 1; background: #132019; }
+    .step-label { color: #789084; font: 600 .63rem "JetBrains Mono", monospace; letter-spacing: .1em; text-transform: uppercase; }
+    .step-value { margin-top: 8px; color: #edf3ef; font: .78rem/1.55 "JetBrains Mono", monospace; overflow-wrap: anywhere; }
+    .step-value code { color: var(--lime); background: transparent; padding: 0; }
+    .empty { color: var(--red); }
+
+    .interface { display: grid; grid-template-columns: repeat(5, 1fr); gap: 9px; margin: 34px 0; }
+    .interface-step { position: relative; min-height: 138px; padding: 16px 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+    .interface-step:not(:last-child)::after { content: "→"; position: absolute; right: -15px; top: 50%; z-index: 2; color: #75a18c; font-size: 1.1rem; }
+    .interface-step b { display: block; margin-bottom: 9px; color: #4c8268; font: 600 .68rem "JetBrains Mono", monospace; }
+    .interface-step span { color: #53625a; font-size: .83rem; line-height: 1.45; }
+    .interface-step.guard { border-color: #b8d98a; background: #f4f9ec; }
+
+    .closing { background: #eef5ef; border-radius: 14px; padding: 26px 30px; margin: 48px 0; }
+    .closing p:last-child { margin-bottom: 0; }
+    footer { border-top: 1px solid var(--line); padding: 30px 0 50px; margin-top: 70px; color: var(--muted); font-size: .85rem; }
+
+    @media (max-width: 780px) {
+      .hero { padding-top: 38px; }
+      .compare-grid, .swap-stage, .binding-stage { grid-template-columns: 1fr; }
+      .run-card:first-child, .swap-card:first-child, .binding-video { border-right: 0; border-bottom: 1px solid #223129; }
+      .interface { grid-template-columns: 1fr 1fr; }
+      .interface-step::after { display: none; }
+    }
+    @media (max-width: 480px) {
+      main, .site-nav { width: min(100% - 24px, 980px); }
+      .visual-header { display: block; }
+      .visual-header > span { display: block; margin-top: 8px; text-align: left; }
+      .run-copy { min-height: 0; }
+      .replay-controls { align-items: flex-start; flex-direction: column; }
+      .interface { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav"><a href="../blog.html">&larr; Projects &amp; Writing</a></nav>
+  <main>
+    <header class="hero">
+      <div class="eyebrow">Agent behavior · September 2026</div>
+      <h1>A Correct Answer Is Not an Action Constraint</h1>
+      <p class="dek">Qwen could identify an unrewarding object and still approach it. Telling it that the object should be avoided changed its next move.</p>
+      <div class="meta">
+        <span>Cédric Caruzzo</span>
+        <span><code>Qwen3.8-27B · UD-IQ4_XS</code></span>
+        <span>Local inference · Mac Mini M4 Pro</span>
+      </div>
+    </header>
+
+    <article>
+      <p>Adding "should be avoided" to a question changed how Qwen used its own answer. It still named the same object, but it stopped treating that object as somewhere to go.</p>
+
+      <p>In the <a href="mazebench-right-answer-wrong-action.html">previous post</a>, I described Qwen3.8-27B correctly identifying an unrewarding block in MazeBench, then walking toward it. I kept testing because the evidence was clearly available when I asked for it. I wanted to find out what would make that evidence useful in the next decision.</p>
+
+      <h2>Making avoidance explicit</h2>
+
+      <p>At the final room, the player stood between two anonymous objects. Earlier actions had pushed <code>object_f</code> without increasing the gem count. Two instances of <code>object_O</code> had disappeared as the count rose.</p>
+
+      <p>When I asked which object had moved without reward and later blocked movement, Qwen correctly answered <code>object_f</code> in all 16 runs. Only three then moved toward the gem.</p>
+
+      <p>Then I changed the question so that the same answer carried an explicit instruction: which object had moved without reward, blocked movement, and should therefore be avoided? Qwen still answered <code>object_f</code>. This time all 16 continuations approached <code>object_O</code>, the gem.</p>
+
+      <figure class="wide">
+        <section class="visual" aria-labelledby="answer-verb-title">
+          <div class="visual-header">
+            <div><div class="figure-label">Two continuations</div><h3 id="answer-verb-title">Adding "should be avoided"</h3></div>
+            <span>Same history and board</span>
+          </div>
+          <div class="compare-grid">
+            <div class="run-card">
+              <div class="run-copy">
+                <div class="run-kind">Identifying the block</div>
+                <div class="run-question">Which identity moved without reward and later blocked movement?</div>
+                <div class="run-answer">QWEN: <code>object_f</code></div>
+                <div class="run-policy"><strong>Next move:</strong> toward the block it just named.</div>
+              </div>
+              <div class="video-frame">
+                <img class="replay-states" id="implicitReplay" src="../img/mazebench/qwen-implicit-negative-states.jpg" width="2880" height="720" alt="Player between the gem on the left and the block on the right">
+                <div class="outcome" id="implicitOutcome">Start: gem left · block right</div>
+              </div>
+            </div>
+            <div class="run-card explicit">
+              <div class="run-copy">
+                <div class="run-kind">Identifying what to avoid</div>
+                <div class="run-question">Which identity moved without reward, blocked movement, and should be avoided?</div>
+                <div class="run-answer">QWEN: <code>object_f</code></div>
+                <div class="run-policy"><strong>Next move:</strong> toward the gem, away from the named block.</div>
+              </div>
+              <div class="video-frame">
+                <img class="replay-states" id="explicitReplay" src="../img/mazebench/qwen-explicit-avoid-states.jpg" width="2880" height="720" alt="Player between the gem on the left and the block on the right">
+                <div class="outcome" id="explicitOutcome">Start: gem left · block right</div>
+              </div>
+            </div>
+          </div>
+          <div class="replay-controls">
+            <span id="compareState">start</span>
+            <input class="replay-position" id="comparePosition" type="range" min="0" max="6" step="0.05" value="0" aria-label="Comparison replay position" disabled>
+            <button type="button" id="compareReplay" disabled>Play comparison</button>
+          </div>
+        </section>
+        <figcaption>Recorded states before and after each move. The questions are shortened above; Qwen's answer is identical.</figcaption>
+      </figure>
+
+      <p>This changes how I interpret the earlier failures. Naming the block hadn't inevitably made it a target: the same name could guide Qwen away from it when the question said what to do with that information. Qwen may have struggled to infer avoidance from the negative evidence, or it may have assumed I was asking about the object I wanted it to approach. The wording addresses both possibilities, so it doesn't tell me which was responsible.</p>
+
+      <p>I also checked whether the object names were doing the work. In new runs, I swapped them: the gem became <code>object_f</code> and the block became <code>object_O</code>, with the same physical behavior.</p>
+
+      <p>The question without an avoidance instruction led to the gem in six of 16 runs. Explicit avoidance led to it in 15. A preference for one particular name couldn't explain the difference.</p>
+
+      <figure class="wide">
+        <section class="visual" aria-labelledby="label-swap-title">
+          <div class="visual-header">
+            <div><div class="figure-label">Swapped names</div><h3 id="label-swap-title">The gem and block behave the same</h3></div>
+            <span>physical roles unchanged</span>
+          </div>
+          <div class="swap-stage">
+            <div class="swap-card">
+              <div class="swap-image"><img src="../img/mazebench/qwen-implicit-negative-poster.jpg" alt="MazeBench player between a cyan gem and blue movable block"></div>
+              <div class="swap-legend">
+                <div class="identity gem"><b>cyan gem</b>object_O</div>
+                <div class="identity box"><b>blue block</b>object_f</div>
+              </div>
+              <div class="swap-result">Original assignment: explicit avoidance selects the gem in 16/16 runs.</div>
+            </div>
+            <div class="swap-card">
+              <div class="swap-image"><img src="../img/mazebench/qwen-implicit-negative-poster.jpg" alt="The same MazeBench physical scene after opaque identities are swapped"></div>
+              <div class="swap-legend">
+                <div class="identity gem"><b>cyan gem</b>object_f</div>
+                <div class="identity box"><b>blue block</b>object_O</div>
+              </div>
+              <div class="swap-result">Swapped assignment: explicit avoidance selects the gem in 15/16 runs.</div>
+            </div>
+          </div>
+        </section>
+        <figcaption>These are the names in Qwen's observations. It has to infer the objects' roles from what happens when it moves.</figcaption>
+      </figure>
+
+      <p>Reversing the last movement before the decision gave a less consistent result. Some choices improved and others got worse; the two mirrored layouts changed in opposite directions. Explicit avoidance still led to the gem in 15 of 16 runs. Recent movement may contribute, but repeating the last command doesn't explain the whole failure.</p>
+
+      <h2>Turning the conclusion into state</h2>
+
+      <p>Next, I made the intended action explicit outside the question. Keeping the swapped names, I had the runner turn Qwen's answer into a small decision record. It named the unrewarding object as something to avoid and the other candidate as something to approach:</p>
+
+      <pre class="decision-record"><code>{
+  "approach_identity": "object_f",
+  "avoid_identity": "object_O"
+}</code></pre>
+
+      <p>Qwen saw this before choosing its next command. The runner also checked each proposal against a route defined in advance for the room. I saved both the model's proposal and the command actually sent to the game.</p>
+
+      <p>All 16 first proposals went toward the gem, before the guard needed to intervene. The first-action response averaged 178 generated tokens, down from 896 when Qwen had to infer what to do from the negative answer.</p>
+
+      <p>Plain-language avoidance already got 15 of these 16 choices right. That leaves little basis for claiming the structured record was more accurate. The shorter responses are interesting, though: Qwen could read the target and find its direction instead of reconstructing the history and working out which object to choose.</p>
+
+      <p>This wasn't a test of JSON syntax alone. The record supplied a positive target as well as an avoidance instruction, and Qwen was told its commands would be checked. Any of those changes could have contributed.</p>
+
+      <h2>The right move can still be missing</h2>
+
+      <p>Across both moves in each route, Qwen returned 29 correct commands in 32 calls. None pointed the wrong way. The other three responses had empty final content, even though their reasoning named the correct direction. All three happened on the second move.</p>
+
+      <figure class="wide">
+        <section class="visual" aria-labelledby="binding-title">
+          <div class="visual-header">
+            <div><div class="figure-label">A missing command</div><h3 id="binding-title">Qwen plans to move left, but sends no command</h3></div>
+            <span>Second move</span>
+          </div>
+          <div class="binding-stage">
+            <div class="binding-video">
+              <img class="replay-states" id="bindingReplay" src="../img/mazebench/qwen-decision-binding-states.jpg" width="2880" height="720" alt="Player at the starting position, with the gem to the left">
+              <div class="binding-badge" id="bindingBadge">MODEL REPORT</div>
+            </div>
+            <div class="binding-side" aria-live="polite">
+              <div class="binding-step active" data-binding-step="0">
+                <div class="step-label">Qwen's answer</div>
+                <div class="step-value"><code>object_O</code> moved without reward.</div>
+              </div>
+              <div class="binding-step" data-binding-step="1">
+                <div class="step-label">Decision state</div>
+                <div class="step-value"><code>approach: object_f</code><br><code>avoid: object_O</code></div>
+              </div>
+              <div class="binding-step" data-binding-step="2">
+                <div class="step-label">Second model call</div>
+                <div class="step-value">Reasoning: “I'll move left to reach it.”<br>Raw command: <span class="empty">empty</span></div>
+              </div>
+              <div class="binding-step" data-binding-step="3">
+                <div class="step-label">Executed</div>
+                <div class="step-value">Runner supplies: <code>left</code><br>Environment: <span class="good">gem +1</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="replay-controls">
+            <span id="bindingState">answer recorded</span>
+            <input class="replay-position" id="bindingPosition" type="range" min="0" max="6" step="0.05" value="0" aria-label="Guarded replay position" disabled>
+            <button type="button" id="bindingPlay" disabled>Play guarded action</button>
+          </div>
+        </section>
+        <figcaption>The reasoning quote is Qwen's. The final move comes from the runner's predefined route because Qwen sent no command.</figcaption>
+      </figure>
+
+      <p>The guard supplied those missing moves, and all 16 runs collected the gem. It could do that because the route was known in advance. This doesn't show that it could plan in an unfamiliar world, or that the runs would have failed without it. Qwen still had a chance to retry an empty response; I didn't run those unguarded continuations.</p>
+
+      <p>Keeping the original proposals made the distinction visible. Qwen's target choices had improved before enforcement. The guard then handled an output failure. Reporting only that every run succeeded would have hidden the three commands the system supplied.</p>
+
+      <h2>What I'd change in an agent</h2>
+
+      <p>I think this is worth taking seriously when an agent writes a plan or checks its own work. In these runs, asking for another correct statement wasn't enough. Making the consequence of that statement explicit helped Qwen choose, and checking the actual command caught a failure that its reasoning didn't reveal.</p>
+
+      <p>Suppose a coding agent identifies a file that must remain untouched. I'd want that restriction passed to the component that applies edits, where it can reject a write to that file. Asking the model to repeat the restriction would still leave the next command unchecked. I haven't tested coding agents here, but this is the kind of production failure the maze makes me concerned about.</p>
+
+      <p>The representation matters at this stage too. The same object name appeared in a factual answer and in an explicit avoidance instruction, with very different results. An agent's interface determines how much it has to infer again on each call. A decision record may reduce that work, especially across a handoff between planning and tool use.</p>
+
+      <div class="interface" aria-label="Agent interface from evidence to validated execution">
+        <div class="interface-step"><b>EVIDENCE</b><span>State changes and tool results</span></div>
+        <div class="interface-step"><b>REPORT</b><span>What the model says happened</span></div>
+        <div class="interface-step"><b>DECISION</b><span>Target and constraints in explicit fields</span></div>
+        <div class="interface-step"><b>PROPOSAL</b><span>The model's raw next action</span></div>
+        <div class="interface-step guard"><b>VALIDATOR</b><span>Check before execution and retain both records</span></div>
+      </div>
+
+      <p>There is a risk in making a decision record authoritative, though. It can be wrong or out of date. In this maze, the answer was correct and there were only two candidates. In a larger system, I'd want the record checked against current observations and permissions that the agent cannot rewrite for itself. Where a replacement action isn't clearly justified, rejecting a proposal or asking for review makes more sense than guessing what the model intended.</p>
+
+      <p>For training, I'd keep examples where the model's answer is correct but its next command violates the conclusion. Include cases where the named object should be avoided, and vary the labels and positions so that following a familiar name or direction isn't enough. A useful self-correction should affect the proposed action before a guard has to fix it.</p>
+
+      <p>Evaluation should retain the uncorrected proposal as well as the executed action. Otherwise better system-level success can conceal a model that still needs frequent intervention. I'd also separate wrong choices from missing commands: they may produce the same failed task, but the remedies are different.</p>
+
+      <p>These are small, selected sets of trajectories from one locally quantized Qwen3.8-27B model. They don't establish reliability on the full benchmark or on production tasks. The reasoning traces help describe the failures, but they aren't a direct view of the computation that caused them.</p>
+
+      <p>For an agent whose mistakes are expensive to undo, I'd want explicit decisions and a check on execution. These runs give me a reason to test that design elsewhere, while keeping track of how much work the system is doing for the model.</p>
+
+      <p>I used the <a href="https://github.com/CedricCaruzzo/mazebench-control-center">MazeBench Control Center</a> to branch these runs and inspect what Qwen proposed beside what the game executed. It's open source, and you can use it with your own models.</p>
+    </article>
+  </main>
+
+  <footer>© 2026 Cédric Caruzzo</footer>
+
+  <script>
+    // Three frames extracted from each recording show the start and both moves.
+    function showRecordedState(img, frame, description) {
+      img.style.transform = `translateX(-${frame * 100 / 3}%)`;
+      img.alt = description;
+    }
+
+    function setupReplay({ images, button, position, status, render, label }) {
+      let ready = false;
+      let playing = false;
+      let time = 0;
+      let started = 0;
+      let animation;
+      let attempts = 0;
+
+      function draw(value) {
+        time = Math.max(0, Math.min(6, value));
+        position.value = time;
+        const description = render(time);
+        status.textContent = description;
+        position.setAttribute("aria-valuetext", description);
+      }
+
+      function pause() {
+        cancelAnimationFrame(animation);
+        playing = false;
+        button.textContent = time >= 6 ? "Replay" : `Play ${label}`;
+      }
+
+      function tick(now) {
+        draw((now - started) / 1000);
+        if (time >= 6) pause();
+        else animation = requestAnimationFrame(tick);
+      }
+
+      async function load() {
+        attempts++;
+        button.disabled = true;
+        status.textContent = "loading";
+        let timeout;
+        try {
+          if (attempts > 1) images.forEach(img => {
+            const url = new URL(img.src);
+            url.searchParams.set("retry", attempts);
+            img.src = url.href;
+          });
+          await Promise.race([
+            Promise.all(images.map(img => img.decode())),
+            new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error("Replay images timed out")), 10000); })
+          ]);
+          ready = true;
+          position.disabled = false;
+          draw(0);
+          pause();
+        } catch {
+          status.textContent = "unavailable";
+          button.textContent = "Retry replay";
+        } finally {
+          clearTimeout(timeout);
+          button.disabled = false;
+        }
+      }
+
+      button.addEventListener("click", () => {
+        if (!ready) { load(); return; }
+        if (playing) { pause(); return; }
+        if (time >= 6) draw(0);
+        playing = true;
+        button.textContent = "Pause";
+        started = performance.now() - time * 1000;
+        animation = requestAnimationFrame(tick);
+      });
+      position.addEventListener("input", () => { draw(Number(position.value)); pause(); });
+      document.addEventListener("visibilitychange", () => { if (document.hidden && playing) pause(); });
+      load();
+    }
+
+    const implicitReplay = document.getElementById("implicitReplay");
+    const explicitReplay = document.getElementById("explicitReplay");
+    setupReplay({
+      images: [implicitReplay, explicitReplay],
+      button: document.getElementById("compareReplay"),
+      position: document.getElementById("comparePosition"),
+      status: document.getElementById("compareState"),
+      label: "comparison",
+      render(time) {
+        const step = time < 1.5 ? 0 : time < 3 ? 1 : 2;
+        showRecordedState(implicitReplay, step, ["Player between gem and block", "Qwen moves right toward the block", "Qwen pushes the block without collecting a gem"][step]);
+        showRecordedState(explicitReplay, step, ["Player between gem and block", "Qwen moves left toward the gem", "Qwen collects the gem"][step]);
+        document.getElementById("implicitOutcome").innerHTML = ["Start: gem left · block right", "Qwen: <span class=\"bad\">right</span>", "Qwen: <span class=\"bad\">right, right · no gem</span>"][step];
+        document.getElementById("explicitOutcome").innerHTML = ["Start: gem left · block right", "Qwen: <span class=\"good\">left</span>", "Qwen: <span class=\"good\">left, left · gem +1</span>"][step];
+        return ["start", "first move", "second move"][step];
+      }
+    });
+
+    const bindingReplay = document.getElementById("bindingReplay");
+    const bindingBadge = document.getElementById("bindingBadge");
+    const bindingSteps = [...document.querySelectorAll("[data-binding-step]")];
+    const bindingLabels = ["answer recorded", "decision record created", "second command missing", "runner supplies the move"];
+    const bindingBadges = ["QWEN'S ANSWER", "DECISION RECORD", "SECOND COMMAND · EMPTY", "RUNNER SUPPLIES LEFT"];
+    setupReplay({
+      images: [bindingReplay],
+      button: document.getElementById("bindingPlay"),
+      position: document.getElementById("bindingPosition"),
+      status: document.getElementById("bindingState"),
+      label: "guarded action",
+      render(time) {
+        const step = time < 1.2 ? 0 : time < 2.6 ? 1 : time < 4.2 ? 2 : 3;
+        const frame = step < 2 ? 0 : step - 1;
+        showRecordedState(bindingReplay, frame, ["Player at the starting position, with the gem to the left", "After the first move, Qwen sends no second command", "The runner supplies the second left move and the player collects the gem"][frame]);
+        bindingSteps.forEach((element, index) => element.classList.toggle("active", index === step));
+        bindingBadge.textContent = bindingBadges[step];
+        return bindingLabels[step];
+      }
+    });
+  </script>
+</body>
+</html>
