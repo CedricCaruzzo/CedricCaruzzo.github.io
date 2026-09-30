@@ -168,6 +168,7 @@
       border-bottom: 1px solid var(--line);
     }
     .pub:last-child { margin-bottom: 0; border-bottom: 0; }
+    .pub-body { min-width: 0; }
     .pub-tagcol { display: flex; flex-direction: column; gap: 8px; }
     .venue-tag {
       display: block;
@@ -306,7 +307,7 @@
     <h2>Research Profile</h2>
     <div class="intro">
       <p><strong>I study how foundation models behave when their data, tasks, and evidence change.</strong> My research spans representation learning, post-training, retrieval, and evaluation, with a focus on reliable biomedical AI.</p>
-      <p>At Lunit, I work on self-supervised vision models for whole-slide pathology and post-training and evaluation of large medical language models. My recent first-author work introduced <em>deceptive grounding</em>, a clinical RAG failure in which a model can faithfully cite real evidence while assigning it to the wrong medical entity.</p>
+      <p>At Lunit, I work on self-supervised vision models for whole-slide pathology and post-training and evaluation of large medical language models. My first-author paper on <em>deceptive grounding</em>, accepted at NeurIPS 2026, studies how clinical RAG can cite real evidence while assigning it to the wrong medical entity.</p>
       <p>At KAIST, I developed CellPainTR, a Transformer for cross-dataset Cell Painting analysis that generalizes to unseen datasets without target-dataset fine-tuning. Earlier, at Institut Pasteur, I built machine-learning systems for phenotypic drug discovery and infectious-disease research.</p>
       <p>I am particularly interested in adaptive and multimodal learning, reliable post-training, and medical AI systems whose evidence and intermediate reasoning can be independently verified.</p>
     </div>
@@ -317,66 +318,16 @@
 
     <article class="pub">
       <div class="pub-tagcol">
-        <span class="venue-tag">Workshop paper</span>
-        <span class="venue-tag secondary">Under review</span>
-      </div>
-      <div class="pub-body">
-        <div class="pub-title">Which Expert Directions Receive Moved Gate Mass? An Exact Correspondence Reference for MoE Routing Changes</div>
-        <div class="pub-authors"><strong>C&eacute;dric Caruzzo</strong>, Donggeun Yoo, Tae Soo Kim</div>
-        <div class="pub-venue">Workshop paper, under review, 2026</div>
-        <p class="pub-summary">Defines an exact conditional correspondence reference for moved gate mass, factors it into spectral capacity and directional utilization, and shows through a preregistered reversal why geometry is diagnostic rather than a checkpoint-independent behavioral allocator.</p>
-        <div class="pub-links">
-          <button class="pub-btn" type="button" onclick="toggleBib(this)">Bib</button>
-          <a class="pub-btn" href="blog/moe-routing/expert-directions.html">Project</a>
-          <a class="pub-btn" href="blog/moe-routing/index.html">Program</a>
-        </div>
-        <pre class="pub-bib" hidden>@unpublished{caruzzo2026expertdirections,
-  title={Which Expert Directions Receive Moved Gate Mass? An Exact Correspondence Reference for MoE Routing Changes},
-  author={Caruzzo, Cedric and Yoo, Donggeun and Kim, Tae Soo},
-  note={Workshop paper under review},
-  year={2026}
-}</pre>
-      </div>
-    </article>
-
-    <article class="pub">
-      <div class="pub-tagcol">
-        <span class="venue-tag">arXiv 2026</span>
-      </div>
-      <div class="pub-body">
-        <div class="pub-title">Routing Divergence Is Not Evidence of Behavioral Influence in Same-Weight MoE Self-Distillation</div>
-        <div class="pub-authors"><strong>C&eacute;dric Caruzzo</strong>, Donggeun Yoo, Tae Soo Kim</div>
-        <div class="pub-venue">arXiv preprint arXiv:2608.15787, 2026</div>
-        <p class="pub-summary">Introduces an exact routing-content decomposition and traces same-weight MoE routing mismatch from block output to residual exposure and causal output effects across seven checkpoints and two domains.</p>
-        <div class="pub-links">
-          <button class="pub-btn" type="button" onclick="toggleBib(this)">Bib</button>
-          <a class="pub-btn" href="https://arxiv.org/abs/2608.15787" target="_blank" rel="noopener">Paper</a>
-          <a class="pub-btn" href="https://github.com/CedricCaruzzo/routing-divergence-moe" target="_blank" rel="noopener">Code</a>
-          <a class="pub-btn" href="blog/moe-routing/routing-divergence.html">Project</a>
-          <a class="pub-btn" href="blog/moe-routing/index.html">Program</a>
-        </div>
-        <pre class="pub-bib" hidden>@article{caruzzo2026routing,
-  title={Routing Divergence Is Not Evidence of Behavioral Influence in Same-Weight MoE Self-Distillation},
-  author={Caruzzo, Cedric and Yoo, Donggeun and Kim, Tae Soo},
-  journal={arXiv preprint arXiv:2608.15787},
-  year={2026}
-}</pre>
-      </div>
-    </article>
-
-    <article class="pub">
-      <div class="pub-tagcol">
-        <span class="venue-tag">arXiv 2026</span>
-        <span class="venue-tag secondary">Under review</span>
+        <span class="venue-tag">NeurIPS 2026</span>
       </div>
       <div class="pub-body">
         <div class="pub-title">Deceptive Grounding: Entity Attribution Failure in Clinical Retrieval-Augmented Generation</div>
         <div class="pub-authors"><strong>Cédric Caruzzo</strong>, Donggeun Yoo, Tae Soo Kim</div>
-        <div class="pub-venue">arXiv preprint arXiv:2607.09349, 2026</div>
-        <p class="pub-summary">Introduces an entity-attribution failure missed by standard RAG evaluation, characterizes it in controlled and production settings, and proposes entity-attribution verification.</p>
+        <div class="pub-venue">Advances in Neural Information Processing Systems (NeurIPS), 2026</div>
+        <p class="pub-summary">Studies how clinical RAG assigns real evidence to the wrong drug, measures the failure in a 740-pair deployment sample, and evaluates a claim-level entity-attribution check.</p>
         <div class="pub-links">
           <button class="pub-btn" type="button" onclick="toggleBib(this)">Bib</button>
-          <a class="pub-btn" href="https://arxiv.org/pdf/2607.09349" target="_blank" rel="noopener">PDF</a>
+          <a class="pub-btn" href="https://arxiv.org/pdf/2607.09349" target="_blank" rel="noopener">Preprint PDF</a>
           <a class="pub-btn" href="blog/deceptive_grounding.html">Project</a>
         </div>
         <pre class="pub-bib" hidden>@article{caruzzo2026deceptive,
@@ -498,36 +449,17 @@
       <article class="research-card">
         <img src="img/proj_deceptive_grounding/hero.svg" alt="Deceptive Grounding failure structure">
         <div class="card-body">
-          <div class="eyebrow">First-author preprint &middot; 2026</div>
+          <div class="eyebrow">NeurIPS 2026 &middot; First author</div>
           <h3>Deceptive Grounding</h3>
-          <p class="card-summary">Clinical RAG can relay real evidence, cite a genuine source, and still attribute that evidence to the wrong medical entity. Standard hallucination and faithfulness checks miss the failure.</p>
+          <p class="card-summary">Clinical RAG can cite a real source while assigning its evidence to the wrong drug. We measured the failure in one deployment and tested an explicit entity-attribution check.</p>
           <div class="metric-row">
             <span class="metric">Clinical RAG</span>
             <span class="metric">Entity attribution</span>
             <span class="metric">Evaluation blind spot</span>
           </div>
           <div class="card-links">
-            <a class="card-link" href="https://arxiv.org/abs/2607.09349" target="_blank" rel="noopener">Paper</a>
+            <a class="card-link" href="https://arxiv.org/abs/2607.09349" target="_blank" rel="noopener">Preprint</a>
             <a class="card-link" href="blog/deceptive_grounding.html">Project page</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="research-card">
-        <img src="img/proj_moe_routing/program-hero.svg" alt="MoE research program connecting routing change, residual exposure, expert correspondence, and behavioral verification">
-        <div class="card-body">
-          <div class="eyebrow">Research program &middot; 2026</div>
-          <h3>MoE Routing: From Movement to Behavioral Consequence</h3>
-          <p class="card-summary">A connected research program on what routing changes actually mean: isolate the gate-induced component, quantify residual exposure, diagnose which expert-output directions receive moved mass, and establish consequence through behavioral intervention.</p>
-          <div class="metric-row">
-            <span class="metric">Residual exposure</span>
-            <span class="metric">Expert correspondence</span>
-            <span class="metric">Behavioral verification</span>
-          </div>
-          <div class="card-links">
-            <a class="card-link" href="blog/moe-routing/index.html">Program overview</a>
-            <a class="card-link" href="blog/moe-routing/expert-directions.html">Expert Directions</a>
-            <a class="card-link" href="blog/moe-routing/routing-divergence.html">Routing Divergence</a>
           </div>
         </div>
       </article>
